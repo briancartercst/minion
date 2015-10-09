@@ -1,0 +1,17 @@
+# humanstxt.org/
+# The humans responsible & technology colophon
+
+# TEAM
+
+    Luis Crespo -- github.com/lcrespom -- @lcrespom
+
+# THANKS
+
+    Tim Berners Lee, Brendan Eich & Douglas Crockford
+
+# TECHNOLOGY COLOPHON
+
+    HTML5, CSS3
+    jQuery, Modernizr,
+    Bootstrap,
+    Routie
