@@ -4,7 +4,9 @@
   "description": "Flatzoom client environment",
   "main": "index.js",
   "scripts": {
-    "test": "test"
+    "test": "test",
+    "build": "babel es6 --out-dir js --source-maps",
+    "serve": "http-server"
   },
   "repository": {
     "type": "git",
