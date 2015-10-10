@@ -4,3 +4,9 @@ Testing a simple SPA, using:
 - jQuery
 - Bootstrap
 - initializr to get a clean boilerplate
+
+ToDo:
+- Browserify
+- ESHint
+- JS minifier
+- Grunt/gulp/make with proper build / watch / serve

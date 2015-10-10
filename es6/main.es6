@@ -1,20 +1,7 @@
 (function() {
 
-/*
-//TODO eventually use browserify
-function require(script) {
-	$.ajax({
-		url: script,
-		dataType: "script",
-		async: false,
-		error: function () {
-			throw new Error("Could not load script " + script);
-		}
-	});
-}*/
-
 $(() => {
-	//TODO show waiting clock & block current UI
+	//TODO show waiting animation & block current UI
 	routie({
 		'': () => {
 			routie('search');
