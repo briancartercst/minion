@@ -5,8 +5,9 @@
   "main": "index.js",
   "scripts": {
     "test": "test",
-    "build": "babel es6 --out-dir js --source-maps",
-    "serve": "http-server"
+    "build": "esnow -e es6/main.es6 -o js -f main.js",
+    "watch": "esnow -e es6/main.es6 -o js -f main.js -w",
+    "serve": "http-server -c-1"
   },
   "repository": {
     "type": "git",
@@ -27,7 +28,7 @@
   },
   "homepage": "https://github.com/lcrespom/fz2",
   "devDependencies": {
-    "babel": "^5.8.23",
+    "esnow": "^2.0.1",
     "http-server": "^0.8.5"
   }
 }
