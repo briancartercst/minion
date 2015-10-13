@@ -21,7 +21,7 @@ var view = $('#view');
 function showPage(page) {
 	console.log('Showing ' + page);
 	getPage(page, (pageData) => {
-		view.empty().append($(pageData));
+		view.empty().append($('<div>' + pageData + '</div>'));
 	});
 }
 
