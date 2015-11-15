@@ -1,3 +1,6 @@
+/// <reference path="../tsd/jquery.d.ts" />
+/// <reference path="../tsd/routie.d.ts" />
+
 (function() {
 
 $(() => {
@@ -18,14 +21,14 @@ $(() => {
 var pageCache = {};
 var view = $('#view');
 
-function showPage(page) {
+function showPage(page: string): void {
 	console.log('Showing ' + page);
 	getPage(page, (pageData) => {
 		view.empty().append($('<div>' + pageData + '</div>'));
 	});
 }
 
-function getPage(page, cb) {
+function getPage(page: string, cb: (id: string)=>void) {
 	if (pageCache[page]) {
 		cb(pageCache[page]);
 	}

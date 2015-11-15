@@ -1,12 +1,12 @@
 {
-  "name": "fz2",
+  "name": "tsfz2",
   "version": "1.0.0",
   "description": "Flatzoom client environment",
   "main": "index.js",
   "scripts": {
     "test": "test",
-    "build": "esnow -e es6/main.es6 -o js -f main.js",
-    "watch": "esnow -e es6/main.es6 -o js -f main.js -w",
+    "build": "tsc --outDir js --sourceMap ts/main.ts",
+    "watch": "tsc --outDir js --sourceMap --watch ts/main.ts",
     "serve": "http-server -c-1"
   },
   "repository": {
@@ -19,7 +19,8 @@
     "bootstrap",
     "routie",
     "jQuery",
-    "SPA"
+    "SPA",
+    "TypeScript"
   ],
   "author": "Luis Crespo",
   "license": "ISC",
@@ -28,7 +29,7 @@
   },
   "homepage": "https://github.com/lcrespom/fz2",
   "devDependencies": {
-    "esnow": "^2.0.1",
-    "http-server": "^0.8.5"
+    "http-server": "^0.8.5",
+    "typescript": "^1.6.2"
   }
 }
