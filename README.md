@@ -10,6 +10,7 @@ Testing a simple SPA, using:
 - ESHint / TSLint
 - JS minifier with support for source maps
 - Grunt/gulp/make with proper build / watch / serve
+
 ### Runtime
 - Templating engine (jQuery / handlebars...)
 
