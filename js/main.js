@@ -17,10 +17,19 @@
     });
     var pageCache = {};
     var view = $('#view');
-    function showPage(page) {
+    function showPage(page, target) {
+        if (target === void 0) { target = view; }
         console.log('Showing ' + page);
         getPage(page, function (pageData) {
-            view.empty().append($('<div>' + pageData + '</div>'));
+            var viewContent = $('<div>' + pageData + '</div>');
+            processSubviews(viewContent);
+            target.empty().append(viewContent);
+        });
+    }
+    function processSubviews(viewContent) {
+        viewContent.find('[fz-subview]').each(function (i, e) {
+            var subView = $(e);
+            showPage(subView.attr('fz-subview'), subView);
         });
     }
     function getPage(page, cb) {

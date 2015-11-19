@@ -1,19 +1,23 @@
 Testing a simple SPA, using:
-- Babel for transpiling ES6 to JS
+- TypeScript
 - Routie for simple navigation routing
 - jQuery
 - Bootstrap
 - initializr to get a clean boilerplate
 
-ToDo:
-- Browserify
-- ESHint
-- JS minifier
+##ToDo:
+### Development
+- ESHint / TSLint
+- JS minifier with support for source maps
 - Grunt/gulp/make with proper build / watch / serve
+### Runtime
+- Templating engine (jQuery / handlebars...)
 
+##Done:
+- Infinitely nested subviews
 
-Functionality
--------------
+##Functionality
+
 - Mobile First
 
 Views:
