@@ -19,7 +19,7 @@ var ctrl;
                 routie('search');
             },
             'search': function () {
-                showPage('search'); //, (view) => ctrl.search.init(view));
+                showPage('search'); //TODO, (view) => ctrl.search.init(view));
                 ctrl.search.init();
             },
             'details/:id': function (id) {

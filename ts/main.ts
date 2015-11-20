@@ -15,7 +15,7 @@ $(() => {
 			routie('search');
 		},
 		'search': () => {
-			showPage('search');//, (view) => ctrl.search.init(view));
+			showPage('search');//TODO, (view) => ctrl.search.init(view));
 				ctrl.search.init();
 		},
 		'details/:id': (id) => {
