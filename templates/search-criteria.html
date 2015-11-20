@@ -1,1 +1,34 @@
-Search criteria here :-)
+<!--
+  1)	Bedrooms: Studio, 1, 2, 3, 4+
+  2)	Double bedrooms: casillas a clicar 0, 1, 2, 3, 4+
+  3)	Bathrooms = 1, 2, 3, 4+ 
+  4)	“Move in”: calendario 
+  5) Price per month: slider + dos casillas numéricas 
+  6) District: desplegable con los barrios. Se pueden escoger varios a la vez
+  7) Size: slider con dos casillas 
+  8) “Great for school”: 4 logos IESE, ESADE, EADA, La Salle para seleccionar uno
+  -->
+
+<form>
+  <div class="form-group">
+    <label for="bedrooms">Bedrooms</label>
+    <input type="number" class="form-control" name="bedrooms" id="bedrooms">
+  </div>
+  <div class="form-group">
+    <label for="dblBedrooms">Double bedrooms</label>
+    <input type="number" class="form-control" name="dblBedrooms" id="dblBedrooms">
+  </div>
+  <div class="form-group">
+    <label for="bathrooms">Bathrooms</label>
+    <input type="number" class="form-control" name="bathrooms" id="bathrooms">
+  </div>
+  <div class="form-group">
+    <label for="movein">Move in</label>
+    <input type="date" class="form-control" name="movein" id="movein">
+  </div>
+  <div class="form-group">
+    <label for="price">Price per month</label>
+    <input type="number" class="form-control" name="price" id="price">
+  </div>
+  <button type="button" class="btn btn-primary">Search</button>
+</form>

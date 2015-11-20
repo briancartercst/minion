@@ -1,7 +1,12 @@
 /// <reference path="../tsd/jquery.d.ts" />
 /// <reference path="../tsd/routie.d.ts" />
 
+/// <reference path="./ctrl/search.ts" />
+
 (function() {
+
+const pageCache = {};
+const view = $('#view');
 
 $(() => {
 	//TODO show waiting animation & block current UI
@@ -10,16 +15,14 @@ $(() => {
 			routie('search');
 		},
 		'search': () => {
-			showPage('search');
+			showPage('search');//, (view) => ctrl.search.init(view));
+				ctrl.search.init();
 		},
 		'details/:id': (id) => {
 			showPage('details');
 		}
 	});
 });
-
-const pageCache = {};
-const view = $('#view');
 
 function showPage(page: string, target: JQuery = view): void {
 	console.log('Showing ' + page);
@@ -37,7 +40,7 @@ function processSubviews(viewContent: JQuery) {
 	});
 }
 
-function getPage(page: string, cb: (id: string)=>void) {
+function getPage(page: string, cb: (id: string) => void) {
 	if (pageCache[page]) {
 		cb(pageCache[page]);
 	}

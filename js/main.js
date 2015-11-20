@@ -1,6 +1,17 @@
+var ctrl;
+(function (ctrl) {
+    ctrl.search = {
+        init: function () {
+            console.log('ctrl.search init');
+        }
+    };
+})(ctrl || (ctrl = {}));
 /// <reference path="../tsd/jquery.d.ts" />
 /// <reference path="../tsd/routie.d.ts" />
+/// <reference path="./ctrl/search.ts" />
 (function () {
+    var pageCache = {};
+    var view = $('#view');
     $(function () {
         //TODO show waiting animation & block current UI
         routie({
@@ -8,15 +19,14 @@
                 routie('search');
             },
             'search': function () {
-                showPage('search');
+                showPage('search'); //, (view) => ctrl.search.init(view));
+                ctrl.search.init();
             },
             'details/:id': function (id) {
                 showPage('details');
             }
         });
     });
-    var pageCache = {};
-    var view = $('#view');
     function showPage(page, target) {
         if (target === void 0) { target = view; }
         console.log('Showing ' + page);

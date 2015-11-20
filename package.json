@@ -5,8 +5,8 @@
   "main": "index.js",
   "scripts": {
     "test": "test",
-    "build": "tsc --outDir js --sourceMap ts/main.ts",
-    "watch": "tsc --outDir js --sourceMap --watch ts/main.ts",
+    "build": "tsc --out js/main.js --sourceMap ts/main.ts",
+    "watch": "tsc --out js/main.js --sourceMap --watch ts/main.ts",
     "serve": "http-server -c-1"
   },
   "repository": {
