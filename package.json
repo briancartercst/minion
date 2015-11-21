@@ -5,8 +5,8 @@
   "main": "index.js",
   "scripts": {
     "test": "test",
-    "build": "tsc --out js/main.js --sourceMap ts/main.ts ts/ctrl/*.ts",
-    "watch": "tsc --out js/main.js --sourceMap --watch ts/main.ts ts/ctrl/*.ts",
+    "build": "browserify -d ts/main.ts ts/ctrl/*.ts -p [ tsify ] > js/bundle.js",
+    "watch": "echo TODO: use watchify, also exocise source map",
     "serve": "http-server -c-1"
   },
   "repository": {
@@ -29,7 +29,9 @@
   },
   "homepage": "https://github.com/lcrespom/fz2",
   "devDependencies": {
+    "browserify": "^12.0.1",
     "http-server": "^0.8.5",
+    "tsify": "^0.12.2",
     "typescript": "^1.6.2"
   }
 }
