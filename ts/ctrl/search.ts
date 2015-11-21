@@ -1,15 +1,13 @@
-module ctrl {
+import templater from '../templater';
 
-	export const search = {
-		data: {},
+templater.addController('search', {
+	data: {},
 
-		init() {
-			console.log('ctrl.search init');
-		},
+	init() {
+		console.log('ctrl.search init');
+	},
 
-		done() {
-			console.log('ctrl.search done');
-		}
-	};
-
-}
+	done() {
+		console.log('ctrl.search done');
+	}
+});
