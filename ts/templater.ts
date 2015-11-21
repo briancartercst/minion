@@ -1,7 +1,7 @@
 const pageCache = {};
 const ctrl = {};
 
-//-------------------- Privates --------------------
+//-------------------- Publics --------------------
 
 function showPage(page: string, target: JQuery): void {
 	//TODO separate recursive part in a different function.
