@@ -1,7 +1,8 @@
 /// <reference path="../tsd/jquery.d.ts" />
 /// <reference path="../tsd/routie.d.ts" />
 
-/// <reference path="./ctrl/search.ts" />
+// Define controller module with dummy export, to allow dynamic module loading
+module ctrl { export var dummy = null; }
 
 (function() {
 
@@ -15,41 +16,57 @@ $(() => {
 			routie('search');
 		},
 		'search': () => {
-			showPage('search');//TODO, (view) => ctrl.search.init(view));
-				ctrl.search.init();
+			templater.showPage('search');
 		},
 		'details/:id': (id) => {
-			showPage('details');
+			templater.showPage('details');
 		}
 	});
 });
 
-function showPage(page: string, target: JQuery = view): void {
-	console.log('Showing ' + page);
-	getPage(page, (pageData) => {
-		const viewContent = $('<div>' + pageData + '</div>');
-		processSubviews(viewContent);
-		target.empty().append(viewContent);
-	});
-}
+//TODO move to separate module
+class Templater {
 
-function processSubviews(viewContent: JQuery) {
-	viewContent.find('[fz-subview]').each((i, e) => {
-		const subView = $(e);
-		showPage(subView.attr('fz-subview'), subView);
-	});
-}
-
-function getPage(page: string, cb: (id: string) => void) {
-	if (pageCache[page]) {
-		cb(pageCache[page]);
-	}
-	else {
-		$.get('templates/' + page + '.html').done((pageData) => {
-			pageCache[page] = pageData;
-			cb(pageData);
+	showPage(page: string, target: JQuery = view): void {
+		console.log('Showing ' + page);
+		this.getPage(page, (pageData) => {
+			const viewContent = $('<div>' + pageData + '</div>');
+			this.processSubviews(viewContent);
+			target.empty().append(viewContent);
+			this.initController(page);
 		});
 	}
+
+	processSubviews(viewContent: JQuery) {
+		viewContent.find('[fz-subview]').each((i, e) => {
+			const subView = $(e);
+			this.showPage(subView.attr('fz-subview'), subView);
+		});
+	}
+
+	getPage(page: string, cb: (id: string) => void) {
+		if (pageCache[page]) {
+			cb(pageCache[page]);
+		}
+		else {
+			$.get('templates/' + page + '.html').done((pageData) => {
+				pageCache[page] = pageData;
+				cb(pageData);
+			});
+		}
+	}
+
+	initController(page: string) {
+		const ctrlName = this.dashed2camel(page);
+		if (!ctrl[ctrlName]) return;
+		ctrl[ctrlName].init();
+	}
+
+	dashed2camel(str: string) {
+		return str; //TODO implement
+	}
 }
+
+var templater = new Templater();
 
 })();
