@@ -40,7 +40,7 @@ function getPage(page: string, cb: (id: string) => void): void {
 
 function initController(page: string): void {
 	const ctrlName = dashed2camel(page);
-	if (!ctrl[ctrlName]) return;	//TODO dynamically load controller
+	if (!ctrl[ctrlName]) return;
 	ctrl[ctrlName].init();
 }
 
@@ -56,6 +56,9 @@ function dashed2camel(str: string): string {
 function ucfirst(str: string): string {
 	return str.charAt(0).toUpperCase() + str.slice(1);
 }
+
+
+//-------------------- Exports --------------------
 
 export default {
 	showPage,
