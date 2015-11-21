@@ -16,30 +16,30 @@ templater_1["default"].addController('search', {
 // Define controller module with dummy export, to allow dynamic module loading
 //module ctrl { export var dummy = null; }
 var templater_1 = require('./templater');
-(function () {
-    var view = $('#view');
-    $(function () {
-        //TODO show waiting animation & block current UI
-        routie({
-            '': function () {
-                routie('search');
-            },
-            'search': function () {
-                templater_1["default"].showPage('search', view);
-            },
-            'details/:id': function (id) {
-                templater_1["default"].showPage('details', view);
-            }
-        });
+var view = $('#view');
+$(function () {
+    routie({
+        '': function () {
+            routie('search');
+        },
+        'search': function () {
+            templater_1["default"].showPage('search', view);
+        },
+        'details/:id': function (id) {
+            templater_1["default"].showPage('details', view);
+        }
     });
-})();
+});
 
 },{"./templater":3}],3:[function(require,module,exports){
 var pageCache = {};
 var ctrl = {};
 //-------------------- Privates --------------------
 function showPage(page, target) {
+    //TODO separate recursive part in a different function.
+    // Then, shutdown previous controllers.
     console.log('Showing ' + page);
+    //TODO show waiting animation & block current UI
     getPage(page, function (pageData) {
         var viewContent = $('<div>' + pageData + '</div>');
         processSubviews(viewContent);

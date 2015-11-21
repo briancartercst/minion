@@ -5,12 +5,9 @@
 //module ctrl { export var dummy = null; }
 import templater from './templater';
 
-(function() {	//TODO replace this IIF with build step, to encapsulate modules too
-
 const view = $('#view');
 
 $(() => {
-	//TODO show waiting animation & block current UI
 	routie({
 		'': () => {
 			routie('search');
@@ -23,5 +20,3 @@ $(() => {
 		}
 	});
 });
-
-})();

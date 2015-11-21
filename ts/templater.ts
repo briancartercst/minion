@@ -4,7 +4,10 @@ const ctrl = {};
 //-------------------- Privates --------------------
 
 function showPage(page: string, target: JQuery): void {
+	//TODO separate recursive part in a different function.
+	// Then, shutdown previous controllers.
 	console.log('Showing ' + page);
+	//TODO show waiting animation & block current UI
 	getPage(page, (pageData) => {
 		const viewContent = $('<div>' + pageData + '</div>');
 		processSubviews(viewContent);
