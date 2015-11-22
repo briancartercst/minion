@@ -1,19 +1,15 @@
 const pageCache = {};
 const ctrl = {};
+const currentCtrls = [];
 
 //-------------------- Publics --------------------
 
 function showPage(page: string, target: JQuery): void {
 	//TODO separate recursive part in a different function.
 	// Then, shutdown previous controllers.
-	console.log('Showing ' + page);
-	//TODO show waiting animation & block current UI
-	getPage(page, (pageData) => {
-		const viewContent = $('<div>' + pageData + '</div>');
-		processSubviews(viewContent);
-		target.empty().append(viewContent);
-		initController(page);
-	});
+	console.log(`Showing page '${page}'`);
+	closeControllers();
+	showView(page, target);
 }
 
 function addController(name: string, controller) {
@@ -22,10 +18,21 @@ function addController(name: string, controller) {
 
 //-------------------- Privates --------------------
 
+function showView(viewName: string, target: JQuery): void {
+	console.log(`  rendering template '${viewName}'`);
+	//TODO show waiting animation & block current UI
+	getPage(viewName, (pageData) => {
+		const viewContent = $('<div>' + pageData + '</div>');
+		processSubviews(viewContent);
+		target.empty().append(viewContent);
+		initController(viewName);
+	});
+}
+
 function processSubviews(viewContent: JQuery): void {
 	viewContent.find('[fz-subview]').each((i, e) => {
 		const subView = $(e);
-		showPage(subView.attr('fz-subview'), subView);
+		showView(subView.attr('fz-subview'), subView);
 	});
 }
 
@@ -44,7 +51,19 @@ function getPage(page: string, cb: (id: string) => void): void {
 function initController(page: string): void {
 	const ctrlName = dashed2camel(page);
 	if (!ctrl[ctrlName]) return;
-	ctrl[ctrlName].init();
+	console.log(`  initializing controller '${ctrlName}'`);
+	const currCtrl = ctrl[ctrlName];
+	currCtrl.init();
+	currCtrl.$name = ctrlName;
+	currentCtrls.push(currCtrl);
+}
+
+function closeControllers() {
+	while (currentCtrls.length > 0) {
+		const ctrl = currentCtrls.pop();
+		console.log(`  closing controller '${ctrl.$name}'`);
+		ctrl.done();
+	}
 }
 
 function dashed2camel(str: string): string {

@@ -34,27 +34,33 @@ $(function () {
 },{"./templater":3}],3:[function(require,module,exports){
 var pageCache = {};
 var ctrl = {};
-//-------------------- Privates --------------------
+var currentCtrls = [];
+//-------------------- Publics --------------------
 function showPage(page, target) {
     //TODO separate recursive part in a different function.
     // Then, shutdown previous controllers.
-    console.log('Showing ' + page);
-    //TODO show waiting animation & block current UI
-    getPage(page, function (pageData) {
-        var viewContent = $('<div>' + pageData + '</div>');
-        processSubviews(viewContent);
-        target.empty().append(viewContent);
-        initController(page);
-    });
+    console.log("Showing page '" + page + "'");
+    closeControllers();
+    showView(page, target);
 }
 function addController(name, controller) {
     ctrl[name] = controller;
 }
 //-------------------- Privates --------------------
+function showView(viewName, target) {
+    console.log("  rendering template '" + viewName + "'");
+    //TODO show waiting animation & block current UI
+    getPage(viewName, function (pageData) {
+        var viewContent = $('<div>' + pageData + '</div>');
+        processSubviews(viewContent);
+        target.empty().append(viewContent);
+        initController(viewName);
+    });
+}
 function processSubviews(viewContent) {
     viewContent.find('[fz-subview]').each(function (i, e) {
         var subView = $(e);
-        showPage(subView.attr('fz-subview'), subView);
+        showView(subView.attr('fz-subview'), subView);
     });
 }
 function getPage(page, cb) {
@@ -72,7 +78,18 @@ function initController(page) {
     var ctrlName = dashed2camel(page);
     if (!ctrl[ctrlName])
         return;
-    ctrl[ctrlName].init();
+    console.log("  initializing controller '" + ctrlName + "'");
+    var currCtrl = ctrl[ctrlName];
+    currCtrl.init();
+    currCtrl.$name = ctrlName;
+    currentCtrls.push(currCtrl);
+}
+function closeControllers() {
+    while (currentCtrls.length > 0) {
+        var ctrl_1 = currentCtrls.pop();
+        console.log("  closing controller '" + ctrl_1.$name + "'");
+        ctrl_1.done();
+    }
 }
 function dashed2camel(str) {
     var parts = str.split('-');
