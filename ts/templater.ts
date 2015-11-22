@@ -1,3 +1,12 @@
+//-------------------- Exports --------------------
+
+export default {
+	showPage,
+	registerController
+}
+
+//-------------------- Module variables --------------------
+
 const pageCache = {};
 const ctrl = {};
 const currentCtrls = [];
@@ -12,7 +21,7 @@ function showPage(page: string, target: JQuery): void {
 	showView(page, target);
 }
 
-function addController(name: string, controller) {
+function registerController(name: string, controller) {
 	ctrl[name] = controller;
 }
 
@@ -77,12 +86,4 @@ function dashed2camel(str: string): string {
 
 function ucfirst(str: string): string {
 	return str.charAt(0).toUpperCase() + str.slice(1);
-}
-
-
-//-------------------- Exports --------------------
-
-export default {
-	showPage,
-	addController
 }

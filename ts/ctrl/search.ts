@@ -1,6 +1,6 @@
 import templater from '../templater';
 
-templater.addController('search', {
+templater.registerController('search', {
 	data: {},
 
 	init() {
