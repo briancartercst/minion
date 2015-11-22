@@ -4,6 +4,7 @@ templater_1["default"].registerController('search', {
     data: {},
     init: function () {
         console.log('ctrl.search init');
+        $("#price-range").slider({});
     },
     done: function () {
         console.log('ctrl.search done');
@@ -12,6 +13,7 @@ templater_1["default"].registerController('search', {
 
 },{"../templater":3}],2:[function(require,module,exports){
 /// <reference path="../tsd/jquery.d.ts" />
+/// <reference path="../tsd/bootstrap-slider.d.ts" />
 /// <reference path="../tsd/routie.d.ts" />
 // Define controller module with dummy export, to allow dynamic module loading
 //module ctrl { export var dummy = null; }

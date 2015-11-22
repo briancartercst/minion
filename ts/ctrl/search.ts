@@ -5,6 +5,7 @@ templater.registerController('search', {
 
 	init() {
 		console.log('ctrl.search init');
+		$("#price-range").slider({});
 	},
 
 	done() {

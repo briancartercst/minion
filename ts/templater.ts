@@ -14,8 +14,6 @@ const currentCtrls = [];
 //-------------------- Publics --------------------
 
 function showPage(page: string, target: JQuery): void {
-	//TODO separate recursive part in a different function.
-	// Then, shutdown previous controllers.
 	console.log(`Showing page '${page}'`);
 	closeControllers();
 	showView(page, target);

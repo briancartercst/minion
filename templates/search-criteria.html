@@ -11,16 +11,64 @@
 
 <form>
   <div class="form-group">
-    <label for="bedrooms">Bedrooms</label>
-    <input type="number" class="form-control" name="bedrooms" id="bedrooms">
+    <label for="bedrooms">Bedrooms</label><br/>
+		<div class="btn-group" data-toggle="buttons">
+			<label class="btn btn-info">
+				<input type="checkbox"> Studio
+			</label>
+			<label class="btn btn-info">
+				<input type="checkbox"> 1
+			</label>
+			<label class="btn btn-info">
+				<input type="checkbox"> 2
+			</label>
+			<label class="btn btn-info">
+				<input type="checkbox"> 3
+			</label>
+			<label class="btn btn-info">
+				<input type="checkbox"> 4+
+			</label>
+		</div>
   </div>
   <div class="form-group">
-    <label for="dblBedrooms">Double bedrooms</label>
-    <input type="number" class="form-control" name="dblBedrooms" id="dblBedrooms">
+    <label for="dblBedrooms">Double bedrooms</label><br/>
+		<div class="btn-group" data-toggle="buttons">
+			<label class="btn btn-info">
+				<input type="checkbox"> 0
+			</label>
+			<label class="btn btn-info">
+				<input type="checkbox"> 1
+			</label>
+			<label class="btn btn-info">
+				<input type="checkbox"> 2
+			</label>
+			<label class="btn btn-info">
+				<input type="checkbox"> 3
+			</label>
+			<label class="btn btn-info">
+				<input type="checkbox"> 4+
+			</label>
+		</div>
   </div>
   <div class="form-group">
-    <label for="bathrooms">Bathrooms</label>
-    <input type="number" class="form-control" name="bathrooms" id="bathrooms">
+    <label for="bathrooms">Bathrooms</label><br/>
+		<div class="btn-group" data-toggle="buttons">
+			<label class="btn btn-info">
+				<input type="checkbox"> 0
+			</label>
+			<label class="btn btn-info">
+				<input type="checkbox"> 1
+			</label>
+			<label class="btn btn-info">
+				<input type="checkbox"> 2
+			</label>
+			<label class="btn btn-info">
+				<input type="checkbox"> 3
+			</label>
+			<label class="btn btn-info">
+				<input type="checkbox"> 4+
+			</label>
+		</div>
   </div>
   <div class="form-group">
     <label for="movein">Move in</label>
@@ -29,6 +77,11 @@
   <div class="form-group">
     <label for="price">Price per month</label>
     <input type="number" class="form-control" name="price" id="price">
+	<b>€ 250</b>
+	<input id="price-range" type="text" class="span2" value=""
+		data-slider-min="250" data-slider-max="2000"
+		data-slider-step="5" data-slider-value="[250,450]"/>
+	<b>€ 2000</b>
   </div>
   <button type="button" class="btn btn-primary">Search</button>
 </form>
