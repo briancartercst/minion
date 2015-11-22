@@ -1,3 +1,4 @@
+/// <reference path="../tsd/es6-promise.d.ts" />
 /// <reference path="../tsd/jquery.d.ts" />
 /// <reference path="../tsd/bootstrap-slider.d.ts" />
 /// <reference path="../tsd/routie.d.ts" />

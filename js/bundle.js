@@ -12,6 +12,7 @@ templater_1["default"].registerController('search', {
 });
 
 },{"../templater":3}],2:[function(require,module,exports){
+/// <reference path="../tsd/es6-promise.d.ts" />
 /// <reference path="../tsd/jquery.d.ts" />
 /// <reference path="../tsd/bootstrap-slider.d.ts" />
 /// <reference path="../tsd/routie.d.ts" />
@@ -46,8 +47,6 @@ var ctrl = {};
 var currentCtrls = [];
 //-------------------- Publics --------------------
 function showPage(page, target) {
-    //TODO separate recursive part in a different function.
-    // Then, shutdown previous controllers.
     console.log("Showing page '" + page + "'");
     closeControllers();
     showView(page, target);
@@ -73,6 +72,12 @@ function processSubviews(viewContent) {
     });
 }
 function getPage(page, cb) {
+    var p = new Promise(function (resolve) {
+        resolve("hehe");
+    });
+    p.then(function (s) {
+        console.log("Promises work: ", s);
+    });
     if (pageCache[page]) {
         cb(pageCache[page]);
     }
