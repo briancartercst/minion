@@ -25,21 +25,32 @@ function registerController(name: string, controller) {
 
 //-------------------- Privates --------------------
 
-function showView(viewName: string, target: JQuery): void {
-	console.log(`  rendering template '${viewName}'`);
+function showView(viewName: string, target: JQuery): Promise<JQuery> {
 	//TODO show waiting animation & block current UI
-	getPage(viewName, (pageData) => {
-		const viewContent = $('<div>' + pageData + '</div>');
-		processSubviews(viewContent);
-		target.empty().append(viewContent);
-		initController(viewName);
+	return new Promise<JQuery>((resolve, reject) => {
+		console.log(`  rendering template '${viewName}'`);
+		getPage(viewName, (pageData) => {
+			const viewContent = $('<div>' + pageData + '</div>');
+			processSubviews(viewContent)
+			.then(() => {
+				target.empty().append(viewContent);
+				initController(viewName);
+				resolve(viewContent);
+			});
+		});
 	});
 }
 
-function processSubviews(viewContent: JQuery): void {
-	viewContent.find('[fz-subview]').each((i, e) => {
-		const subView = $(e);
-		showView(subView.attr('fz-subview'), subView);
+function processSubviews(viewContent: JQuery): Promise<void> {
+	const showPromises: Promise<JQuery>[] = [];
+	return new Promise<void>((resolve, reject) => {
+		viewContent.find('[fz-subview]').each((i, e) => {
+			const subView = $(e);
+			showPromises.push(showView(subView.attr('fz-subview'), subView));
+		});
+		Promise.all(showPromises).then(results => {
+			resolve();
+		});
 	});
 }
 

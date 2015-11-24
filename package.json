@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "test": "test",
-    "build": "browserify -d ts/main.ts ts/ctrl/*.ts -p tsify | exorcist js/bundle.js.map > js/bundle.js",
+    "//TODO": "echo replace browserify with webpack",
+    "build": "browserify -d ts/main.ts ts/ctrl/search.ts -p tsify | exorcist js/bundle.js.map > js/bundle.js",
     "watch": "watchify -d ts/main.ts ts/ctrl/*.ts -p tsify -o 'exorcist js/bundle.js.map > js/bundle.js' -v",
     "serve": "http-server -c-1"
   },

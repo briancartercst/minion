@@ -4,13 +4,16 @@ templater_1["default"].registerController('search', {
     data: {},
     init: function () {
         console.log('ctrl.search init');
-        $("#price-range").slider({});
+        $('#price-range').slider({});
+        $('.slider-selection').css({
+            backgroundImage: 'initial',
+            backgroundColor: '#AAA'
+        });
     },
     done: function () {
         console.log('ctrl.search done');
     }
 });
-
 },{"../templater":3}],2:[function(require,module,exports){
 /// <reference path="../tsd/es6-promise.d.ts" />
 /// <reference path="../tsd/jquery.d.ts" />
@@ -33,7 +36,6 @@ $(function () {
         }
     });
 });
-
 },{"./templater":3}],3:[function(require,module,exports){
 //-------------------- Exports --------------------
 exports.__esModule = true;
@@ -56,28 +58,33 @@ function registerController(name, controller) {
 }
 //-------------------- Privates --------------------
 function showView(viewName, target) {
-    console.log("  rendering template '" + viewName + "'");
     //TODO show waiting animation & block current UI
-    getPage(viewName, function (pageData) {
-        var viewContent = $('<div>' + pageData + '</div>');
-        processSubviews(viewContent);
-        target.empty().append(viewContent);
-        initController(viewName);
+    return new Promise(function (resolve, reject) {
+        console.log("  rendering template '" + viewName + "'");
+        getPage(viewName, function (pageData) {
+            var viewContent = $('<div>' + pageData + '</div>');
+            processSubviews(viewContent)
+                .then(function () {
+                target.empty().append(viewContent);
+                initController(viewName);
+                resolve(viewContent);
+            });
+        });
     });
 }
 function processSubviews(viewContent) {
-    viewContent.find('[fz-subview]').each(function (i, e) {
-        var subView = $(e);
-        showView(subView.attr('fz-subview'), subView);
+    var showPromises = [];
+    return new Promise(function (resolve, reject) {
+        viewContent.find('[fz-subview]').each(function (i, e) {
+            var subView = $(e);
+            showPromises.push(showView(subView.attr('fz-subview'), subView));
+        });
+        Promise.all(showPromises).then(function (results) {
+            resolve();
+        });
     });
 }
 function getPage(page, cb) {
-    var p = new Promise(function (resolve) {
-        resolve("hehe");
-    });
-    p.then(function (s) {
-        console.log("Promises work: ", s);
-    });
     if (pageCache[page]) {
         cb(pageCache[page]);
     }
@@ -116,6 +123,5 @@ function dashed2camel(str) {
 function ucfirst(str) {
     return str.charAt(0).toUpperCase() + str.slice(1);
 }
-
 },{}]},{},[2,1])
 //# sourceMappingURL=bundle.js.map

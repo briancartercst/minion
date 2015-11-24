@@ -5,7 +5,11 @@ templater.registerController('search', {
 
 	init() {
 		console.log('ctrl.search init');
-		$("#price-range").slider({});
+		$('#price-range').slider({});
+		$('.slider-selection').css({
+			backgroundImage: 'initial',
+			backgroundColor: '#AAA'
+		});
 	},
 
 	done() {
