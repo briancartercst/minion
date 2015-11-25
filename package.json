@@ -5,9 +5,9 @@
   "main": "index.js",
   "scripts": {
     "test": "test",
-    "//TODO": "echo replace browserify with webpack",
-    "build": "browserify -d ts/main.ts ts/ctrl/search.ts -p tsify | exorcist js/bundle.js.map > js/bundle.js",
-    "watch": "watchify -d ts/main.ts ts/ctrl/*.ts -p tsify -o 'exorcist js/bundle.js.map > js/bundle.js' -v",
+    "tsc": "tsc",
+    "build": "webpack --progress --colors",
+    "watch": "webpack --progress --colors --watch",
     "serve": "http-server -c-1"
   },
   "repository": {
@@ -30,11 +30,10 @@
   },
   "homepage": "https://github.com/lcrespom/fz2",
   "devDependencies": {
-    "browserify": "^12.0.1",
-    "exorcist": "^0.4.0",
+    "glob": "^6.0.1",
     "http-server": "^0.8.5",
-    "tsify": "^0.12.2",
+    "ts-loader": "^0.7.1",
     "typescript": "^1.6.2",
-    "watchify": "^3.6.1"
+    "webpack": "^1.12.9"
   }
 }
