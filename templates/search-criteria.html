@@ -1,17 +1,19 @@
 <!--
-  1)	Bedrooms: Studio, 1, 2, 3, 4+
-  2)	Double bedrooms: casillas a clicar 0, 1, 2, 3, 4+
-  3)	Bathrooms = 1, 2, 3, 4+ 
-  4)	“Move in”: calendario 
-  5) Price per month: slider + dos casillas numéricas 
-  6) District: desplegable con los barrios. Se pueden escoger varios a la vez
-  7) Size: slider con dos casillas 
-  8) “Great for school”: 4 logos IESE, ESADE, EADA, La Salle para seleccionar uno
-  -->
+1)	Bedrooms: Studio, 1, 2, 3, 4+
+2)	Double bedrooms: casillas a clicar 0, 1, 2, 3, 4+
+3)	Bathrooms = 1, 2, 3, 4+ 
+4)	“Move in”: calendario 
+5) Price per month: slider + dos casillas numéricas 
+6) District: desplegable con los barrios. Se pueden escoger varios a la vez
+7) Size: slider con dos casillas 
+8) “Great for school”: 4 logos IESE, ESADE, EADA, La Salle para seleccionar uno
+-->
 
 <form>
-  <div class="form-group">
-    <label for="bedrooms">Bedrooms</label><br/>
+
+	<div class="form-group">
+		<label for="bedrooms">Bedrooms</label>
+		<br/>
 		<div class="btn-group" data-toggle="buttons">
 			<label class="btn btn-info">
 				<input type="checkbox"> Studio
@@ -29,61 +31,71 @@
 				<input type="checkbox"> 4+
 			</label>
 		</div>
-  </div>
-  <div class="form-group">
-    <label for="dblBedrooms">Double bedrooms</label><br/>
-		<div class="btn-group" data-toggle="buttons">
-			<label class="btn btn-info">
-				<input type="checkbox"> 0
-			</label>
-			<label class="btn btn-info">
-				<input type="checkbox"> 1
-			</label>
-			<label class="btn btn-info">
-				<input type="checkbox"> 2
-			</label>
-			<label class="btn btn-info">
-				<input type="checkbox"> 3
-			</label>
-			<label class="btn btn-info">
-				<input type="checkbox"> 4+
-			</label>
-		</div>
-  </div>
-  <div class="form-group">
-    <label for="bathrooms">Bathrooms</label><br/>
-		<div class="btn-group" data-toggle="buttons">
-			<label class="btn btn-info">
-				<input type="checkbox"> 0
-			</label>
-			<label class="btn btn-info">
-				<input type="checkbox"> 1
-			</label>
-			<label class="btn btn-info">
-				<input type="checkbox"> 2
-			</label>
-			<label class="btn btn-info">
-				<input type="checkbox"> 3
-			</label>
-			<label class="btn btn-info">
-				<input type="checkbox"> 4+
-			</label>
-		</div>
-  </div>
-  <div class="form-group">
-    <label for="movein">Move in</label>
-    <input type="date" class="form-control" name="movein" id="movein">
-  </div>
-  <div class="form-group">
-    <label for="price">Price per month</label><br/>
-	<b>€ 250&nbsp;&nbsp;</b>
-	<input id="price-range" type="text" class="span2" value=""
-		data-slider-min="250" data-slider-max="2000"
-		data-slider-step="10" data-slider-value="[400,1000]">
-	<b>&nbsp;&nbsp;€ 2000</b>
-	<input type="hidden" name="priceMin" id="priceMin">
-	<input type="hidden" name="priceMax" id="priceMax">
+	</div>
 
-  </div>
-  <button type="button" class="btn btn-primary">Search</button>
+	<div class="form-group">
+		<label for="dblBedrooms">Double bedrooms</label>
+		<br/>
+		<div class="btn-group" data-toggle="buttons">
+			<label class="btn btn-info">
+				<input type="checkbox"> 0
+			</label>
+			<label class="btn btn-info">
+				<input type="checkbox"> 1
+			</label>
+			<label class="btn btn-info">
+				<input type="checkbox"> 2
+			</label>
+			<label class="btn btn-info">
+				<input type="checkbox"> 3
+			</label>
+			<label class="btn btn-info">
+				<input type="checkbox"> 4+
+			</label>
+		</div>
+	</div>
+
+	<div class="form-group">
+		<label for="bathrooms">Bathrooms</label>
+		<br/>
+		<div class="btn-group" data-toggle="buttons">
+			<label class="btn btn-info">
+				<input type="checkbox"> 0
+			</label>
+			<label class="btn btn-info">
+				<input type="checkbox"> 1
+			</label>
+			<label class="btn btn-info">
+				<input type="checkbox"> 2
+			</label>
+			<label class="btn btn-info">
+				<input type="checkbox"> 3
+			</label>
+			<label class="btn btn-info">
+				<input type="checkbox"> 4+
+			</label>
+		</div>
+	</div>
+
+	<div class="form-group">
+		<label for="movein">Move in</label>
+		<input type="date" class="form-control" name="movein" id="movein">
+	</div>
+
+	<div class="form-group">
+		<label for="price">Price per month</label>
+		<br/>
+		<b>€ 250&nbsp;&nbsp;</b>
+		<input id="price-range" type="text" class="span2" value=""
+			data-slider-min="250" data-slider-max="2000"
+			data-slider-step="10" data-slider-value="[400,1000]">
+		<b>&nbsp;&nbsp;€ 2000</b>
+		<input type="hidden" name="priceMin" id="priceMin">
+		<input type="hidden" name="priceMax" id="priceMax">
+	</div>
+
+	<button type="button" class="btn btn-primary">
+		<span class="glyphicon glyphicon-search" aria-hidden="true"></span>
+		Search
+	</button>
 </form>

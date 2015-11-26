@@ -8,6 +8,6 @@
 	"exclude": [
 		".", ".git",
 		"js", "build", "node_modules",
-		"css", "fonts", "img", "templates"
+		"css", "img", "templates"
 	]
 }
