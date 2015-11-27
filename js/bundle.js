@@ -56,15 +56,10 @@
 	var view = $('#view');
 	$(function () {
 	    routie({
-	        '': function () {
-	            routie('search');
-	        },
-	        'search': function () {
-	            templater_1.default.showPage('search', view);
-	        },
-	        'details/:id': function (id) {
-	            templater_1.default.showPage('details', view);
-	        }
+	        '': function () { return routie('search'); },
+	        'search': function () { return templater_1.default.showPage('search', view); },
+	        'users': function () { return templater_1.default.showPage('users', view); },
+	        'details/:id': function (id) { return templater_1.default.showPage('details', view); }
 	    });
 	});
 
