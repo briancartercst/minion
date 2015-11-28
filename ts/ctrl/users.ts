@@ -14,22 +14,24 @@ interface User {
 	name: string,
 	surname: string,
 	email: string,
-	mobile: string
+	mobile: string,
+	id: number
 }
 
 function getData(): Promise<User[]> {
 	const data: User[] = [];
 	for (var i = 0; i < 10; i++)
-		data.push(createUser());
+		data.push(createUser(i));
 	return Promise.resolve(data);
 }
 
-function createUser(): User {
+function createUser(id: number): User {
 	const usr: User = <any>{};
 	usr.name = randomName(3, 6);
 	usr.surname = randomName(4, 7);
 	usr.email = usr.name + '.' + usr.surname + '@gmail.com';
 	usr.mobile = randomMobile();
+	usr.id = id;
 	return usr;
 }
 

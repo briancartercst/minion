@@ -200,15 +200,16 @@
 	function getData() {
 	    var data = [];
 	    for (var i = 0; i < 10; i++)
-	        data.push(createUser());
+	        data.push(createUser(i));
 	    return Promise.resolve(data);
 	}
-	function createUser() {
+	function createUser(id) {
 	    var usr = {};
 	    usr.name = randomName(3, 6);
 	    usr.surname = randomName(4, 7);
 	    usr.email = usr.name + '.' + usr.surname + '@gmail.com';
 	    usr.mobile = randomMobile();
+	    usr.id = id;
 	    return usr;
 	}
 	var CONSONANTS = 'bcdfghjklmnpqrstvwxyz';
