@@ -46,7 +46,8 @@
 
 	__webpack_require__(1);
 	__webpack_require__(3);
-	module.exports = __webpack_require__(4);
+	__webpack_require__(4);
+	module.exports = __webpack_require__(5);
 
 
 /***/ },
@@ -60,7 +61,7 @@
 	        '': function () { return routie('search'); },
 	        'search': function () { return templater_1.default.showPage('search', view); },
 	        'users': function () { return templater_1.default.showPage('users', view); },
-	        'user/:id': function (id) { return templater_1.default.showPage('user-edit', view); },
+	        'user/:id': function (id) { return templater_1.default.showPage('user-edit', view, id); },
 	        'details/:id': function (id) { return templater_1.default.showPage('details', view); }
 	    });
 	});
@@ -82,10 +83,10 @@
 	var ctrl = {};
 	var currentCtrls = [];
 	//-------------------- Publics --------------------
-	function showPage(page, target) {
+	function showPage(page, target, extra) {
 	    console.log("Showing page '" + page + "'");
 	    closeControllers();
-	    showView(page, target);
+	    showView(page, target, extra);
 	}
 	function registerController(name, controller) {
 	    ctrl[name] = controller;
@@ -97,27 +98,27 @@
 	    $('#' + dst).html(rendered);
 	}
 	//-------------------- Privates --------------------
-	function showView(viewName, target) {
+	function showView(viewName, target, extra) {
 	    //TODO show waiting animation & block current UI
 	    return new Promise(function (resolve, reject) {
 	        console.log("  rendering template '" + viewName + "'");
 	        getPage(viewName, function (pageData) {
 	            var viewContent = $('<div>' + pageData + '</div>');
-	            processSubviews(viewContent)
+	            processSubviews(viewContent, extra)
 	                .then(function () {
 	                target.empty().append(viewContent);
-	                initController(viewName);
+	                initController(viewName, extra);
 	                resolve(viewContent);
 	            });
 	        });
 	    });
 	}
-	function processSubviews(viewContent) {
+	function processSubviews(viewContent, extra) {
 	    var showPromises = [];
 	    return new Promise(function (resolve, reject) {
 	        viewContent.find('[fz-subview]').each(function (i, e) {
 	            var subView = $(e);
-	            showPromises.push(showView(subView.attr('fz-subview'), subView));
+	            showPromises.push(showView(subView.attr('fz-subview'), subView, extra));
 	        });
 	        Promise.all(showPromises).then(function (results) {
 	            resolve();
@@ -135,14 +136,13 @@
 	        });
 	    }
 	}
-	function initController(page) {
-	    var ctrlName = dashed2camel(page);
+	function initController(ctrlName, extra) {
 	    if (!ctrl[ctrlName])
 	        return;
 	    console.log("  initializing controller '" + ctrlName + "'");
 	    var currCtrl = ctrl[ctrlName];
 	    if (currCtrl.init)
-	        currCtrl.init();
+	        currCtrl.init(extra);
 	    currCtrl.$name = ctrlName;
 	    currentCtrls.push(currCtrl);
 	}
@@ -153,17 +153,6 @@
 	        if (ctrl_1.done)
 	            ctrl_1.done();
 	    }
-	}
-	function dashed2camel(str) {
-	    var parts = str.split('-');
-	    var camel = parts[0];
-	    for (var i = 1; i < parts.length; i++) {
-	        camel += ucfirst(parts[i]);
-	    }
-	    return camel;
-	}
-	function ucfirst(str) {
-	    return str.charAt(0).toUpperCase() + str.slice(1);
 	}
 
 
@@ -190,6 +179,18 @@
 
 /***/ },
 /* 4 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var templater_1 = __webpack_require__(2);
+	templater_1.default.registerController('user-edit', {
+	    init: function (id) {
+	        console.log('user-edit init:', id);
+	    }
+	});
+
+
+/***/ },
+/* 5 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var templater_1 = __webpack_require__(2);

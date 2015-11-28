@@ -14,10 +14,10 @@ const currentCtrls = [];
 
 //-------------------- Publics --------------------
 
-function showPage(page: string, target: JQuery): void {
+function showPage(page: string, target: JQuery, extra?: string): void {
 	console.log(`Showing page '${page}'`);
 	closeControllers();
-	showView(page, target);
+	showView(page, target, extra);
 }
 
 function registerController(name: string, controller) {
@@ -32,28 +32,28 @@ function applyTemplate(src: string, data: Object, dst: string) {
 }
 //-------------------- Privates --------------------
 
-function showView(viewName: string, target: JQuery): Promise<JQuery> {
+function showView(viewName: string, target: JQuery, extra: string): Promise<JQuery> {
 	//TODO show waiting animation & block current UI
 	return new Promise<JQuery>((resolve, reject) => {
 		console.log(`  rendering template '${viewName}'`);
 		getPage(viewName, (pageData) => {
 			const viewContent = $('<div>' + pageData + '</div>');
-			processSubviews(viewContent)
+			processSubviews(viewContent, extra)
 			.then(() => {
 				target.empty().append(viewContent);
-				initController(viewName);
+				initController(viewName, extra);
 				resolve(viewContent);
 			});
 		});
 	});
 }
 
-function processSubviews(viewContent: JQuery): Promise<void> {
+function processSubviews(viewContent: JQuery, extra: string): Promise<void> {
 	const showPromises: Promise<JQuery>[] = [];
 	return new Promise<void>((resolve, reject) => {
 		viewContent.find('[fz-subview]').each((i, e) => {
 			const subView = $(e);
-			showPromises.push(showView(subView.attr('fz-subview'), subView));
+			showPromises.push(showView(subView.attr('fz-subview'), subView, extra));
 		});
 		Promise.all(showPromises).then(results => {
 			resolve();
@@ -73,12 +73,11 @@ function getPage(page: string, cb: (id: string) => void): void {
 	}
 }
 
-function initController(page: string): void {
-	const ctrlName = dashed2camel(page);
+function initController(ctrlName: string, extra: string): void {
 	if (!ctrl[ctrlName]) return;
 	console.log(`  initializing controller '${ctrlName}'`);
 	const currCtrl = ctrl[ctrlName];
-	if (currCtrl.init) currCtrl.init();
+	if (currCtrl.init) currCtrl.init(extra);
 	currCtrl.$name = ctrlName;
 	currentCtrls.push(currCtrl);
 }
@@ -89,17 +88,4 @@ function closeControllers() {
 		console.log(`  closing controller '${ctrl.$name}'`);
 		if (ctrl.done) ctrl.done();
 	}
-}
-
-function dashed2camel(str: string): string {
-	const parts = str.split('-');
-	let camel = parts[0];
-	for (let i = 1; i < parts.length; i++) {
-		camel += ucfirst(parts[i]);
-	}
-	return camel;
-}
-
-function ucfirst(str: string): string {
-	return str.charAt(0).toUpperCase() + str.slice(1);
 }
