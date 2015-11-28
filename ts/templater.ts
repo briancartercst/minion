@@ -2,7 +2,8 @@
 
 export default {
 	showPage,
-	registerController
+	registerController,
+	applyTemplate
 }
 
 //-------------------- Module variables --------------------
@@ -23,6 +24,12 @@ function registerController(name: string, controller) {
 	ctrl[name] = controller;
 }
 
+function applyTemplate(src: string, data: Object, dst: string) {
+	const template = $('#' + src).html();
+	Mustache.parse(template);
+	const rendered = Mustache.render(template, data);
+	$('#' + dst).html(rendered);
+}
 //-------------------- Privates --------------------
 
 function showView(viewName: string, target: JQuery): Promise<JQuery> {

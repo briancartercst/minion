@@ -2,8 +2,8 @@ import templater from '../templater';
 
 templater.registerController('users', {
 	init() {
-		getData().then(data => {
-			//templater.applyTemplate('user-table', data);
+		getData().then(users => {
+			templater.applyTemplate('template-users', { users }, 'place-users');
 		});
 	}
 });
@@ -28,7 +28,7 @@ function createUser(): User {
 	const usr: User = <any>{};
 	usr.name = randomName(3, 6);
 	usr.surname = randomName(4, 7);
-	usr.email = usr.name + usr.surname + '@gmail.com';
+	usr.email = usr.name + '.' + usr.surname + '@gmail.com';
 	usr.mobile = randomMobile();
 	return usr;
 }
@@ -50,8 +50,8 @@ function randomName(min: number, max: number): string {
 
 function randomMobile(): string {
 	var num: string = '6';
-	for (var i = 2; i <= 9; i++) {
-		if (i % 3) num += ' ';
+	for (var i = 1; i < 9; i++) {
+		if (i % 3 == 0) num += ' ';
 		num += randomNum(0, 10);
 	}
 	return num;
