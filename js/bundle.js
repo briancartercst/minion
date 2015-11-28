@@ -76,12 +76,15 @@
 	exports.default = {
 	    showPage: showPage,
 	    registerController: registerController,
-	    applyTemplate: applyTemplate
+	    applyTemplate: applyTemplate,
+	    getModel: getModel
 	};
 	//-------------------- Module variables --------------------
+	window['$model'] = window['$model'] || {};
 	var pageCache = {};
 	var ctrl = {};
 	var currentCtrls = [];
+	var model = window['$model'];
 	//-------------------- Publics --------------------
 	function showPage(page, target, extra) {
 	    console.log("Showing page '" + page + "'");
@@ -96,6 +99,9 @@
 	    Mustache.parse(template);
 	    var rendered = Mustache.render(template, data);
 	    $('#' + dst).html(rendered);
+	}
+	function getModel() {
+	    return model;
 	}
 	//-------------------- Privates --------------------
 	function showView(viewName, target, extra) {
@@ -185,6 +191,8 @@
 	templater_1.default.registerController('user-edit', {
 	    init: function (id) {
 	        console.log('user-edit init:', id);
+	        var usr = templater_1.default.getModel().users[id];
+	        console.log('user:', usr);
 	    }
 	});
 
@@ -198,6 +206,7 @@
 	    init: function () {
 	        getData().then(function (users) {
 	            templater_1.default.applyTemplate('template-users', { users: users }, 'place-users');
+	            templater_1.default.getModel().users = users;
 	        });
 	    }
 	});

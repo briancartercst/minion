@@ -4,6 +4,7 @@ templater.registerController('users', {
 	init() {
 		getData().then(users => {
 			templater.applyTemplate('template-users', { users }, 'place-users');
+			templater.getModel().users = users;
 		});
 	}
 });

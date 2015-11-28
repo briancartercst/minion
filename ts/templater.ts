@@ -3,14 +3,18 @@
 export default {
 	showPage,
 	registerController,
-	applyTemplate
+	applyTemplate,
+	getModel
 }
 
 //-------------------- Module variables --------------------
 
+window['$model'] = window['$model'] || {};
+
 const pageCache = {};
 const ctrl = {};
 const currentCtrls = [];
+const model = window['$model'];
 
 //-------------------- Publics --------------------
 
@@ -29,6 +33,10 @@ function applyTemplate(src: string, data: Object, dst: string) {
 	Mustache.parse(template);
 	const rendered = Mustache.render(template, data);
 	$('#' + dst).html(rendered);
+}
+
+function getModel() {
+	return model;
 }
 //-------------------- Privates --------------------
 
