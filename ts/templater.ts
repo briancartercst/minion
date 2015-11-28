@@ -78,7 +78,7 @@ function initController(page: string): void {
 	if (!ctrl[ctrlName]) return;
 	console.log(`  initializing controller '${ctrlName}'`);
 	const currCtrl = ctrl[ctrlName];
-	currCtrl.init();
+	if (currCtrl.init) currCtrl.init();
 	currCtrl.$name = ctrlName;
 	currentCtrls.push(currCtrl);
 }
@@ -87,7 +87,7 @@ function closeControllers() {
 	while (currentCtrls.length > 0) {
 		const ctrl = currentCtrls.pop();
 		console.log(`  closing controller '${ctrl.$name}'`);
-		ctrl.done();
+		if (ctrl.done) ctrl.done();
 	}
 }
 

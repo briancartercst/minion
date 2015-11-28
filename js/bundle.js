@@ -60,6 +60,7 @@
 	        '': function () { return routie('search'); },
 	        'search': function () { return templater_1.default.showPage('search', view); },
 	        'users': function () { return templater_1.default.showPage('users', view); },
+	        'user/:id': function (id) { return templater_1.default.showPage('user-edit', view); },
 	        'details/:id': function (id) { return templater_1.default.showPage('details', view); }
 	    });
 	});
@@ -140,7 +141,8 @@
 	        return;
 	    console.log("  initializing controller '" + ctrlName + "'");
 	    var currCtrl = ctrl[ctrlName];
-	    currCtrl.init();
+	    if (currCtrl.init)
+	        currCtrl.init();
 	    currCtrl.$name = ctrlName;
 	    currentCtrls.push(currCtrl);
 	}
@@ -148,7 +150,8 @@
 	    while (currentCtrls.length > 0) {
 	        var ctrl_1 = currentCtrls.pop();
 	        console.log("  closing controller '" + ctrl_1.$name + "'");
-	        ctrl_1.done();
+	        if (ctrl_1.done)
+	            ctrl_1.done();
 	    }
 	}
 	function dashed2camel(str) {
