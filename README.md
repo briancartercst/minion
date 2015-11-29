@@ -12,6 +12,7 @@ Testing a simple SPA, using:
 - Minification with proper source maps (webpack plugin is buggy)
 
 ### Runtime
+- Show waiting animation & block current UI
 - NLS/multilanguage
 
 ##Done:

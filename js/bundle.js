@@ -79,7 +79,7 @@
 	    model: model,
 	    showPage: showPage,
 	    registerComponent: registerComponent,
-	    registerController: registerController // C
+	    registerController: registerController // Controllers
 	};
 	//-------------------- Module variables --------------------
 	var pageCache = {};
@@ -100,35 +100,30 @@
 	}
 	//-------------------- Privates --------------------
 	function showView(viewName, target, extra) {
-	    //TODO show waiting animation & block current UI
-	    return new Promise(function (resolve) {
-	        console.log("  rendering template '" + viewName + "'");
-	        preRenderController(viewName, extra)
-	            .then(function () {
-	            return getPage(viewName);
-	        })
-	            .then(function (pageData) {
-	            var viewContent = $('<div>' + Mustache.render(pageData, model) + '</div>');
-	            return processSubviews(viewContent, extra);
-	        })
-	            .then(function (viewContent) {
-	            target.empty().append(viewContent);
-	            processComponents(viewContent);
-	            postRenderController(viewName);
-	            resolve(viewContent);
-	        });
+	    console.log("  rendering template '" + viewName + "'");
+	    return preRenderController(viewName, extra)
+	        .then(function () {
+	        return getPage(viewName);
+	    })
+	        .then(function (pageData) {
+	        var viewContent = $('<div>' + Mustache.render(pageData, model) + '</div>');
+	        return processSubviews(viewContent, extra);
+	    })
+	        .then(function (viewContent) {
+	        target.empty().append(viewContent);
+	        processComponents(viewContent);
+	        postRenderController(viewName);
+	        return viewContent;
 	    });
 	}
 	function processSubviews(viewContent, extra) {
 	    var showPromises = [];
-	    return new Promise(function (resolve) {
-	        viewContent.find('[mn-subview]').each(function (i, e) {
-	            var subView = $(e);
-	            showPromises.push(showView(subView.attr('mn-subview'), subView, extra));
-	        });
-	        Promise.all(showPromises).then(function (results) {
-	            resolve(viewContent);
-	        });
+	    viewContent.find('[mn-subview]').each(function (i, e) {
+	        var subView = $(e);
+	        showPromises.push(showView(subView.attr('mn-subview'), subView, extra));
+	    });
+	    return Promise.all(showPromises).then(function (results) {
+	        return viewContent;
 	    });
 	}
 	function getPage(page) {
@@ -145,6 +140,7 @@
 	        }
 	    });
 	}
+	//---------- Controllers ----------
 	function preRenderController(ctrlName, extra) {
 	    if (ctrl[ctrlName]) {
 	        // Add controller
@@ -175,6 +171,7 @@
 	            ctrl_1.done();
 	    }
 	}
+	//---------- Components ----------
 	function processComponents(viewContent) {
 	    viewContent.find('[mn-component]').each(function (i, e) {
 	        processComponent($(e));

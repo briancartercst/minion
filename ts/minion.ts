@@ -36,36 +36,31 @@ function registerComponent(name: string, component) {
 //-------------------- Privates --------------------
 
 function showView(viewName: string, target: JQuery, extra: string): Promise<JQuery> {
-	//TODO show waiting animation & block current UI
-	return new Promise<JQuery>(resolve => {
-		console.log(`  rendering template '${viewName}'`);
-		preRenderController(viewName, extra)
-		.then(() => {
-			return getPage(viewName);
-		})
-		.then(pageData => {
-			const viewContent = $('<div>' + Mustache.render(pageData, model) + '</div>');
-			return processSubviews(viewContent, extra);
-		})
-		.then(viewContent => {
-			target.empty().append(viewContent);
-			processComponents(viewContent);
-			postRenderController(viewName);
-			resolve(viewContent);
-		});
+	console.log(`  rendering template '${viewName}'`);
+	return preRenderController(viewName, extra)
+	.then(() => {
+		return getPage(viewName);
+	})
+	.then(pageData => {
+		const viewContent = $('<div>' + Mustache.render(pageData, model) + '</div>');
+		return processSubviews(viewContent, extra);
+	})
+	.then(viewContent => {
+		target.empty().append(viewContent);
+		processComponents(viewContent);
+		postRenderController(viewName);
+		return viewContent;
 	});
 }
 
 function processSubviews(viewContent: JQuery, extra: string): Promise<JQuery> {
 	const showPromises: Promise<JQuery>[] = [];
-	return new Promise(resolve => {
-		viewContent.find('[mn-subview]').each((i, e) => {
-			const subView = $(e);
-			showPromises.push(showView(subView.attr('mn-subview'), subView, extra));
-		});
-		Promise.all(showPromises).then(results => {
-			resolve(viewContent);
-		});
+	viewContent.find('[mn-subview]').each((i, e) => {
+		const subView = $(e);
+		showPromises.push(showView(subView.attr('mn-subview'), subView, extra));
+	});
+	return Promise.all(showPromises).then(results => {
+		return viewContent;
 	});
 }
 
