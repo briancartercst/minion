@@ -98,21 +98,24 @@
 	    //TODO show waiting animation & block current UI
 	    return new Promise(function (resolve, reject) {
 	        console.log("  rendering template '" + viewName + "'");
-	        preRenderController(viewName, extra);
-	        getPage(viewName, function (pageData) {
-	            var viewContent = $('<div>' + Mustache.render(pageData, model) + '</div>');
-	            processSubviews(viewContent, extra)
-	                .then(function () {
-	                target.empty().append(viewContent);
-	                postRenderController(viewName);
-	                resolve(viewContent);
+	        preRenderController(viewName, extra)
+	            .then(function () {
+	            getPage(viewName)
+	                .then(function (pageData) {
+	                var viewContent = $('<div>' + Mustache.render(pageData, model) + '</div>');
+	                processSubviews(viewContent, extra)
+	                    .then(function () {
+	                    target.empty().append(viewContent);
+	                    postRenderController(viewName);
+	                    resolve(viewContent);
+	                });
 	            });
 	        });
 	    });
 	}
 	function processSubviews(viewContent, extra) {
 	    var showPromises = [];
-	    return new Promise(function (resolve, reject) {
+	    return new Promise(function (resolve) {
 	        viewContent.find('[fz-subview]').each(function (i, e) {
 	            var subView = $(e);
 	            showPromises.push(showView(subView.attr('fz-subview'), subView, extra));
@@ -122,26 +125,35 @@
 	        });
 	    });
 	}
-	function getPage(page, cb) {
-	    if (pageCache[page]) {
-	        cb(pageCache[page]);
-	    }
-	    else {
-	        $.get('templates/' + page + '.html').done(function (pageData) {
-	            pageCache[page] = pageData;
-	            Mustache.parse(pageData);
-	            cb(pageData);
-	        });
-	    }
+	function getPage(page) {
+	    return new Promise(function (resolve) {
+	        if (pageCache[page]) {
+	            resolve(pageCache[page]);
+	        }
+	        else {
+	            $.get('templates/' + page + '.html').done(function (pageData) {
+	                pageCache[page] = pageData;
+	                Mustache.parse(pageData);
+	                resolve(pageData);
+	            });
+	        }
+	    });
 	}
 	function preRenderController(ctrlName, extra) {
-	    if (!ctrl[ctrlName])
-	        return;
-	    var currCtrl = ctrl[ctrlName];
-	    if (currCtrl.preRender)
-	        currCtrl.preRender(extra);
-	    currCtrl.$name = ctrlName;
-	    currentCtrls.push(currCtrl);
+	    if (ctrl[ctrlName]) {
+	        // Add controller
+	        // TODO this should be done elsewhere
+	        var currCtrl = ctrl[ctrlName];
+	        currCtrl.$name = ctrlName;
+	        currentCtrls.push(currCtrl);
+	        // Call prerender
+	        if (currCtrl.preRender) {
+	            var result = currCtrl.preRender(extra);
+	            if (result instanceof Promise)
+	                return result;
+	        }
+	    }
+	    return Promise.resolve();
 	}
 	function postRenderController(ctrlName) {
 	    if (!ctrl[ctrlName])
@@ -201,13 +213,9 @@
 	var templater_1 = __webpack_require__(2);
 	templater_1.default.registerController('users', {
 	    preRender: function () {
-	        var data = [];
-	        for (var i = 0; i < 10; i++)
-	            data.push(createUser(i));
-	        templater_1.default.model.users = data;
-	        // return getData().then(users => {
-	        // 	templater.model.users = users;
-	        // });
+	        return getData().then(function (users) {
+	            templater_1.default.model.users = users;
+	        });
 	    }
 	});
 	function getData() {

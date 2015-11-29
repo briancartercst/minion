@@ -34,14 +34,17 @@ function showView(viewName: string, target: JQuery, extra: string): Promise<JQue
 	//TODO show waiting animation & block current UI
 	return new Promise<JQuery>((resolve, reject) => {
 		console.log(`  rendering template '${viewName}'`);
-		preRenderController(viewName, extra);
-		getPage(viewName, (pageData) => {
-			const viewContent = $('<div>' + Mustache.render(pageData, model) + '</div>');
-			processSubviews(viewContent, extra)
-			.then(() => {
-				target.empty().append(viewContent);
-				postRenderController(viewName);
-				resolve(viewContent);
+		preRenderController(viewName, extra)
+		.then(() => {
+			getPage(viewName)
+			.then(pageData => {
+				const viewContent = $('<div>' + Mustache.render(pageData, model) + '</div>');
+				processSubviews(viewContent, extra)
+				.then(() => {
+					target.empty().append(viewContent);
+					postRenderController(viewName);
+					resolve(viewContent);
+				});
 			});
 		});
 	});
@@ -49,7 +52,7 @@ function showView(viewName: string, target: JQuery, extra: string): Promise<JQue
 
 function processSubviews(viewContent: JQuery, extra: string): Promise<void> {
 	const showPromises: Promise<JQuery>[] = [];
-	return new Promise<void>((resolve, reject) => {
+	return new Promise<void>(resolve => {
 		viewContent.find('[fz-subview]').each((i, e) => {
 			const subView = $(e);
 			showPromises.push(showView(subView.attr('fz-subview'), subView, extra));
@@ -60,25 +63,35 @@ function processSubviews(viewContent: JQuery, extra: string): Promise<void> {
 	});
 }
 
-function getPage(page: string, cb: (id: string) => void): void {
-	if (pageCache[page]) {
-		cb(pageCache[page]);
-	}
-	else {
-		$.get('templates/' + page + '.html').done((pageData) => {
-			pageCache[page] = pageData;
-			Mustache.parse(pageData);
-			cb(pageData);
-		});
-	}
+function getPage(page: string): Promise<string> {
+	return new Promise(resolve => {
+		if (pageCache[page]) {
+			resolve(pageCache[page]);
+		}
+		else {
+			$.get('templates/' + page + '.html').done((pageData) => {
+				pageCache[page] = pageData;
+				Mustache.parse(pageData);
+				resolve(pageData);
+			});
+		}
+	});
 }
 
-function preRenderController(ctrlName: string, extra: string): void {
-	if (!ctrl[ctrlName]) return;
-	const currCtrl = ctrl[ctrlName];
-	if (currCtrl.preRender) currCtrl.preRender(extra);
-	currCtrl.$name = ctrlName;
-	currentCtrls.push(currCtrl);
+function preRenderController(ctrlName: string, extra: string): Promise<any> {
+	if (ctrl[ctrlName]) {
+		// Add controller
+		// TODO this should be done elsewhere
+		const currCtrl = ctrl[ctrlName];
+		currCtrl.$name = ctrlName;
+		currentCtrls.push(currCtrl);
+		// Call prerender
+		if (currCtrl.preRender) {
+			const result = currCtrl.preRender(extra);
+			if (result instanceof Promise) return result;
+		}
+	}
+	return Promise.resolve();
 }
 
 function postRenderController(ctrlName: string): void {
