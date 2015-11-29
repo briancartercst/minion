@@ -3,10 +3,10 @@
 const model = <any>{};
 
 export default {
-	model,				// M
-	showPage,			// V
-	registerComponent,	// V
-	registerController	// C
+	model,				// Model
+	showPage,			// View
+	registerComponent,	// Components
+	registerController	// Controllers
 }
 
 //-------------------- Module variables --------------------
@@ -84,6 +84,8 @@ function getPage(page: string): Promise<string> {
 	});
 }
 
+//---------- Controllers ----------
+
 function preRenderController(ctrlName: string, extra: string): Promise<any> {
 	if (ctrl[ctrlName]) {
 		// Add controller
@@ -112,6 +114,8 @@ function closeControllers() {
 		if (ctrl.done) ctrl.done();
 	}
 }
+
+//---------- Components ----------
 
 function processComponents(viewContent: JQuery) {
 	viewContent.find('[mn-component]').each((i, e) => {

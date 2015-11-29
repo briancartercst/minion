@@ -12,9 +12,7 @@ Testing a simple SPA, using:
 - Minification with proper source maps (webpack plugin is buggy)
 
 ### Runtime
-- Simple Web components
 - NLS/multilanguage
-- Find a better name for "templater"
 
 ##Done:
 - Infinitely nested subviews
@@ -22,6 +20,8 @@ Testing a simple SPA, using:
 - npm scripts with proper build / watch / serve
 - Templating engine: Mustache
 - Execute Mustache from templater
+- Simple Web components
+- Find a better name for "templater"
 
 ##Functionality
 
