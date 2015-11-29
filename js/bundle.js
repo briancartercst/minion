@@ -200,9 +200,7 @@
 	var templater_1 = __webpack_require__(2);
 	templater_1.default.registerController('user-edit', {
 	    preRender: function (id) {
-	        console.log('user-edit init:', id);
-	        var usr = templater_1.default.model.users[id];
-	        console.log('user:', usr);
+	        templater_1.default.model.user = templater_1.default.model.users[id];
 	    }
 	});
 
