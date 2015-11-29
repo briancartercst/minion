@@ -13,6 +13,7 @@ Testing a simple SPA, using:
 ### Runtime
 - Execute Mustache from templater
 - Simple Web components
+- NLS/multilanguage
 
 ##Done:
 - Infinitely nested subviews

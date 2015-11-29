@@ -1,11 +1,14 @@
 import templater from '../templater';
 
 templater.registerController('users', {
-	postRender() {
-		getData().then(users => {
-			templater.applyTemplate('template-users', { users }, 'place-users');
-			templater.model.users = users;
-		});
+	preRender() {
+		const data: User[] = [];
+		for (var i = 0; i < 10; i++)
+			data.push(createUser(i));
+		templater.model.users = data;
+		// return getData().then(users => {
+		// 	templater.model.users = users;
+		// });
 	}
 });
 

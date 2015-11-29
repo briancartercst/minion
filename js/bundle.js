@@ -78,7 +78,6 @@
 	exports.default = {
 	    showPage: showPage,
 	    registerController: registerController,
-	    applyTemplate: applyTemplate,
 	    model: model
 	};
 	//-------------------- Module variables --------------------
@@ -94,12 +93,6 @@
 	function registerController(name, controller) {
 	    ctrl[name] = controller;
 	}
-	function applyTemplate(src, data, dst) {
-	    var template = $('#' + src).html();
-	    Mustache.parse(template);
-	    var rendered = Mustache.render(template, data);
-	    $('#' + dst).html(rendered);
-	}
 	//-------------------- Privates --------------------
 	function showView(viewName, target, extra) {
 	    //TODO show waiting animation & block current UI
@@ -107,7 +100,7 @@
 	        console.log("  rendering template '" + viewName + "'");
 	        preRenderController(viewName, extra);
 	        getPage(viewName, function (pageData) {
-	            var viewContent = $('<div>' + pageData + '</div>');
+	            var viewContent = $('<div>' + Mustache.render(pageData, model) + '</div>');
 	            processSubviews(viewContent, extra)
 	                .then(function () {
 	                target.empty().append(viewContent);
@@ -136,6 +129,7 @@
 	    else {
 	        $.get('templates/' + page + '.html').done(function (pageData) {
 	            pageCache[page] = pageData;
+	            Mustache.parse(pageData);
 	            cb(pageData);
 	        });
 	    }
@@ -206,11 +200,14 @@
 
 	var templater_1 = __webpack_require__(2);
 	templater_1.default.registerController('users', {
-	    postRender: function () {
-	        getData().then(function (users) {
-	            templater_1.default.applyTemplate('template-users', { users: users }, 'place-users');
-	            templater_1.default.model.users = users;
-	        });
+	    preRender: function () {
+	        var data = [];
+	        for (var i = 0; i < 10; i++)
+	            data.push(createUser(i));
+	        templater_1.default.model.users = data;
+	        // return getData().then(users => {
+	        // 	templater.model.users = users;
+	        // });
 	    }
 	});
 	function getData() {

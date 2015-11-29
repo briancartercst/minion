@@ -6,7 +6,6 @@ const model = window['$model'];
 export default {
 	showPage,
 	registerController,
-	applyTemplate,
 	model
 }
 
@@ -28,13 +27,6 @@ function registerController(name: string, controller) {
 	ctrl[name] = controller;
 }
 
-function applyTemplate(src: string, data: Object, dst: string) {
-	const template = $('#' + src).html();
-	Mustache.parse(template);
-	const rendered = Mustache.render(template, data);
-	$('#' + dst).html(rendered);
-}
-
 
 //-------------------- Privates --------------------
 
@@ -44,7 +36,7 @@ function showView(viewName: string, target: JQuery, extra: string): Promise<JQue
 		console.log(`  rendering template '${viewName}'`);
 		preRenderController(viewName, extra);
 		getPage(viewName, (pageData) => {
-			const viewContent = $('<div>' + pageData + '</div>');
+			const viewContent = $('<div>' + Mustache.render(pageData, model) + '</div>');
 			processSubviews(viewContent, extra)
 			.then(() => {
 				target.empty().append(viewContent);
@@ -75,6 +67,7 @@ function getPage(page: string, cb: (id: string) => void): void {
 	else {
 		$.get('templates/' + page + '.html').done((pageData) => {
 			pageCache[page] = pageData;
+			Mustache.parse(pageData);
 			cb(pageData);
 		});
 	}
