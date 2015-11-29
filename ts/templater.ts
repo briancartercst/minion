@@ -1,20 +1,20 @@
 //-------------------- Exports --------------------
 
+window['$model'] = window['$model'] || {};
+const model = window['$model'];
+
 export default {
 	showPage,
 	registerController,
 	applyTemplate,
-	getModel
+	model
 }
 
 //-------------------- Module variables --------------------
 
-window['$model'] = window['$model'] || {};
-
 const pageCache = {};
 const ctrl = {};
 const currentCtrls = [];
-const model = window['$model'];
 
 //-------------------- Publics --------------------
 
@@ -35,21 +35,20 @@ function applyTemplate(src: string, data: Object, dst: string) {
 	$('#' + dst).html(rendered);
 }
 
-function getModel() {
-	return model;
-}
+
 //-------------------- Privates --------------------
 
 function showView(viewName: string, target: JQuery, extra: string): Promise<JQuery> {
 	//TODO show waiting animation & block current UI
 	return new Promise<JQuery>((resolve, reject) => {
 		console.log(`  rendering template '${viewName}'`);
+		preRenderController(viewName, extra);
 		getPage(viewName, (pageData) => {
 			const viewContent = $('<div>' + pageData + '</div>');
 			processSubviews(viewContent, extra)
 			.then(() => {
 				target.empty().append(viewContent);
-				initController(viewName, extra);
+				postRenderController(viewName);
 				resolve(viewContent);
 			});
 		});
@@ -81,19 +80,23 @@ function getPage(page: string, cb: (id: string) => void): void {
 	}
 }
 
-function initController(ctrlName: string, extra: string): void {
+function preRenderController(ctrlName: string, extra: string): void {
 	if (!ctrl[ctrlName]) return;
-	console.log(`  initializing controller '${ctrlName}'`);
 	const currCtrl = ctrl[ctrlName];
-	if (currCtrl.init) currCtrl.init(extra);
+	if (currCtrl.preRender) currCtrl.preRender(extra);
 	currCtrl.$name = ctrlName;
 	currentCtrls.push(currCtrl);
+}
+
+function postRenderController(ctrlName: string): void {
+	if (!ctrl[ctrlName]) return;
+	const currCtrl = ctrl[ctrlName];
+	if (currCtrl.postRender) currCtrl.postRender();
 }
 
 function closeControllers() {
 	while (currentCtrls.length > 0) {
 		const ctrl = currentCtrls.pop();
-		console.log(`  closing controller '${ctrl.$name}'`);
 		if (ctrl.done) ctrl.done();
 	}
 }

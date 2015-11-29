@@ -72,19 +72,19 @@
 /***/ function(module, exports) {
 
 	//-------------------- Exports --------------------
+	window['$model'] = window['$model'] || {};
+	var model = window['$model'];
 	Object.defineProperty(exports, "__esModule", { value: true });
 	exports.default = {
 	    showPage: showPage,
 	    registerController: registerController,
 	    applyTemplate: applyTemplate,
-	    getModel: getModel
+	    model: model
 	};
 	//-------------------- Module variables --------------------
-	window['$model'] = window['$model'] || {};
 	var pageCache = {};
 	var ctrl = {};
 	var currentCtrls = [];
-	var model = window['$model'];
 	//-------------------- Publics --------------------
 	function showPage(page, target, extra) {
 	    console.log("Showing page '" + page + "'");
@@ -100,20 +100,18 @@
 	    var rendered = Mustache.render(template, data);
 	    $('#' + dst).html(rendered);
 	}
-	function getModel() {
-	    return model;
-	}
 	//-------------------- Privates --------------------
 	function showView(viewName, target, extra) {
 	    //TODO show waiting animation & block current UI
 	    return new Promise(function (resolve, reject) {
 	        console.log("  rendering template '" + viewName + "'");
+	        preRenderController(viewName, extra);
 	        getPage(viewName, function (pageData) {
 	            var viewContent = $('<div>' + pageData + '</div>');
 	            processSubviews(viewContent, extra)
 	                .then(function () {
 	                target.empty().append(viewContent);
-	                initController(viewName, extra);
+	                postRenderController(viewName);
 	                resolve(viewContent);
 	            });
 	        });
@@ -142,20 +140,25 @@
 	        });
 	    }
 	}
-	function initController(ctrlName, extra) {
+	function preRenderController(ctrlName, extra) {
 	    if (!ctrl[ctrlName])
 	        return;
-	    console.log("  initializing controller '" + ctrlName + "'");
 	    var currCtrl = ctrl[ctrlName];
-	    if (currCtrl.init)
-	        currCtrl.init(extra);
+	    if (currCtrl.preRender)
+	        currCtrl.preRender(extra);
 	    currCtrl.$name = ctrlName;
 	    currentCtrls.push(currCtrl);
+	}
+	function postRenderController(ctrlName) {
+	    if (!ctrl[ctrlName])
+	        return;
+	    var currCtrl = ctrl[ctrlName];
+	    if (currCtrl.postRender)
+	        currCtrl.postRender();
 	}
 	function closeControllers() {
 	    while (currentCtrls.length > 0) {
 	        var ctrl_1 = currentCtrls.pop();
-	        console.log("  closing controller '" + ctrl_1.$name + "'");
 	        if (ctrl_1.done)
 	            ctrl_1.done();
 	    }
@@ -169,8 +172,8 @@
 	var templater_1 = __webpack_require__(2);
 	templater_1.default.registerController('search', {
 	    data: {},
-	    init: function () {
-	        console.log('ctrl.search init');
+	    postRender: function () {
+	        console.log('ctrl.search postRender');
 	        $('#price-range').slider({});
 	        $('.slider-selection').css({
 	            backgroundImage: 'initial',
@@ -189,9 +192,9 @@
 
 	var templater_1 = __webpack_require__(2);
 	templater_1.default.registerController('user-edit', {
-	    init: function (id) {
+	    preRender: function (id) {
 	        console.log('user-edit init:', id);
-	        var usr = templater_1.default.getModel().users[id];
+	        var usr = templater_1.default.model.users[id];
 	        console.log('user:', usr);
 	    }
 	});
@@ -203,10 +206,10 @@
 
 	var templater_1 = __webpack_require__(2);
 	templater_1.default.registerController('users', {
-	    init: function () {
+	    postRender: function () {
 	        getData().then(function (users) {
 	            templater_1.default.applyTemplate('template-users', { users: users }, 'place-users');
-	            templater_1.default.getModel().users = users;
+	            templater_1.default.model.users = users;
 	        });
 	    }
 	});

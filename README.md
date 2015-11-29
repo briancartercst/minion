@@ -8,14 +8,17 @@ Testing a simple SPA, using:
 ##ToDo:
 ### Development
 - ESHint / TSLint
-- JS minifier with support for source maps
-- Grunt/gulp/make with proper build / watch / serve
+- Minification with proper source maps (webpack plugin is buggy)
 
 ### Runtime
-- Templating engine (jQuery / handlebars...)
+- Execute Mustache from templater
+- Simple Web components
 
 ##Done:
 - Infinitely nested subviews
+- JS minifier with support for source maps
+- npm scripts with proper build / watch / serve
+- Templating engine: Mustache
 
 ##Functionality
 
