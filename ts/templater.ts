@@ -14,6 +14,7 @@ export default {
 
 const pageCache = {};
 const ctrl = {};
+const components = {};
 const currentCtrls = [];
 
 //-------------------- Publics --------------------
@@ -29,7 +30,7 @@ function registerController(name: string, controller) {
 }
 
 function registerComponent(name: string, component) {
-	//TODO add component to registry
+	components[name] = component;
 }
 
 

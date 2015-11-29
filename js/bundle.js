@@ -47,7 +47,8 @@
 	__webpack_require__(1);
 	__webpack_require__(3);
 	__webpack_require__(4);
-	module.exports = __webpack_require__(5);
+	__webpack_require__(5);
+	module.exports = __webpack_require__(6);
 
 
 /***/ },
@@ -262,6 +263,19 @@
 	function randomNum(min, max) {
 	    return min + Math.floor(Math.random() * (max - min));
 	}
+
+
+/***/ },
+/* 6 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var templater_1 = __webpack_require__(2);
+	templater_1.default.registerComponent('input-wide', {
+	    render: function (element) {
+	        return 'hello!';
+	    }
+	});
+	console.log('>>> inside input-wide.ts');
 
 
 /***/ }
