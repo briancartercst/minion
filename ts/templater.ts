@@ -36,29 +36,29 @@ function showView(viewName: string, target: JQuery, extra: string): Promise<JQue
 		console.log(`  rendering template '${viewName}'`);
 		preRenderController(viewName, extra)
 		.then(() => {
-			getPage(viewName)
-			.then(pageData => {
-				const viewContent = $('<div>' + Mustache.render(pageData, model) + '</div>');
-				processSubviews(viewContent, extra)
-				.then(() => {
-					target.empty().append(viewContent);
-					postRenderController(viewName);
-					resolve(viewContent);
-				});
-			});
+			return getPage(viewName);
+		})
+		.then(pageData => {
+			const viewContent = $('<div>' + Mustache.render(pageData, model) + '</div>');
+			return processSubviews(viewContent, extra);
+		})
+		.then(viewContent => {
+			target.empty().append(viewContent);
+			postRenderController(viewName);
+			resolve(viewContent);
 		});
 	});
 }
 
-function processSubviews(viewContent: JQuery, extra: string): Promise<void> {
+function processSubviews(viewContent: JQuery, extra: string): Promise<JQuery> {
 	const showPromises: Promise<JQuery>[] = [];
-	return new Promise<void>(resolve => {
+	return new Promise(resolve => {
 		viewContent.find('[fz-subview]').each((i, e) => {
 			const subView = $(e);
 			showPromises.push(showView(subView.attr('fz-subview'), subView, extra));
 		});
 		Promise.all(showPromises).then(results => {
-			resolve();
+			resolve(viewContent);
 		});
 	});
 }

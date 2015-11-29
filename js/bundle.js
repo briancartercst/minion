@@ -100,16 +100,16 @@
 	        console.log("  rendering template '" + viewName + "'");
 	        preRenderController(viewName, extra)
 	            .then(function () {
-	            getPage(viewName)
-	                .then(function (pageData) {
-	                var viewContent = $('<div>' + Mustache.render(pageData, model) + '</div>');
-	                processSubviews(viewContent, extra)
-	                    .then(function () {
-	                    target.empty().append(viewContent);
-	                    postRenderController(viewName);
-	                    resolve(viewContent);
-	                });
-	            });
+	            return getPage(viewName);
+	        })
+	            .then(function (pageData) {
+	            var viewContent = $('<div>' + Mustache.render(pageData, model) + '</div>');
+	            return processSubviews(viewContent, extra);
+	        })
+	            .then(function (viewContent) {
+	            target.empty().append(viewContent);
+	            postRenderController(viewName);
+	            resolve(viewContent);
 	        });
 	    });
 	}
@@ -121,7 +121,7 @@
 	            showPromises.push(showView(subView.attr('fz-subview'), subView, extra));
 	        });
 	        Promise.all(showPromises).then(function (results) {
-	            resolve();
+	            resolve(viewContent);
 	        });
 	    });
 	}
