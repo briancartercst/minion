@@ -113,7 +113,7 @@
 	        })
 	            .then(function (viewContent) {
 	            target.empty().append(viewContent);
-	            //TODO process custom components here
+	            processComponents(viewContent);
 	            postRenderController(viewName);
 	            resolve(viewContent);
 	        });
@@ -122,9 +122,9 @@
 	function processSubviews(viewContent, extra) {
 	    var showPromises = [];
 	    return new Promise(function (resolve) {
-	        viewContent.find('[fz-subview]').each(function (i, e) {
+	        viewContent.find('[mn-subview]').each(function (i, e) {
 	            var subView = $(e);
-	            showPromises.push(showView(subView.attr('fz-subview'), subView, extra));
+	            showPromises.push(showView(subView.attr('mn-subview'), subView, extra));
 	        });
 	        Promise.all(showPromises).then(function (results) {
 	            resolve(viewContent);
@@ -174,6 +174,20 @@
 	        if (ctrl_1.done)
 	            ctrl_1.done();
 	    }
+	}
+	function processComponents(viewContent) {
+	    viewContent.find('[mn-component]').each(function (i, e) {
+	        processComponent($(e));
+	    });
+	}
+	function processComponent(node) {
+	    var compName = node.attr('mn-component');
+	    var component = components[compName];
+	    if (!component) {
+	        console.warn("Component " + compName + " not found");
+	        return;
+	    }
+	    component.render(node);
 	}
 
 
@@ -271,11 +285,33 @@
 
 	var minion_1 = __webpack_require__(2);
 	minion_1.default.registerComponent('input-wide', {
-	    render: function (element) {
-	        //TODO use JSX, see http://www.jbrantly.com/typescript-and-jsx/
-	        return 'hello!';
+	    render: function (node) {
+	        var attrs = getInputAttrs(node);
+	        var template = "\n\t\t\t<div class=\"form-group\">\n\t\t\t\t<label for=\"" + attrs.name + "\" class=\"col-sm-3 control-label\">" + attrs.label + "</label>\n\t\t\t\t<div class=\"col-sm-9\">\n\t\t\t\t\t<input class=\"form-control\" id=\"" + attrs.name + "\" value=\"" + attrs.value + "\" type=\"" + attrs.type + "\">\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t";
+	        node.html(template);
 	    }
 	});
+	minion_1.default.registerComponent('input-narrow', {
+	    render: function (node) {
+	        var attrs = getInputAttrs(node);
+	        var template = "\n\t\t\t<div class=\"form-group\">\n\t\t\t\t<label for=\"" + attrs.name + "\">" + attrs.label + "</label>\n\t\t\t\t<input class=\"form-control\" id=\"" + attrs.name + "\" value=\"" + attrs.value + "\" type=\"" + attrs.email + "\">\n\t\t\t</div>\n\t\t";
+	        node.html(template);
+	    }
+	});
+	function getInputAttrs(node) {
+	    var attrs = getAttrs(node, 'name label value type'.split(' '));
+	    attrs.type = attrs.type || 'text';
+	    attrs.value = attrs.value || '';
+	    return attrs;
+	}
+	function getAttrs(node, attrs) {
+	    var result = {};
+	    for (var _i = 0; _i < attrs.length; _i++) {
+	        var attr = attrs[_i];
+	        result[attr] = node.attr(attr);
+	    }
+	    return result;
+	}
 
 
 /***/ }

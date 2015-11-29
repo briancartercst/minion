@@ -5,33 +5,14 @@
 
 		<form class="form-horizontal">
 
-			<div class="form-group">
-				<label for="email" class="col-sm-3 control-label">e-mail</label>
-				<div class="col-sm-9">
-					<input class="form-control" id="email" value="{{user.email}}">
-				</div>
-			</div>
-
-			<div class="form-group">
-				<label for="name" class="col-sm-3 control-label">Name</label>
-				<div class="col-sm-9">
-					<input class="form-control" id="name" value="{{user.name}}">
-				</div>
-			</div>
-
-			<div class="form-group">
-				<label for="name" class="col-sm-3 control-label">Surname</label>
-				<div class="col-sm-9">
-					<input class="form-control" id="surname" value="{{user.surname}}">
-				</div>
-			</div>
-
-			<div class="form-group">
-				<label for="name" class="col-sm-3 control-label">Mobile phone</label>
-				<div class="col-sm-9">
-					<input class="form-control" id="mobile" value="{{user.mobile}}">
-				</div>
-			</div>
+			<div mn-component="input-wide"
+				name="email" label="e-mail" value="{{user.email}}"></div>
+			<div mn-component="input-wide"
+				name="name" label="Name" value="{{user.name}}"></div>
+			<div mn-component="input-wide"
+				name="surname" label="Surname" value="{{user.surname}}"></div>
+			<div mn-component="input-wide"
+				name="mobile" label="Mobile phone" value="{{user.mobile}}"></div>
 
 			<div class="col-sm-12 text-center">
 				<a class="btn btn-primary">

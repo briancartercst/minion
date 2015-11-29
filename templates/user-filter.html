@@ -1,31 +1,17 @@
 <form>
 
-	<!--
-		<div fz-component="input" label="e-mail" type="email" id="email">
-	-->
-	<div class="form-group">
-		<label for="email">e-mail</label>
-		<input type="email" class="form-control" id="email">
-	</div>
-
-	<div class="form-group">
-		<label for="name">Name</label>
-		<input type="text" class="form-control" id="name">
-	</div>
-
-	<div class="form-group">
-		<label for="surname">Surname</label>
-		<input type="text" class="form-control" id="surname">
-	</div>
-
-	<div class="form-group">
-		<label for="mobile">Mobile</label>
-		<input type="text" class="form-control" id="mobile">
-	</div>
-
+	<div mn-component="input-narrow"
+		name="email" label="e-mail"></div>
+	<div mn-component="input-narrow"
+		name="name" label="Name"></div>
+	<div mn-component="input-narrow"
+		name="surname" label="Surname"></div>
+	<div mn-component="input-narrow"
+		name="mobile" label="Mobile"></div>
 
 	<button type="button" class="btn btn-primary">
 		<span class="glyphicon glyphicon-search" aria-hidden="true"></span>
 		Search
 	</button>
+
 </form>

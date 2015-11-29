@@ -49,7 +49,7 @@ function showView(viewName: string, target: JQuery, extra: string): Promise<JQue
 		})
 		.then(viewContent => {
 			target.empty().append(viewContent);
-			//TODO process custom components here
+			processComponents(viewContent);
 			postRenderController(viewName);
 			resolve(viewContent);
 		});
@@ -59,9 +59,9 @@ function showView(viewName: string, target: JQuery, extra: string): Promise<JQue
 function processSubviews(viewContent: JQuery, extra: string): Promise<JQuery> {
 	const showPromises: Promise<JQuery>[] = [];
 	return new Promise(resolve => {
-		viewContent.find('[fz-subview]').each((i, e) => {
+		viewContent.find('[mn-subview]').each((i, e) => {
 			const subView = $(e);
-			showPromises.push(showView(subView.attr('fz-subview'), subView, extra));
+			showPromises.push(showView(subView.attr('mn-subview'), subView, extra));
 		});
 		Promise.all(showPromises).then(results => {
 			resolve(viewContent);
@@ -111,4 +111,20 @@ function closeControllers() {
 		const ctrl = currentCtrls.pop();
 		if (ctrl.done) ctrl.done();
 	}
+}
+
+function processComponents(viewContent: JQuery) {
+	viewContent.find('[mn-component]').each((i, e) => {
+		processComponent($(e));
+	});
+}
+
+function processComponent(node: JQuery) {
+	const compName = node.attr('mn-component');
+	const component = components[compName];
+	if (!component) {
+		console.warn(`Component ${compName} not found`);
+		return;
+	}
+	component.render(node);
 }

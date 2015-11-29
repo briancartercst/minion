@@ -20,7 +20,7 @@ interface User {
 
 function getData(): Promise<User[]> {
 	const data: User[] = [];
-	for (var i = 0; i < 10; i++)
+	for (let i = 0; i < 10; i++)
 		data.push(createUser(i));
 	return Promise.resolve(data);
 }
@@ -39,10 +39,10 @@ const CONSONANTS = 'bcdfghjklmnpqrstvwxyz';
 const VOWELS = 'aeiou';
 
 function randomName(min: number, max: number): string {
-	var name: string = '';
-	var letters: string;
+	let name: string = '';
+	let letters: string;
 	const len = randomNum(min, max);
-	for (var i = 0; i < len; i++) {
+	for (let i = 0; i < len; i++) {
 		letters = (i % 2 == 0) ? CONSONANTS : VOWELS;
 		name += letters[randomNum(0, letters.length)];
 		if (name.length == 1) name = name.toUpperCase();
@@ -51,8 +51,8 @@ function randomName(min: number, max: number): string {
 }
 
 function randomMobile(): string {
-	var num: string = '6';
-	for (var i = 1; i < 9; i++) {
+	let num: string = '6';
+	for (let i = 1; i < 9; i++) {
 		if (i % 3 == 0) num += ' ';
 		num += randomNum(0, 10);
 	}
