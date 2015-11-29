@@ -96,7 +96,7 @@
 	//-------------------- Privates --------------------
 	function showView(viewName, target, extra) {
 	    //TODO show waiting animation & block current UI
-	    return new Promise(function (resolve, reject) {
+	    return new Promise(function (resolve) {
 	        console.log("  rendering template '" + viewName + "'");
 	        preRenderController(viewName, extra)
 	            .then(function () {
@@ -108,6 +108,7 @@
 	        })
 	            .then(function (viewContent) {
 	            target.empty().append(viewContent);
+	            //TODO process custom components here
 	            postRenderController(viewName);
 	            resolve(viewContent);
 	        });

@@ -32,7 +32,7 @@ function registerController(name: string, controller) {
 
 function showView(viewName: string, target: JQuery, extra: string): Promise<JQuery> {
 	//TODO show waiting animation & block current UI
-	return new Promise<JQuery>((resolve, reject) => {
+	return new Promise<JQuery>(resolve => {
 		console.log(`  rendering template '${viewName}'`);
 		preRenderController(viewName, extra)
 		.then(() => {
@@ -44,6 +44,7 @@ function showView(viewName: string, target: JQuery, extra: string): Promise<JQue
 		})
 		.then(viewContent => {
 			target.empty().append(viewContent);
+			//TODO process custom components here
 			postRenderController(viewName);
 			resolve(viewContent);
 		});

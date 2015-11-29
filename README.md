@@ -11,7 +11,6 @@ Testing a simple SPA, using:
 - Minification with proper source maps (webpack plugin is buggy)
 
 ### Runtime
-- Execute Mustache from templater
 - Simple Web components
 - NLS/multilanguage
 
@@ -20,6 +19,7 @@ Testing a simple SPA, using:
 - JS minifier with support for source maps
 - npm scripts with proper build / watch / serve
 - Templating engine: Mustache
+- Execute Mustache from templater
 
 ##Functionality
 
