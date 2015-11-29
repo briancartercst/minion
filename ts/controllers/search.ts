@@ -1,6 +1,6 @@
-import templater from '../templater';
+import minion from '../minion';
 
-templater.registerController('search', {
+minion.registerController('search', {
 	data: {},
 
 	postRender() {

@@ -1,7 +1,7 @@
-import templater from '../templater';
+import minion from '../minion';
 
-templater.registerController('user-edit', {
+minion.registerController('user-edit', {
 	preRender(id: string) {
-		templater.model.user = templater.model.users[id];
+		minion.model.user = minion.model.users[id];
 	}
 });

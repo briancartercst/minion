@@ -55,15 +55,15 @@
 /* 1 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var templater_1 = __webpack_require__(2);
+	var minion_1 = __webpack_require__(2);
 	var view = $('#view');
 	$(function () {
 	    routie({
 	        '': function () { return routie('search'); },
-	        'search': function () { return templater_1.default.showPage('search', view); },
-	        'users': function () { return templater_1.default.showPage('users', view); },
-	        'user/:id': function (id) { return templater_1.default.showPage('user-edit', view, id); },
-	        'details/:id': function (id) { return templater_1.default.showPage('details', view); }
+	        'search': function () { return minion_1.default.showPage('search', view); },
+	        'users': function () { return minion_1.default.showPage('users', view); },
+	        'user/:id': function (id) { return minion_1.default.showPage('user-edit', view, id); },
+	        'details/:id': function (id) { return minion_1.default.showPage('details', view); }
 	    });
 	});
 
@@ -73,8 +73,7 @@
 /***/ function(module, exports) {
 
 	//-------------------- Exports --------------------
-	window['$model'] = window['$model'] || {};
-	var model = window['$model'];
+	var model = {};
 	Object.defineProperty(exports, "__esModule", { value: true });
 	exports.default = {
 	    model: model,
@@ -85,6 +84,7 @@
 	//-------------------- Module variables --------------------
 	var pageCache = {};
 	var ctrl = {};
+	var components = {};
 	var currentCtrls = [];
 	//-------------------- Publics --------------------
 	function showPage(page, target, extra) {
@@ -96,7 +96,7 @@
 	    ctrl[name] = controller;
 	}
 	function registerComponent(name, component) {
-	    //TODO add component to registry
+	    components[name] = component;
 	}
 	//-------------------- Privates --------------------
 	function showView(viewName, target, extra) {
@@ -181,8 +181,8 @@
 /* 3 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var templater_1 = __webpack_require__(2);
-	templater_1.default.registerController('search', {
+	var minion_1 = __webpack_require__(2);
+	minion_1.default.registerController('search', {
 	    data: {},
 	    postRender: function () {
 	        console.log('ctrl.search postRender');
@@ -202,10 +202,10 @@
 /* 4 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var templater_1 = __webpack_require__(2);
-	templater_1.default.registerController('user-edit', {
+	var minion_1 = __webpack_require__(2);
+	minion_1.default.registerController('user-edit', {
 	    preRender: function (id) {
-	        templater_1.default.model.user = templater_1.default.model.users[id];
+	        minion_1.default.model.user = minion_1.default.model.users[id];
 	    }
 	});
 
@@ -214,11 +214,11 @@
 /* 5 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var templater_1 = __webpack_require__(2);
-	templater_1.default.registerController('users', {
+	var minion_1 = __webpack_require__(2);
+	minion_1.default.registerController('users', {
 	    preRender: function () {
 	        return getData().then(function (users) {
-	            templater_1.default.model.users = users;
+	            minion_1.default.model.users = users;
 	        });
 	    }
 	});
@@ -269,13 +269,13 @@
 /* 6 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var templater_1 = __webpack_require__(2);
-	templater_1.default.registerComponent('input-wide', {
+	var minion_1 = __webpack_require__(2);
+	minion_1.default.registerComponent('input-wide', {
 	    render: function (element) {
+	        //TODO use JSX, see http://www.jbrantly.com/typescript-and-jsx/
 	        return 'hello!';
 	    }
 	});
-	console.log('>>> inside input-wide.ts');
 
 
 /***/ }

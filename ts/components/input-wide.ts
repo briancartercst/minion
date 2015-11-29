@@ -1,6 +1,6 @@
-import templater from '../templater';
+import minion from '../minion';
 
-templater.registerComponent('input-wide', {
+minion.registerComponent('input-wide', {
 	render(element: JQuery): string {
 		//TODO use JSX, see http://www.jbrantly.com/typescript-and-jsx/
 		return 'hello!';

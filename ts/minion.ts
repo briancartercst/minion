@@ -1,7 +1,6 @@
 //-------------------- Exports --------------------
 
-window['$model'] = window['$model'] || {};
-const model = window['$model'];
+const model = <any>{};
 
 export default {
 	model,				// M

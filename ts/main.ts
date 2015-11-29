@@ -1,13 +1,13 @@
-import templater from './templater';
+import minion from './minion';
 
 const view = $('#view');
 
 $(() => {
 	routie({
 		'': () => routie('search'),
-		'search': () => templater.showPage('search', view),
-		'users': () => templater.showPage('users', view),
-		'user/:id': (id) => templater.showPage('user-edit', view, id),
-		'details/:id': (id) => templater.showPage('details', view)
+		'search': () => minion.showPage('search', view),
+		'users': () => minion.showPage('users', view),
+		'user/:id': (id) => minion.showPage('user-edit', view, id),
+		'details/:id': (id) => minion.showPage('details', view)
 	});
 });

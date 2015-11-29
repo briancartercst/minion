@@ -1,9 +1,9 @@
-import templater from '../templater';
+import minion from '../minion';
 
-templater.registerController('users', {
+minion.registerController('users', {
 	preRender() {
 		return getData().then(users => {
-			templater.model.users = users;
+			minion.model.users = users;
 		});
 	}
 });
