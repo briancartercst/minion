@@ -3,7 +3,7 @@ var glob = require("glob");
 function getEntries() {
 	// Cool pure functional way
 	return ['./ts/main'].concat(
-		glob.sync('./ts/ctrl/*.ts').map(function(ctrl) {
+		glob.sync('./ts/controllers/*.ts').map(function(ctrl) {
 			return ctrl.substr(0, ctrl.length - 3)
 		})
 	);

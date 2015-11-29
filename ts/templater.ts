@@ -4,9 +4,10 @@ window['$model'] = window['$model'] || {};
 const model = window['$model'];
 
 export default {
-	showPage,
-	registerController,
-	model
+	model,				// M
+	showPage,			// V
+	registerComponent,	// V
+	registerController	// C
 }
 
 //-------------------- Module variables --------------------
@@ -25,6 +26,10 @@ function showPage(page: string, target: JQuery, extra?: string): void {
 
 function registerController(name: string, controller) {
 	ctrl[name] = controller;
+}
+
+function registerComponent(name: string, component) {
+	//TODO add component to registry
 }
 
 

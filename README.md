@@ -3,6 +3,7 @@ Testing a simple SPA, using:
 - Routie for simple navigation routing
 - jQuery
 - Bootstrap
+- Mustache
 - initializr to get a clean boilerplate
 
 ##ToDo:
@@ -13,6 +14,7 @@ Testing a simple SPA, using:
 ### Runtime
 - Simple Web components
 - NLS/multilanguage
+- Find a better name for "templater"
 
 ##Done:
 - Infinitely nested subviews

@@ -76,9 +76,10 @@
 	var model = window['$model'];
 	Object.defineProperty(exports, "__esModule", { value: true });
 	exports.default = {
+	    model: model,
 	    showPage: showPage,
-	    registerController: registerController,
-	    model: model
+	    registerComponent: registerComponent,
+	    registerController: registerController // C
 	};
 	//-------------------- Module variables --------------------
 	var pageCache = {};
@@ -92,6 +93,9 @@
 	}
 	function registerController(name, controller) {
 	    ctrl[name] = controller;
+	}
+	function registerComponent(name, component) {
+	    //TODO add component to registry
 	}
 	//-------------------- Privates --------------------
 	function showView(viewName, target, extra) {
