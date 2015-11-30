@@ -79,18 +79,13 @@
 	    model: model,
 	    showPage: showPage,
 	    registerController: registerController,
-	    registerComponent: registerComponent,
-	    publish: publish,
-	    subscribe: subscribe,
-	    unsubscribe: unsubscribe
+	    registerComponent: registerComponent // Components
 	};
 	//-------------------- Module variables --------------------
 	var pageCache = {};
 	var ctrl = {};
 	var components = {};
 	var currentCtrls = [];
-	;
-	var handlers = {};
 	//-------------------- Publics --------------------
 	function showPage(page, target, extra) {
 	    console.log("Showing page '" + page + "'");
@@ -102,36 +97,6 @@
 	}
 	function registerComponent(name, component) {
 	    components[name] = component;
-	}
-	function publish(name, evt) {
-	    var handlersForName = handlers[name];
-	    if (!handlersForName)
-	        return;
-	    for (var _i = 0; _i < handlersForName.length; _i++) {
-	        var handler = handlersForName[_i];
-	        if (handler(name, evt) === false)
-	            break;
-	    }
-	}
-	function subscribe(name, handler) {
-	    handlers[name] = handlers[name] || [];
-	    handlers[name].push(handler);
-	}
-	function unsubscribe(name, handler) {
-	    if (!handler) {
-	        delete handlers[name];
-	        return;
-	    }
-	    var handlersForName = handlers[name];
-	    if (!handlersForName)
-	        return;
-	    for (var i = 0; i < handlersForName.length; i++) {
-	        if (handlersForName[i] == handler) {
-	            handlersForName.splice(i, 1);
-	            return;
-	        }
-	    }
-	    console.warn('Could not unsubscribe handler because it is not subscribed', handler);
 	}
 	//-------------------- Privates --------------------
 	function showView(viewName, target, extra) {
@@ -147,7 +112,7 @@
 	        .then(function (viewContent) {
 	        target.empty().append(viewContent);
 	        processComponents(viewContent);
-	        postRenderController(viewName);
+	        postRenderController(viewName, viewContent);
 	        return viewContent;
 	    });
 	}
@@ -192,12 +157,12 @@
 	    }
 	    return Promise.resolve();
 	}
-	function postRenderController(ctrlName) {
+	function postRenderController(ctrlName, viewContent) {
 	    if (!ctrl[ctrlName])
 	        return;
 	    var currCtrl = ctrl[ctrlName];
 	    if (currCtrl.postRender)
-	        currCtrl.postRender();
+	        currCtrl.postRender(viewContent);
 	}
 	function closeControllers() {
 	    while (currentCtrls.length > 0) {
@@ -266,6 +231,11 @@
 	    preRender: function () {
 	        return users_1.default.getUsers(minion_1.default.model.userFilter).then(function (users) {
 	            minion_1.default.model.users = users;
+	        });
+	    },
+	    postRender: function (viewContent) {
+	        viewContent.find('#user-search-but').click(function () {
+	            console.log('User search!!!');
 	        });
 	    }
 	});

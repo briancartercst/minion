@@ -6,11 +6,9 @@ export default {
 	model,				// Model
 	showPage,			// View
 	registerController,	// Controllers
-	registerComponent,	// Components
-	publish,			// Pub-sub
-	subscribe,
-	unsubscribe
+	registerComponent	// Components
 }
+
 
 //-------------------- Module variables --------------------
 
@@ -18,9 +16,6 @@ const pageCache = {};
 const ctrl = {};
 const components = {};
 const currentCtrls = [];
-
-interface pubSubHandler { (name: string, event: {})};
-const handlers = {};
 
 //-------------------- Publics --------------------
 
@@ -38,35 +33,6 @@ function registerComponent(name: string, component) {
 	components[name] = component;
 }
 
-function publish(name: string, evt: {}) {
-	const handlersForName = handlers[name];
-	if (!handlersForName) return;
-	for (let handler of handlersForName)
-		if (handler(name, evt) === false) break;
-}
-
-function subscribe(name: string, handler: pubSubHandler) {
-	handlers[name] = handlers[name] || [];
-	handlers[name].push(handler);
-}
-
-function unsubscribe(name: string, handler?: pubSubHandler | string) {
-	if (!handler) {
-		delete handlers[name];
-		return;
-	}
-	const handlersForName = handlers[name];
-	if (!handlersForName) return;
-	for (let i = 0; i < handlersForName.length; i++) {
-		const h = handlersForName[i];
-		if ((typeof handler == 'string' && h.name == handler) ||
-			(h == handler) {
-			handlersForName.splice(i, 1);
-			return;
-		}
-	}
-	console.warn('Could not unsubscribe handler because it is not subscribed', handler);
-}
 
 //-------------------- Privates --------------------
 
@@ -83,7 +49,7 @@ function showView(viewName: string, target: JQuery, extra: string): Promise<JQue
 	.then(viewContent => {
 		target.empty().append(viewContent);
 		processComponents(viewContent);
-		postRenderController(viewName);
+		postRenderController(viewName, viewContent);
 		return viewContent;
 	});
 }
@@ -132,10 +98,10 @@ function preRenderController(ctrlName: string, extra: string): Promise<any> {
 	return Promise.resolve();
 }
 
-function postRenderController(ctrlName: string): void {
+function postRenderController(ctrlName: string, viewContent: JQuery): void {
 	if (!ctrl[ctrlName]) return;
 	const currCtrl = ctrl[ctrlName];
-	if (currCtrl.postRender) currCtrl.postRender();
+	if (currCtrl.postRender) currCtrl.postRender(viewContent);
 }
 
 function closeControllers() {

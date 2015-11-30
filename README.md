@@ -12,6 +12,7 @@ Testing a simple SPA, using:
 - Minification with proper source maps (webpack plugin is buggy)
 
 ### Runtime
+- Refactor 'search' views & controller to flat hunting names 
 - Show waiting animation & block current UI
 - NLS/multilanguage
 
@@ -23,7 +24,6 @@ Testing a simple SPA, using:
 - Execute Mustache from templater
 - Simple Web components
 - Find a better name for "templater"
-- Pub/sub events to communicate different parts of the app
 
 ##Functionality
 
