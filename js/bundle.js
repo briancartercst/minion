@@ -234,8 +234,10 @@
 	        });
 	    },
 	    postRender: function (viewContent) {
-	        viewContent.find('#user-search-but').click(function () {
+	        var form = viewContent.find('#user-search-form');
+	        form.submit(function () {
 	            console.log('User search!!!');
+	            return false;
 	        });
 	    }
 	});
@@ -307,7 +309,7 @@
 	minion_1.default.registerComponent('input-narrow', {
 	    render: function (node) {
 	        var attrs = getInputAttrs(node);
-	        var template = "\n\t\t\t<div class=\"form-group\">\n\t\t\t\t<label for=\"" + attrs.name + "\">" + attrs.label + "</label>\n\t\t\t\t<input class=\"form-control\" id=\"" + attrs.name + "\" value=\"" + attrs.value + "\" type=\"" + attrs.email + "\">\n\t\t\t</div>\n\t\t";
+	        var template = "\n\t\t\t<div class=\"form-group\">\n\t\t\t\t<label for=\"" + attrs.name + "\">" + attrs.label + "</label>\n\t\t\t\t<input class=\"form-control\" id=\"" + attrs.name + "\" value=\"" + attrs.value + "\" type=\"" + attrs.type + "\">\n\t\t\t</div>\n\t\t";
 	        node.html(template);
 	    }
 	});

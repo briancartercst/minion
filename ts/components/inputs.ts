@@ -21,7 +21,7 @@ minion.registerComponent('input-narrow', {
 		const template = `
 			<div class="form-group">
 				<label for="${attrs.name}">${attrs.label}</label>
-				<input class="form-control" id="${attrs.name}" value="${attrs.value}" type="${attrs.email}">
+				<input class="form-control" id="${attrs.name}" value="${attrs.value}" type="${attrs.type}">
 			</div>
 		`;
 		node.html(template);

@@ -10,8 +10,10 @@ minion.registerController('users', {
 	},
 
 	postRender(viewContent: JQuery) {
-		viewContent.find('#user-search-but').click(() => {
+		const form = viewContent.find('#user-search-form'); 
+		form.submit(() => {
 			console.log('User search!!!');
+			return false;
 		});
 	}
 
