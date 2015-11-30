@@ -10,9 +10,15 @@ minion.registerController('search', {
 			backgroundImage: 'initial',
 			backgroundColor: '#AAA'
 		});
+		minion.subscribe('user.search', searchHandler);
 	},
 
 	done() {
 		console.log('ctrl.search done');
+		minion.unsubscribe('user.search', searchHandler);
 	}
 });
+
+
+function searchHandler(name, event) {
+}

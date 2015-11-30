@@ -23,6 +23,7 @@ Testing a simple SPA, using:
 - Execute Mustache from templater
 - Simple Web components
 - Find a better name for "templater"
+- Pub/sub events to communicate different parts of the app
 
 ##Functionality
 

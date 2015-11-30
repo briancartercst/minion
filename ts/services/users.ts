@@ -1,6 +1,6 @@
 
 export default {
-	getData
+	getUsers
 }
 
 //-------------------- Private --------------------
@@ -13,7 +13,7 @@ interface User {
 	id: number
 }
 
-function getData(): Promise<User[]> {
+function getUsers(filter): Promise<User[]> {
 	const data: User[] = [];
 	for (let i = 0; i < 10; i++)
 		data.push(createUser(i));

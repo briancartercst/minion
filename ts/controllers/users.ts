@@ -3,7 +3,7 @@ import userSvc from '../services/users';
 
 minion.registerController('users', {
 	preRender() {
-		return userSvc.getData().then(users => {
+		return userSvc.getUsers(minion.model.userFilter).then(users => {
 			minion.model.users = users;
 		});
 	}
