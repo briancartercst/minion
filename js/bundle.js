@@ -48,7 +48,7 @@
 	__webpack_require__(3);
 	__webpack_require__(4);
 	__webpack_require__(5);
-	module.exports = __webpack_require__(6);
+	module.exports = __webpack_require__(7);
 
 
 /***/ },
@@ -226,13 +226,24 @@
 /***/ function(module, exports, __webpack_require__) {
 
 	var minion_1 = __webpack_require__(2);
+	var users_1 = __webpack_require__(6);
 	minion_1.default.registerController('users', {
 	    preRender: function () {
-	        return getData().then(function (users) {
+	        return users_1.default.getData().then(function (users) {
 	            minion_1.default.model.users = users;
 	        });
 	    }
 	});
+
+
+/***/ },
+/* 6 */
+/***/ function(module, exports) {
+
+	Object.defineProperty(exports, "__esModule", { value: true });
+	exports.default = {
+	    getData: getData
+	};
 	function getData() {
 	    var data = [];
 	    for (var i = 0; i < 10; i++)
@@ -277,7 +288,7 @@
 
 
 /***/ },
-/* 6 */
+/* 7 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var minion_1 = __webpack_require__(2);
