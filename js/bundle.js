@@ -318,6 +318,7 @@
 	    },
 	    postRender: function (viewContent) {
 	        handleSearchForm(viewContent);
+	        handleDeleteButton(viewContent);
 	    }
 	});
 	function handleSearchForm(viewContent) {
@@ -329,6 +330,11 @@
 	            minion_1.default.showPage('user-table', $('[mn-view=user-table]'));
 	        });
 	        return false;
+	    });
+	}
+	function handleDeleteButton(viewContent) {
+	    viewContent.find('[data-delete-id]').click(function () {
+	        console.log('user delete clicked for id', $(this).attr('data-delete-id'));
 	    });
 	}
 

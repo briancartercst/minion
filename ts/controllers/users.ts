@@ -11,6 +11,7 @@ minion.registerController('users', {
 
 	postRender(viewContent: JQuery) {
 		handleSearchForm(viewContent);
+		handleDeleteButton(viewContent);
 	}
 
 });
@@ -25,5 +26,11 @@ function handleSearchForm(viewContent: JQuery) {
 			minion.showPage('user-table', $('[mn-view=user-table]'));
 		});
 		return false;
+	});
+}
+
+function handleDeleteButton(viewContent: JQuery) {
+	viewContent.find('[data-delete-id]').click(function() {
+		console.log('user delete clicked for id', $(this).attr('data-delete-id'));
 	});
 }
