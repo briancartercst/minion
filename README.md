@@ -12,6 +12,7 @@ Testing a simple SPA, using:
 - Minification with proper source maps (webpack plugin is buggy)
 
 ### Runtime
+- Implement full set of CRUD operations
 - Refactor 'search' views & controller to flat hunting names 
 - Show waiting animation & block current UI
 - NLS/multilanguage

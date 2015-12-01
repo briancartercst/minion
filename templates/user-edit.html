@@ -3,7 +3,7 @@
 
 		<h2>Edit User</h2>
 
-		<form class="form-horizontal">
+		<form class="form-horizontal" id="user-edit-form">
 
 			<div mn-component="input-wide"
 				name="email" label="e-mail" value="{{user.email}}"></div>
@@ -15,9 +15,9 @@
 				name="mobile" label="Mobile phone" value="{{user.mobile}}"></div>
 
 			<div class="col-sm-12 text-center">
-				<a class="btn btn-primary">
+				<button type="submit" class="btn btn-primary">
 					Update
-				</a>&nbsp;
+				</button>&nbsp;
 				<a href="#users" class="btn btn-default">
 					Cancel
 				</a>

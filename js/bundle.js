@@ -47,7 +47,7 @@
 	__webpack_require__(1);
 	__webpack_require__(3);
 	__webpack_require__(4);
-	__webpack_require__(5);
+	__webpack_require__(6);
 	module.exports = __webpack_require__(7);
 
 
@@ -229,46 +229,33 @@
 /***/ function(module, exports, __webpack_require__) {
 
 	var minion_1 = __webpack_require__(2);
+	var users_1 = __webpack_require__(5);
 	minion_1.default.registerController('user-edit', {
 	    preRender: function (id) {
 	        minion_1.default.model.user = minion_1.default.model.users[id];
-	    }
-	});
+	    },
+	    postRender: function (viewContent) {
+	        handleEditForm(viewContent);
+	    } });
+	function handleEditForm(viewContent) {
+	    var form = viewContent.find('#user-edit-form');
+	    form.submit(function () {
+	        users_1.default.saveUser(minion_1.default.model.user).then(function () {
+	            window.location.href = '#users';
+	        });
+	        return false;
+	    });
+	}
 
 
 /***/ },
 /* 5 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var minion_1 = __webpack_require__(2);
-	var users_1 = __webpack_require__(6);
-	minion_1.default.registerController('users', {
-	    preRender: function () {
-	        return users_1.default.getUsers(minion_1.default.model.userFilter).then(function (users) {
-	            minion_1.default.model.users = users;
-	        });
-	    },
-	    postRender: function (viewContent) {
-	        var form = viewContent.find('#user-search-form');
-	        form.submit(function () {
-	            minion_1.default.model.userFilter = minion_1.default.form2obj(form);
-	            users_1.default.getUsers(minion_1.default.model.userFilter).then(function (users) {
-	                minion_1.default.model.users = users;
-	                minion_1.default.showPage('user-table', $('[mn-view=user-table]'));
-	            });
-	            return false;
-	        });
-	    }
-	});
-
-
-/***/ },
-/* 6 */
 /***/ function(module, exports) {
 
 	Object.defineProperty(exports, "__esModule", { value: true });
 	exports.default = {
-	    getUsers: getUsers
+	    getUsers: getUsers,
+	    saveUser: saveUser
 	};
 	function getUsers(filter) {
 	    var data = [];
@@ -276,6 +263,10 @@
 	        data.push(createUser(i));
 	    return Promise.resolve(data);
 	}
+	function saveUser(u) {
+	    return Promise.resolve(undefined);
+	}
+	//-------------------- Public --------------------
 	function createUser(id) {
 	    var usr = {};
 	    usr.name = randomName(3, 6);
@@ -310,6 +301,35 @@
 	}
 	function randomNum(min, max) {
 	    return min + Math.floor(Math.random() * (max - min));
+	}
+
+
+/***/ },
+/* 6 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var minion_1 = __webpack_require__(2);
+	var users_1 = __webpack_require__(5);
+	minion_1.default.registerController('users', {
+	    preRender: function () {
+	        return users_1.default.getUsers(minion_1.default.model.userFilter).then(function (users) {
+	            minion_1.default.model.users = users;
+	        });
+	    },
+	    postRender: function (viewContent) {
+	        handleSearchForm(viewContent);
+	    }
+	});
+	function handleSearchForm(viewContent) {
+	    var form = viewContent.find('#user-search-form');
+	    form.submit(function () {
+	        minion_1.default.model.userFilter = minion_1.default.form2obj(form);
+	        users_1.default.getUsers(minion_1.default.model.userFilter).then(function (users) {
+	            minion_1.default.model.users = users;
+	            minion_1.default.showPage('user-table', $('[mn-view=user-table]'));
+	        });
+	        return false;
+	    });
 	}
 
 

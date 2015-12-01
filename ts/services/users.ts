@@ -1,9 +1,10 @@
 
 export default {
-	getUsers
+	getUsers,
+	saveUser
 }
 
-//-------------------- Private --------------------
+//-------------------- Public --------------------
 
 interface User {
 	name: string,
@@ -19,6 +20,13 @@ function getUsers(filter): Promise<User[]> {
 		data.push(createUser(i));
 	return Promise.resolve(data);
 }
+
+function saveUser(u: User): Promise<void> {
+	return Promise.resolve(undefined);
+}
+
+
+//-------------------- Public --------------------
 
 function createUser(id: number): User {
 	const usr: User = <any>{};
