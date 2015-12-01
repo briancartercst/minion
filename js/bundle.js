@@ -78,6 +78,7 @@
 	exports.default = {
 	    model: model,
 	    showPage: showPage,
+	    showView: showView,
 	    registerController: registerController,
 	    registerComponent: registerComponent,
 	    form2obj: form2obj // Helper
@@ -92,6 +93,23 @@
 	    console.log("Showing page '" + page + "'");
 	    closeControllers();
 	    showView(page, target, extra);
+	}
+	function showView(viewName, target, extra) {
+	    console.log("  rendering template '" + viewName + "'");
+	    return preRenderController(viewName, extra)
+	        .then(function () {
+	        return getPage(viewName);
+	    })
+	        .then(function (pageData) {
+	        var viewContent = $('<div>' + Mustache.render(pageData, model) + '</div>');
+	        return processSubviews(viewContent, extra);
+	    })
+	        .then(function (viewContent) {
+	        target.empty().append(viewContent);
+	        processComponents(viewContent);
+	        postRenderController(viewName, viewContent);
+	        return viewContent;
+	    });
 	}
 	function registerController(name, controller) {
 	    ctrl[name] = controller;
@@ -114,23 +132,6 @@
 	    return result;
 	}
 	//-------------------- Privates --------------------
-	function showView(viewName, target, extra) {
-	    console.log("  rendering template '" + viewName + "'");
-	    return preRenderController(viewName, extra)
-	        .then(function () {
-	        return getPage(viewName);
-	    })
-	        .then(function (pageData) {
-	        var viewContent = $('<div>' + Mustache.render(pageData, model) + '</div>');
-	        return processSubviews(viewContent, extra);
-	    })
-	        .then(function (viewContent) {
-	        target.empty().append(viewContent);
-	        processComponents(viewContent);
-	        postRenderController(viewName, viewContent);
-	        return viewContent;
-	    });
-	}
 	function processSubviews(viewContent, extra) {
 	    var showPromises = [];
 	    viewContent.find('[mn-view]').each(function (i, e) {
@@ -255,7 +256,8 @@
 	Object.defineProperty(exports, "__esModule", { value: true });
 	exports.default = {
 	    getUsers: getUsers,
-	    saveUser: saveUser
+	    saveUser: saveUser,
+	    deleteUser: deleteUser
 	};
 	function getUsers(filter) {
 	    var data = [];
@@ -264,6 +266,9 @@
 	    return Promise.resolve(data);
 	}
 	function saveUser(u) {
+	    return Promise.resolve(undefined);
+	}
+	function deleteUser(id) {
 	    return Promise.resolve(undefined);
 	}
 	//-------------------- Public --------------------
@@ -319,6 +324,9 @@
 	    postRender: function (viewContent) {
 	        handleSearchForm(viewContent);
 	        handleDeleteButton(viewContent);
+	    },
+	    done: function () {
+	        $('#modal-delete-btn').unbind('click');
 	    }
 	});
 	function handleSearchForm(viewContent) {
@@ -327,14 +335,21 @@
 	        minion_1.default.model.userFilter = minion_1.default.form2obj(form);
 	        users_1.default.getUsers(minion_1.default.model.userFilter).then(function (users) {
 	            minion_1.default.model.users = users;
-	            minion_1.default.showPage('user-table', $('[mn-view=user-table]'));
+	            minion_1.default.showView('user-table', $('[mn-view=user-table]'));
 	        });
 	        return false;
 	    });
 	}
 	function handleDeleteButton(viewContent) {
+	    var delUserId = null;
 	    viewContent.find('[data-delete-id]').click(function () {
-	        console.log('user delete clicked for id', $(this).attr('data-delete-id'));
+	        delUserId = $(this).attr('data-delete-id');
+	    });
+	    $('#modal-delete-btn').click(function () {
+	        if (!delUserId)
+	            return;
+	        console.log('Deleting user:', delUserId);
+	        users_1.default.deleteUser(delUserId);
 	    });
 	}
 

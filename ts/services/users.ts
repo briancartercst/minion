@@ -1,7 +1,8 @@
 
 export default {
 	getUsers,
-	saveUser
+	saveUser,
+	deleteUser
 }
 
 //-------------------- Public --------------------
@@ -25,6 +26,9 @@ function saveUser(u: User): Promise<void> {
 	return Promise.resolve(undefined);
 }
 
+function deleteUser(id: string): Promise<void> {
+	return Promise.resolve(undefined);
+}
 
 //-------------------- Public --------------------
 

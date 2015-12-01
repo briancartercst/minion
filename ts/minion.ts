@@ -5,6 +5,7 @@ const model = <any>{};
 export default {
 	model,				// Model
 	showPage,			// View
+	showView,
 	registerController,	// Controllers
 	registerComponent,	// Components
 	form2obj			// Helper
@@ -24,6 +25,24 @@ function showPage(page: string, target: JQuery, extra?: string): void {
 	console.log(`Showing page '${page}'`);
 	closeControllers();
 	showView(page, target, extra);
+}
+
+function showView(viewName: string, target: JQuery, extra?: string): Promise<JQuery> {
+	console.log(`  rendering template '${viewName}'`);
+	return preRenderController(viewName, extra)
+	.then(() => {
+		return getPage(viewName);
+	})
+	.then(pageData => {
+		const viewContent = $('<div>' + Mustache.render(pageData, model) + '</div>');
+		return processSubviews(viewContent, extra);
+	})
+	.then(viewContent => {
+		target.empty().append(viewContent);
+		processComponents(viewContent);
+		postRenderController(viewName, viewContent);
+		return viewContent;
+	});
 }
 
 function registerController(name: string, controller) {
@@ -50,24 +69,6 @@ function form2obj(form: JQuery): Object {
 
 
 //-------------------- Privates --------------------
-
-function showView(viewName: string, target: JQuery, extra: string): Promise<JQuery> {
-	console.log(`  rendering template '${viewName}'`);
-	return preRenderController(viewName, extra)
-	.then(() => {
-		return getPage(viewName);
-	})
-	.then(pageData => {
-		const viewContent = $('<div>' + Mustache.render(pageData, model) + '</div>');
-		return processSubviews(viewContent, extra);
-	})
-	.then(viewContent => {
-		target.empty().append(viewContent);
-		processComponents(viewContent);
-		postRenderController(viewName, viewContent);
-		return viewContent;
-	});
-}
 
 function processSubviews(viewContent: JQuery, extra: string): Promise<JQuery> {
 	const showPromises: Promise<JQuery>[] = [];
