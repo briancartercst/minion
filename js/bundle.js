@@ -108,8 +108,9 @@
 	        var inputType = form.find(":input[name=" + input.name + "]").attr('type');
 	        if (inputType == 'number')
 	            result[input.name] = parseFloat(input.value);
+	        else if (inputType == 'checkbox')
+	            result[input.name] = true;
 	    }
-	    //TODO support all kinds of inputs e.g. multi-valued lists, radios, checkboxes, etc
 	    return result;
 	}
 	//-------------------- Privates --------------------
@@ -132,9 +133,9 @@
 	}
 	function processSubviews(viewContent, extra) {
 	    var showPromises = [];
-	    viewContent.find('[mn-subview]').each(function (i, e) {
+	    viewContent.find('[mn-view]').each(function (i, e) {
 	        var subView = $(e);
-	        showPromises.push(showView(subView.attr('mn-subview'), subView, extra));
+	        showPromises.push(showView(subView.attr('mn-view'), subView, extra));
 	    });
 	    return Promise.all(showPromises).then(function (results) {
 	        return viewContent;
@@ -250,7 +251,7 @@
 	    postRender: function (viewContent) {
 	        var form = viewContent.find('#user-search-form');
 	        form.submit(function () {
-	            console.log('User search:', form, minion_1.default.form2obj(form));
+	            var userSearchFilter = minion_1.default.form2obj(form);
 	            return false;
 	        });
 	    }

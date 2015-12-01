@@ -71,9 +71,9 @@ function showView(viewName: string, target: JQuery, extra: string): Promise<JQue
 
 function processSubviews(viewContent: JQuery, extra: string): Promise<JQuery> {
 	const showPromises: Promise<JQuery>[] = [];
-	viewContent.find('[mn-subview]').each((i, e) => {
+	viewContent.find('[mn-view]').each((i, e) => {
 		const subView = $(e);
-		showPromises.push(showView(subView.attr('mn-subview'), subView, extra));
+		showPromises.push(showView(subView.attr('mn-view'), subView, extra));
 	});
 	return Promise.all(showPromises).then(results => {
 		return viewContent;
