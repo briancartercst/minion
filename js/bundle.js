@@ -251,7 +251,11 @@
 	    postRender: function (viewContent) {
 	        var form = viewContent.find('#user-search-form');
 	        form.submit(function () {
-	            var userSearchFilter = minion_1.default.form2obj(form);
+	            minion_1.default.model.userFilter = minion_1.default.form2obj(form);
+	            users_1.default.getUsers(minion_1.default.model.userFilter).then(function (users) {
+	                minion_1.default.model.users = users;
+	                minion_1.default.showPage('user-table', $('[mn-view=user-table]'));
+	            });
 	            return false;
 	        });
 	    }
