@@ -15,8 +15,8 @@ export default {
 //-------------------- Module variables --------------------
 
 const pageCache = {};
-const ctrl = {};
-const components = {};
+const ctrlRegistry = {};
+const cmpRegistry = {};
 const currentCtrls = [];
 
 //-------------------- Publics --------------------
@@ -46,11 +46,11 @@ function showView(viewName: string, target: JQuery, extra?: string): Promise<JQu
 }
 
 function registerController(name: string, controller) {
-	ctrl[name] = controller;
+	ctrlRegistry[name] = controller;
 }
 
 function registerComponent(name: string, component) {
-	components[name] = component;
+	cmpRegistry[name] = component;
 }
 
 function form2obj(form: JQuery): Object {
@@ -99,15 +99,13 @@ function getPage(page: string): Promise<string> {
 //---------- Controllers ----------
 
 function preRenderController(ctrlName: string, extra: string): Promise<any> {
-	if (ctrl[ctrlName]) {
-		// Add controller
-		// TODO this should be done elsewhere
-		const currCtrl = ctrl[ctrlName];
-		currCtrl.$name = ctrlName;
-		currentCtrls.push(currCtrl);
+	const ctrl = ctrlRegistry[ctrlName]; 
+	if (ctrl) {
+		ctrl.$name = ctrlName;
+		currentCtrls.push(ctrl);
 		// Call prerender
-		if (currCtrl.preRender) {
-			const result = currCtrl.preRender(extra);
+		if (ctrl.preRender) {
+			const result = ctrl.preRender(extra);
 			if (result instanceof Promise) return result;
 		}
 	}
@@ -115,9 +113,9 @@ function preRenderController(ctrlName: string, extra: string): Promise<any> {
 }
 
 function postRenderController(ctrlName: string, viewContent: JQuery): void {
-	if (!ctrl[ctrlName]) return;
-	const currCtrl = ctrl[ctrlName];
-	if (currCtrl.postRender) currCtrl.postRender(viewContent);
+	const ctrl = ctrlRegistry[ctrlName]; 
+	if (!ctrl) return;
+	if (ctrl.postRender) ctrl.postRender(viewContent);
 }
 
 function closeControllers() {
@@ -137,7 +135,7 @@ function processComponents(viewContent: JQuery) {
 
 function processComponent(node: JQuery) {
 	const compName = node.attr('mn-component');
-	const component = components[compName];
+	const component = cmpRegistry[compName];
 	if (!component) {
 		console.warn(`Component ${compName} not found`);
 		return;

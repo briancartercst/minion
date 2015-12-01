@@ -85,8 +85,8 @@
 	};
 	//-------------------- Module variables --------------------
 	var pageCache = {};
-	var ctrl = {};
-	var components = {};
+	var ctrlRegistry = {};
+	var cmpRegistry = {};
 	var currentCtrls = [];
 	//-------------------- Publics --------------------
 	function showPage(page, target, extra) {
@@ -112,10 +112,10 @@
 	    });
 	}
 	function registerController(name, controller) {
-	    ctrl[name] = controller;
+	    ctrlRegistry[name] = controller;
 	}
 	function registerComponent(name, component) {
-	    components[name] = component;
+	    cmpRegistry[name] = component;
 	}
 	function form2obj(form) {
 	    var result = {};
@@ -158,15 +158,13 @@
 	}
 	//---------- Controllers ----------
 	function preRenderController(ctrlName, extra) {
-	    if (ctrl[ctrlName]) {
-	        // Add controller
-	        // TODO this should be done elsewhere
-	        var currCtrl = ctrl[ctrlName];
-	        currCtrl.$name = ctrlName;
-	        currentCtrls.push(currCtrl);
+	    var ctrl = ctrlRegistry[ctrlName];
+	    if (ctrl) {
+	        ctrl.$name = ctrlName;
+	        currentCtrls.push(ctrl);
 	        // Call prerender
-	        if (currCtrl.preRender) {
-	            var result = currCtrl.preRender(extra);
+	        if (ctrl.preRender) {
+	            var result = ctrl.preRender(extra);
 	            if (result instanceof Promise)
 	                return result;
 	        }
@@ -174,17 +172,17 @@
 	    return Promise.resolve();
 	}
 	function postRenderController(ctrlName, viewContent) {
-	    if (!ctrl[ctrlName])
+	    var ctrl = ctrlRegistry[ctrlName];
+	    if (!ctrl)
 	        return;
-	    var currCtrl = ctrl[ctrlName];
-	    if (currCtrl.postRender)
-	        currCtrl.postRender(viewContent);
+	    if (ctrl.postRender)
+	        ctrl.postRender(viewContent);
 	}
 	function closeControllers() {
 	    while (currentCtrls.length > 0) {
-	        var ctrl_1 = currentCtrls.pop();
-	        if (ctrl_1.done)
-	            ctrl_1.done();
+	        var ctrl = currentCtrls.pop();
+	        if (ctrl.done)
+	            ctrl.done();
 	    }
 	}
 	//---------- Components ----------
@@ -195,7 +193,7 @@
 	}
 	function processComponent(node) {
 	    var compName = node.attr('mn-component');
-	    var component = components[compName];
+	    var component = cmpRegistry[compName];
 	    if (!component) {
 	        console.warn("Component " + compName + " not found");
 	        return;
