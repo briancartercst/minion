@@ -6,7 +6,8 @@ export default {
 	model,				// Model
 	showPage,			// View
 	registerController,	// Controllers
-	registerComponent	// Components
+	registerComponent,	// Components
+	form2obj			// Helper
 }
 
 
@@ -31,6 +32,20 @@ function registerController(name: string, controller) {
 
 function registerComponent(name: string, component) {
 	components[name] = component;
+}
+
+function form2obj(form: JQuery): Object {
+	var result = {};
+	for (const input of form.serializeArray()) {
+		if (input.value)
+			result[input.name] = input.value;
+		const inputType = form.find(`:input[name=${input.name}]`).attr('type');
+		if (inputType == 'number')
+			result[input.name] = parseFloat(input.value);
+		else if (inputType == 'checkbox')
+			result[input.name] = true;
+	}
+	return result;
 }
 
 

@@ -79,7 +79,8 @@
 	    model: model,
 	    showPage: showPage,
 	    registerController: registerController,
-	    registerComponent: registerComponent // Components
+	    registerComponent: registerComponent,
+	    form2obj: form2obj // Helper
 	};
 	//-------------------- Module variables --------------------
 	var pageCache = {};
@@ -97,6 +98,19 @@
 	}
 	function registerComponent(name, component) {
 	    components[name] = component;
+	}
+	function form2obj(form) {
+	    var result = {};
+	    for (var _i = 0, _a = form.serializeArray(); _i < _a.length; _i++) {
+	        var input = _a[_i];
+	        if (input.value)
+	            result[input.name] = input.value;
+	        var inputType = form.find(":input[name=" + input.name + "]").attr('type');
+	        if (inputType == 'number')
+	            result[input.name] = parseFloat(input.value);
+	    }
+	    //TODO support all kinds of inputs e.g. multi-valued lists, radios, checkboxes, etc
+	    return result;
 	}
 	//-------------------- Privates --------------------
 	function showView(viewName, target, extra) {
@@ -236,7 +250,7 @@
 	    postRender: function (viewContent) {
 	        var form = viewContent.find('#user-search-form');
 	        form.submit(function () {
-	            console.log('User search!!!');
+	            console.log('User search:', form, minion_1.default.form2obj(form));
 	            return false;
 	        });
 	    }
@@ -302,14 +316,14 @@
 	minion_1.default.registerComponent('input-wide', {
 	    render: function (node) {
 	        var attrs = getInputAttrs(node);
-	        var template = "\n\t\t\t<div class=\"form-group\">\n\t\t\t\t<label for=\"" + attrs.name + "\" class=\"col-sm-3 control-label\">" + attrs.label + "</label>\n\t\t\t\t<div class=\"col-sm-9\">\n\t\t\t\t\t<input class=\"form-control\" id=\"" + attrs.name + "\" value=\"" + attrs.value + "\" type=\"" + attrs.type + "\">\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t";
+	        var template = "\n\t\t\t<div class=\"form-group\">\n\t\t\t\t<label for=\"" + attrs.name + "\" class=\"col-sm-3 control-label\">" + attrs.label + "</label>\n\t\t\t\t<div class=\"col-sm-9\">\n\t\t\t\t\t<input class=\"form-control\" id=\"" + attrs.name + "\" name=\"" + attrs.name + "\"\n\t\t\t\t\t\tvalue=\"" + attrs.value + "\" type=\"" + attrs.type + "\">\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t";
 	        node.html(template);
 	    }
 	});
 	minion_1.default.registerComponent('input-narrow', {
 	    render: function (node) {
 	        var attrs = getInputAttrs(node);
-	        var template = "\n\t\t\t<div class=\"form-group\">\n\t\t\t\t<label for=\"" + attrs.name + "\">" + attrs.label + "</label>\n\t\t\t\t<input class=\"form-control\" id=\"" + attrs.name + "\" value=\"" + attrs.value + "\" type=\"" + attrs.type + "\">\n\t\t\t</div>\n\t\t";
+	        var template = "\n\t\t\t<div class=\"form-group\">\n\t\t\t\t<label for=\"" + attrs.name + "\">" + attrs.label + "</label>\n\t\t\t\t<input class=\"form-control\" id=\"" + attrs.name + "\" name=\"" + attrs.name + "\"\n\t\t\t\t\tvalue=\"" + attrs.value + "\" type=\"" + attrs.type + "\">\n\t\t\t</div>\n\t\t";
 	        node.html(template);
 	    }
 	});

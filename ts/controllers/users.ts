@@ -12,7 +12,7 @@ minion.registerController('users', {
 	postRender(viewContent: JQuery) {
 		const form = viewContent.find('#user-search-form'); 
 		form.submit(() => {
-			console.log('User search!!!');
+			const userSearchFilter = minion.form2obj(form);
 			return false;
 		});
 	}

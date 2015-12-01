@@ -7,7 +7,8 @@ minion.registerComponent('input-wide', {
 			<div class="form-group">
 				<label for="${attrs.name}" class="col-sm-3 control-label">${attrs.label}</label>
 				<div class="col-sm-9">
-					<input class="form-control" id="${attrs.name}" value="${attrs.value}" type="${attrs.type}">
+					<input class="form-control" id="${attrs.name}" name="${attrs.name}"
+						value="${attrs.value}" type="${attrs.type}">
 				</div>
 			</div>
 		`;
@@ -21,7 +22,8 @@ minion.registerComponent('input-narrow', {
 		const template = `
 			<div class="form-group">
 				<label for="${attrs.name}">${attrs.label}</label>
-				<input class="form-control" id="${attrs.name}" value="${attrs.value}" type="${attrs.type}">
+				<input class="form-control" id="${attrs.name}" name="${attrs.name}"
+					value="${attrs.value}" type="${attrs.type}">
 			</div>
 		`;
 		node.html(template);
