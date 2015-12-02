@@ -88,8 +88,8 @@
 	var cmpRegistry = {};
 	//-------------------- Publics --------------------
 	function showView(page, target, extra) {
-	    console.log("Showing page '" + page + "'");
-	    showViewRecursive(page, target, extra);
+	    console.log("Showing view '" + page + "'");
+	    return showViewRecursive(page, target, extra);
 	}
 	function registerController(name, controller) {
 	    ctrlRegistry[name] = controller;
@@ -196,7 +196,7 @@
 	    }
 	    component.render(node);
 	}
-	//----- Startup code -----
+	//--------------- Startup  ---------------
 	$['event'].special.destroyed = {
 	    remove: function (o) {
 	        if (o && o.handler) {
@@ -336,11 +336,12 @@
 	    form.submit(function () {
 	        $('#modal-delete-btn').unbind('click');
 	        minion_1.default.model.userFilter = minion_1.default.form2obj(form);
-	        users_1.default.getUsers(minion_1.default.model.userFilter).then(function (users) {
+	        users_1.default.getUsers(minion_1.default.model.userFilter)
+	            .then(function (users) {
 	            minion_1.default.model.users = users;
-	            minion_1.default.showView('user-table', $('[mn-view=user-table]'));
-	            handleDeleteButton(viewContent);
-	        });
+	            return minion_1.default.showView('user-table', $('[mn-view=user-table]'));
+	        })
+	            .then(function (viewContent) { return handleDeleteButton(viewContent); });
 	        return false;
 	    });
 	}
