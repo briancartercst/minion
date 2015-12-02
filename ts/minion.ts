@@ -101,9 +101,9 @@ function registerEventHandlers(viewName: string, viewContent: JQuery, events: st
 		var mnAttr = "mn-on" + eventId;
 		viewContent.find("[" + mnAttr + "]").each((i, elem) => {
 			const evtHandler = $(elem).attr(mnAttr);
-			if (!ctrl.evtHandler) console.warn(
+			if (!ctrl[evtHandler]) console.warn(
 				`Event handler '${evtHandler}' not found in controller for view '${viewName}'`);
-			else $(elem).on(eventId, ctrl.evtHandler);
+			else $(elem).on(eventId, ctrl[evtHandler]);
 		});
 	}
 }
