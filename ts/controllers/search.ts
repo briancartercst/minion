@@ -1,6 +1,6 @@
 import minion from '../minion';
 
-minion.registerController('search', {
+minion.controller('search', {
 	postRender() {
 		console.log('ctrl.search postRender');
 		$('#price-range').slider({});

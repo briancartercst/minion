@@ -1,6 +1,6 @@
 import minion from '../minion';
 
-minion.registerComponent('input-wide', {
+minion.component('input-wide', {
 	render(node: JQuery): void {
 		const attrs: any = getInputAttrs(node);
 		const template = `
@@ -16,7 +16,7 @@ minion.registerComponent('input-wide', {
 	}
 });
 
-minion.registerComponent('input-narrow', {
+minion.component('input-narrow', {
 	render(node: JQuery): void {
 		const attrs: any = getInputAttrs(node);
 		const template = `
@@ -29,6 +29,9 @@ minion.registerComponent('input-narrow', {
 		node.html(template);
 	}
 });
+
+
+///--------------------------------------------------
 
 function getInputAttrs(node: JQuery) {
 	const attrs: any = getAttrs(node, 'name label value type'.split(' '));

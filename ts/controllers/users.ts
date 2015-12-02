@@ -1,7 +1,7 @@
 import minion from '../minion';
 import userSvc from '../services/users';
 
-minion.registerController('users', {
+minion.controller('users', {
 	preRender() {
 		return userSvc.getUsers(this.userFilter).then(users => {
 			minion.rootModel.users = users;
@@ -17,7 +17,7 @@ minion.registerController('users', {
 	}
 });
 
-minion.registerController('user-table', {
+minion.controller('user-table', {
 	postRender(viewContent: JQuery) {
 		handleDeleteButton(viewContent);
 	},

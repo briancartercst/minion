@@ -1,15 +1,22 @@
-Testing a simple SPA, using:
-- TypeScript
-- Routie for simple navigation routing
-- jQuery
-- Bootstrap
-- Mustache
-- initializr to get a clean boilerplate
+Minion
+======
+
+Minion is a tiny MVC framework. It can be learned very fast and is good enough
+for small to medium single-page applications.
+
+It has some similarities with Angular:
+- Controllers
+- Components
+- Routing (provided by Routie)
+- Templating (provided by Mustache)
+
 
 ##ToDo:
 ### Development
 - ESHint / TSLint
 - Minification with proper source maps (webpack plugin is buggy)
+- Set TypeScript compile target to ES6 and add Babel as a build step.
+	- And maybe the Promise shim will no longer be required.
 
 ### Runtime
 - Define controller interface (empty?)
@@ -30,36 +37,3 @@ Testing a simple SPA, using:
 - Improve controller lifecycle attached to view lifecycle
 - Use hierarchical, controller-owned model, angular-style
 
-##Functionality
-
-- Mobile First
-
-Views:
-- Landing - show menu with:
-	- Login => show login form
-	- Search => show search form
-	- Share => show search form
-	- About => show static about page
-- Login form:
-	- Request userid/pw
-	- Provide login button for existing users
-	- Provide sign in button for new users => show new user form
-- Logged In - show menu with:
-	- Log Out => go back to landing
-	- Search
-	- Edit profile => show profile
-	- Favorites
-- Search
-	- Show search form
-	- When submit, show results page
-- Results
-	- Show list of flats, lazy load
-	- When flat is selected, show details
-- Details
-	- Pictures - support zooming
-	- Add to favorites
-	- Chat
-- Chat
-	- Show chat for specific flat
-- Favorites
-	- Show results page with list of favorited flats

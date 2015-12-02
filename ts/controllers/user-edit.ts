@@ -1,7 +1,7 @@
 import minion from '../minion';
 import userSvc from '../services/users';
 
-minion.registerController('user-edit', {
+minion.controller('user-edit', {
 	preRender(id: string) {
 		this.user = minion.rootModel.users[id];
 	},

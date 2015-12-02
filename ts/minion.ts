@@ -3,11 +3,11 @@
 const rootModel = <any>{};
 
 export default {
-	rootModel,			// Model
-	showView,			// View
-	registerController,	// Controllers
-	registerComponent,	// Components
-	form2obj			// Helper
+	rootModel,		// Model
+	showView,		// View
+	controller,		// Controllers
+	component,		// Components
+	form2obj		// Helper
 }
 
 
@@ -25,11 +25,11 @@ function showView(page: string, target?: JQuery, extra?: string): Promise<JQuery
 	return showViewRecursive(page, target, rootModel, extra);
 }
 
-function registerController(name: string, controller) {
+function controller(name: string, controller) {
 	ctrlRegistry[name] = controller;
 }
 
-function registerComponent(name: string, component) {
+function component(name: string, component) {
 	cmpRegistry[name] = component;
 }
 

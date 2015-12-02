@@ -78,8 +78,8 @@
 	exports.default = {
 	    rootModel: rootModel,
 	    showView: showView,
-	    registerController: registerController,
-	    registerComponent: registerComponent,
+	    controller: controller,
+	    component: component,
 	    form2obj: form2obj // Helper
 	};
 	//-------------------- Module variables --------------------
@@ -92,10 +92,10 @@
 	    target = target || $("[mn-view=" + page + "]");
 	    return showViewRecursive(page, target, rootModel, extra);
 	}
-	function registerController(name, controller) {
+	function controller(name, controller) {
 	    ctrlRegistry[name] = controller;
 	}
-	function registerComponent(name, component) {
+	function component(name, component) {
 	    cmpRegistry[name] = component;
 	}
 	function form2obj(form) {
@@ -224,7 +224,7 @@
 /***/ function(module, exports, __webpack_require__) {
 
 	var minion_1 = __webpack_require__(2);
-	minion_1.default.registerController('search', {
+	minion_1.default.controller('search', {
 	    postRender: function () {
 	        console.log('ctrl.search postRender');
 	        $('#price-range').slider({});
@@ -249,7 +249,7 @@
 
 	var minion_1 = __webpack_require__(2);
 	var users_1 = __webpack_require__(5);
-	minion_1.default.registerController('user-edit', {
+	minion_1.default.controller('user-edit', {
 	    preRender: function (id) {
 	        this.user = minion_1.default.rootModel.users[id];
 	    },
@@ -328,7 +328,7 @@
 
 	var minion_1 = __webpack_require__(2);
 	var users_1 = __webpack_require__(5);
-	minion_1.default.registerController('users', {
+	minion_1.default.controller('users', {
 	    preRender: function () {
 	        return users_1.default.getUsers(this.userFilter).then(function (users) {
 	            minion_1.default.rootModel.users = users;
@@ -343,7 +343,7 @@
 	        return false;
 	    }
 	});
-	minion_1.default.registerController('user-table', {
+	minion_1.default.controller('user-table', {
 	    postRender: function (viewContent) {
 	        handleDeleteButton(viewContent);
 	    },
@@ -371,20 +371,21 @@
 /***/ function(module, exports, __webpack_require__) {
 
 	var minion_1 = __webpack_require__(2);
-	minion_1.default.registerComponent('input-wide', {
+	minion_1.default.component('input-wide', {
 	    render: function (node) {
 	        var attrs = getInputAttrs(node);
 	        var template = "\n\t\t\t<div class=\"form-group\">\n\t\t\t\t<label for=\"" + attrs.name + "\" class=\"col-sm-3 control-label\">" + attrs.label + "</label>\n\t\t\t\t<div class=\"col-sm-9\">\n\t\t\t\t\t<input class=\"form-control\" id=\"" + attrs.name + "\" name=\"" + attrs.name + "\"\n\t\t\t\t\t\tvalue=\"" + attrs.value + "\" type=\"" + attrs.type + "\">\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t";
 	        node.html(template);
 	    }
 	});
-	minion_1.default.registerComponent('input-narrow', {
+	minion_1.default.component('input-narrow', {
 	    render: function (node) {
 	        var attrs = getInputAttrs(node);
 	        var template = "\n\t\t\t<div class=\"form-group\">\n\t\t\t\t<label for=\"" + attrs.name + "\">" + attrs.label + "</label>\n\t\t\t\t<input class=\"form-control\" id=\"" + attrs.name + "\" name=\"" + attrs.name + "\"\n\t\t\t\t\tvalue=\"" + attrs.value + "\" type=\"" + attrs.type + "\">\n\t\t\t</div>\n\t\t";
 	        node.html(template);
 	    }
 	});
+	///--------------------------------------------------
 	function getInputAttrs(node) {
 	    var attrs = getAttrs(node, 'name label value type'.split(' '));
 	    attrs.type = attrs.type || 'text';
