@@ -62,6 +62,7 @@ function showViewRecursive(viewName: string, target: JQuery, extra?: string): Pr
 	.then(viewContent => {
 		target.empty().append(viewContent);
 		processComponents(viewContent);
+		registerEventHandlers(viewName, viewContent, ['click', 'submit']);
 		postRenderController(viewName, viewContent);
 		return viewContent;
 	});
@@ -91,6 +92,20 @@ function getPage(page: string): Promise<string> {
 			});
 		}
 	});
+}
+
+function registerEventHandlers(viewName: string, viewContent: JQuery, events: string[]) {
+	const ctrl = ctrlRegistry[viewName];
+	if (!ctrl) return; 
+	for (var eventId of events) {
+		var mnAttr = "mn-on" + eventId;
+		viewContent.find("[" + mnAttr + "]").each((i, elem) => {
+			const evtHandler = $(elem).attr(mnAttr);
+			if (!ctrl.evtHandler) console.warn(
+				`Event handler '${evtHandler}' not found in controller for view '${viewName}'`);
+			else $(elem).on(eventId, ctrl.evtHandler);
+		});
+	}
 }
 
 //---------- Controllers ----------
