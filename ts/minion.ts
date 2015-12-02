@@ -142,9 +142,5 @@ function processComponent(node: JQuery) {
 //--------------- Startup  ---------------
 
 $['event'].special.destroyed = {
-    remove: function(o) {
-		if (o && o.handler) {
-			o.handler();
-		}
-    }
+    remove: o => (o && o.handler) ? o.handler() : null
 };

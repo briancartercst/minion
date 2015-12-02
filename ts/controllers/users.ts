@@ -24,6 +24,7 @@ minion.registerController('users', {
 function handleSearchForm(viewContent: JQuery) {
 	const form = viewContent.find('#user-search-form'); 
 	form.submit(() => {
+		//TODO refactor modal click handling to new user-table controller
 		$('#modal-delete-btn').unbind('click');
 		minion.model.userFilter = minion.form2obj(form);
 		userSvc.getUsers(minion.model.userFilter)
