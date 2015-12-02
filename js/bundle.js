@@ -90,7 +90,7 @@
 	function showView(page, target, extra) {
 	    console.log("Showing view '" + page + "'");
 	    target = target || $("[mn-view=" + page + "]");
-	    return showViewRecursive(page, target, extra);
+	    return showViewRecursive(page, target, model, extra);
 	}
 	function registerController(name, controller) {
 	    ctrlRegistry[name] = controller;
@@ -113,16 +113,18 @@
 	    return result;
 	}
 	//-------------------- Privates --------------------
-	function showViewRecursive(viewName, target, extra) {
+	function showViewRecursive(viewName, target, parent, extra) {
 	    console.log("  rendering template '" + viewName + "'");
 	    var ctrl = ctrlRegistry[viewName];
+	    if (ctrl)
+	        ctrl.$parent = parent;
 	    return preRenderController(ctrl, extra)
 	        .then(function () {
 	        return getPage(viewName);
 	    })
 	        .then(function (pageData) {
 	        var viewContent = $('<div>' + Mustache.render(pageData, model) + '</div>');
-	        return processSubviews(viewContent, extra);
+	        return processSubviews(viewContent, ctrl, extra);
 	    })
 	        .then(function (viewContent) {
 	        target.empty().append(viewContent);
@@ -132,11 +134,11 @@
 	        return viewContent;
 	    });
 	}
-	function processSubviews(viewContent, extra) {
+	function processSubviews(viewContent, parent, extra) {
 	    var showPromises = [];
 	    viewContent.find('[mn-view]').each(function (i, e) {
 	        var subView = $(e);
-	        showPromises.push(showViewRecursive(subView.attr('mn-view'), subView, extra));
+	        showPromises.push(showViewRecursive(subView.attr('mn-view'), subView, parent, extra));
 	    });
 	    return Promise.all(showPromises).then(function (results) {
 	        return viewContent;

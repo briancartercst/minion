@@ -3,7 +3,7 @@
 const model = <any>{};
 
 export default {
-	model,				// Model
+	model,				// Model	TODO remove?
 	showView,			// View
 	registerController,	// Controllers
 	registerComponent,	// Components
@@ -22,7 +22,7 @@ const cmpRegistry = {};
 function showView(page: string, target?: JQuery, extra?: string): Promise<JQuery> {
 	console.log(`Showing view '${page}'`);
 	target = target || $(`[mn-view=${page}]`);
-	return showViewRecursive(page, target, extra);
+	return showViewRecursive(page, target, model, extra);
 }
 
 function registerController(name: string, controller) {
@@ -50,16 +50,18 @@ function form2obj(form: JQuery): Object {
 
 //-------------------- Privates --------------------
 
-function showViewRecursive(viewName: string, target: JQuery, extra?: string): Promise<JQuery> {
+function showViewRecursive(viewName: string, target: JQuery, parent, extra?: string): Promise<JQuery> {
 	console.log(`  rendering template '${viewName}'`);
-	const ctrl = ctrlRegistry[viewName]; 
+	const ctrl = ctrlRegistry[viewName];
+	if (ctrl) ctrl.$parent = parent;
 	return preRenderController(ctrl, extra)
 	.then(() => {
 		return getPage(viewName);
 	})
 	.then(pageData => {
+		//TODO pass ctrl instead of model, adapt app accordingly
 		const viewContent = $('<div>' + Mustache.render(pageData, model) + '</div>');
-		return processSubviews(viewContent, extra);
+		return processSubviews(viewContent, ctrl, extra);
 	})
 	.then(viewContent => {
 		target.empty().append(viewContent);
@@ -70,11 +72,11 @@ function showViewRecursive(viewName: string, target: JQuery, extra?: string): Pr
 	});
 }
 
-function processSubviews(viewContent: JQuery, extra: string): Promise<JQuery> {
+function processSubviews(viewContent: JQuery, parent, extra: string): Promise<JQuery> {
 	const showPromises: Promise<JQuery>[] = [];
 	viewContent.find('[mn-view]').each((i, e) => {
 		const subView = $(e);
-		showPromises.push(showViewRecursive(subView.attr('mn-view'), subView, extra));
+		showPromises.push(showViewRecursive(subView.attr('mn-view'), subView, parent, extra));
 	});
 	return Promise.all(showPromises).then(results => {
 		return viewContent;
