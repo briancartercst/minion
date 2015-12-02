@@ -254,18 +254,14 @@
 	    preRender: function (id) {
 	        minion_1.default.model.user = minion_1.default.model.users[id];
 	    },
-	    postRender: function (viewContent) {
-	        handleEditForm(viewContent);
-	    } });
-	function handleEditForm(viewContent) {
-	    var form = viewContent.find('#user-edit-form');
-	    form.submit(function () {
+	    save: function () {
+	        minion_1.default.model.user = minion_1.default.form2obj($(this));
 	        users_1.default.saveUser(minion_1.default.model.user).then(function () {
 	            window.location.href = '#users';
 	        });
 	        return false;
-	    });
-	}
+	    }
+	});
 
 
 /***/ },
@@ -340,29 +336,24 @@
 	            minion_1.default.model.users = users;
 	        });
 	    },
+	    submit: function () {
+	        minion_1.default.model.userFilter = minion_1.default.form2obj($(this));
+	        users_1.default.getUsers(minion_1.default.model.userFilter).then(function (users) {
+	            minion_1.default.model.users = users;
+	            minion_1.default.showView('user-table', $('[mn-view=user-table]'));
+	        });
+	        return false;
+	    }
+	});
+	minion_1.default.registerController('user-table', {
 	    postRender: function (viewContent) {
-	        handleSearchForm(viewContent);
 	        handleDeleteButton(viewContent);
 	    },
 	    done: function () {
 	        $('#modal-delete-btn').unbind('click');
 	    }
 	});
-	function handleSearchForm(viewContent) {
-	    var form = viewContent.find('#user-search-form');
-	    form.submit(function () {
-	        //TODO refactor modal click handling to new user-table controller
-	        $('#modal-delete-btn').unbind('click');
-	        minion_1.default.model.userFilter = minion_1.default.form2obj(form);
-	        users_1.default.getUsers(minion_1.default.model.userFilter)
-	            .then(function (users) {
-	            minion_1.default.model.users = users;
-	            return minion_1.default.showView('user-table', $('[mn-view=user-table]'));
-	        })
-	            .then(function (viewContent) { return handleDeleteButton(viewContent); });
-	        return false;
-	    });
-	}
+	//--------------------------------------------------
 	function handleDeleteButton(viewContent) {
 	    var delUserId = null;
 	    viewContent.find('[data-delete-id]').click(function () {

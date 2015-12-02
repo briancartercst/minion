@@ -2,40 +2,32 @@ import minion from '../minion';
 import userSvc from '../services/users';
 
 minion.registerController('users', {
-
 	preRender() {
 		return userSvc.getUsers(minion.model.userFilter).then(users => {
 			minion.model.users = users;
 		});
 	},
+	submit() {
+		minion.model.userFilter = minion.form2obj($(this));
+		userSvc.getUsers(minion.model.userFilter).then(users => {
+			minion.model.users = users;
+			minion.showView('user-table', $('[mn-view=user-table]'));
+		});
+		return false;
+	}
+});
 
+minion.registerController('user-table', {
 	postRender(viewContent: JQuery) {
-		handleSearchForm(viewContent);
 		handleDeleteButton(viewContent);
 	},
-
 	done() {
 		$('#modal-delete-btn').unbind('click');
 	}
-
 });
 
 
-function handleSearchForm(viewContent: JQuery) {
-	const form = viewContent.find('#user-search-form'); 
-	form.submit(() => {
-		//TODO refactor modal click handling to new user-table controller
-		$('#modal-delete-btn').unbind('click');
-		minion.model.userFilter = minion.form2obj(form);
-		userSvc.getUsers(minion.model.userFilter)
-		.then(users => {
-			minion.model.users = users;
-			return minion.showView('user-table', $('[mn-view=user-table]'))
-		})
-		.then(viewContent => handleDeleteButton(viewContent));
-		return false;
-	});
-}
+//--------------------------------------------------
 
 function handleDeleteButton(viewContent: JQuery) {
 	let delUserId = null;
