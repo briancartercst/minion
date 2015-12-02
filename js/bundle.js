@@ -215,11 +215,7 @@
 	}
 	//--------------- Startup  ---------------
 	$['event'].special.destroyed = {
-	    remove: function (o) {
-	        if (o && o.handler) {
-	            o.handler();
-	        }
-	    }
+	    remove: function (o) { return (o && o.handler) ? o.handler() : null; }
 	};
 
 
@@ -355,6 +351,7 @@
 	function handleSearchForm(viewContent) {
 	    var form = viewContent.find('#user-search-form');
 	    form.submit(function () {
+	        //TODO refactor modal click handling to new user-table controller
 	        $('#modal-delete-btn').unbind('click');
 	        minion_1.default.model.userFilter = minion_1.default.form2obj(form);
 	        users_1.default.getUsers(minion_1.default.model.userFilter)
