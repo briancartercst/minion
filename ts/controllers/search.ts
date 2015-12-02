@@ -14,5 +14,10 @@ minion.registerController('search', {
 
 	done() {
 		console.log('ctrl.search done');
+	},
+
+	hello(evt) {
+		alert('hello!');
+		console.log(evt);
 	}
 });

@@ -125,6 +125,7 @@
 	        .then(function (viewContent) {
 	        target.empty().append(viewContent);
 	        processComponents(viewContent);
+	        registerEventHandlers(viewName, viewContent, ['click', 'submit']);
 	        postRenderController(viewName, viewContent);
 	        return viewContent;
 	    });
@@ -152,6 +153,22 @@
 	            });
 	        }
 	    });
+	}
+	function registerEventHandlers(viewName, viewContent, events) {
+	    var ctrl = ctrlRegistry[viewName];
+	    if (!ctrl)
+	        return;
+	    for (var _i = 0; _i < events.length; _i++) {
+	        var eventId = events[_i];
+	        var mnAttr = "mn-on" + eventId;
+	        viewContent.find("[" + mnAttr + "]").each(function (i, elem) {
+	            var evtHandler = $(elem).attr(mnAttr);
+	            if (!ctrl[evtHandler])
+	                console.warn("Event handler '" + evtHandler + "' not found in controller for view '" + viewName + "'");
+	            else
+	                $(elem).on(eventId, ctrl[evtHandler]);
+	        });
+	    }
 	}
 	//---------- Controllers ----------
 	function preRenderController(ctrlName, extra) {
@@ -223,6 +240,10 @@
 	    },
 	    done: function () {
 	        console.log('ctrl.search done');
+	    },
+	    hello: function (evt) {
+	        alert('hello!');
+	        console.log(evt);
 	    }
 	});
 
