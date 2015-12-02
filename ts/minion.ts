@@ -1,9 +1,6 @@
 //-------------------- Exports --------------------
 
-const model = <any>{};
-
 export default {
-	model,				// Model	TODO remove?
 	showView,			// View
 	registerController,	// Controllers
 	registerComponent,	// Components
@@ -22,7 +19,7 @@ const cmpRegistry = {};
 function showView(page: string, target?: JQuery, extra?: string): Promise<JQuery> {
 	console.log(`Showing view '${page}'`);
 	target = target || $(`[mn-view=${page}]`);
-	return showViewRecursive(page, target, model, extra);
+	return showViewRecursive(page, target, {}, extra);
 }
 
 function registerController(name: string, controller) {
@@ -59,8 +56,7 @@ function showViewRecursive(viewName: string, target: JQuery, parent, extra?: str
 		return getPage(viewName);
 	})
 	.then(pageData => {
-		//TODO pass ctrl instead of model, adapt app accordingly
-		const viewContent = $('<div>' + Mustache.render(pageData, model) + '</div>');
+		const viewContent = $('<div>' + Mustache.render(pageData, ctrl) + '</div>');
 		return processSubviews(viewContent, ctrl, extra);
 	})
 	.then(viewContent => {
