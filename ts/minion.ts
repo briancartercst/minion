@@ -19,9 +19,9 @@ const cmpRegistry = {};
 
 //-------------------- Publics --------------------
 
-function showView(page: string, target: JQuery, extra?: string): void {
-	console.log(`Showing page '${page}'`);
-	showViewRecursive(page, target, extra);
+function showView(page: string, target: JQuery, extra?: string): Promise<JQuery> {
+	console.log(`Showing view '${page}'`);
+	return showViewRecursive(page, target, extra);
 }
 
 function registerController(name: string, controller) {
@@ -154,7 +154,7 @@ function processComponent(node: JQuery) {
 	component.render(node);
 }
 
-//----- Startup code -----
+//--------------- Startup  ---------------
 
 $['event'].special.destroyed = {
     remove: function(o) {

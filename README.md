@@ -12,8 +12,7 @@ Testing a simple SPA, using:
 - Minification with proper source maps (webpack plugin is buggy)
 
 ### Runtime
-- Improve controller lifecycle attached to view lifecycle
-- Refactor 'search' views & controller to flat hunting names
+- Refactor 'search' views & controller to flat search names
 - Test refactor folders by functionality instead of component type 
 - Show waiting animation & block current UI
 - NLS/multilanguage
@@ -27,6 +26,7 @@ Testing a simple SPA, using:
 - Simple Web components
 - Find a better name for "templater"
 - Implement full set of CRUD operations for user table
+- Improve controller lifecycle attached to view lifecycle
 
 ##Functionality
 
