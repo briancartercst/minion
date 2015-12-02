@@ -24,10 +24,12 @@ minion.registerController('users', {
 function handleSearchForm(viewContent: JQuery) {
 	const form = viewContent.find('#user-search-form'); 
 	form.submit(() => {
+		$('#modal-delete-btn').unbind('click');
 		minion.model.userFilter = minion.form2obj(form);
 		userSvc.getUsers(minion.model.userFilter).then(users => {
 			minion.model.users = users;
 			minion.showView('user-table', $('[mn-view=user-table]'));
+			handleDeleteButton(viewContent);
 		});
 		return false;
 	});

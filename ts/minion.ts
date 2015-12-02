@@ -4,8 +4,7 @@ const model = <any>{};
 
 export default {
 	model,				// Model
-	showPage,			// View
-	showView,
+	showView,			// View
 	registerController,	// Controllers
 	registerComponent,	// Components
 	form2obj			// Helper
@@ -17,32 +16,12 @@ export default {
 const pageCache = {};
 const ctrlRegistry = {};
 const cmpRegistry = {};
-const currentCtrls = [];
 
 //-------------------- Publics --------------------
 
-function showPage(page: string, target: JQuery, extra?: string): void {
+function showView(page: string, target: JQuery, extra?: string): void {
 	console.log(`Showing page '${page}'`);
-	closeControllers();
-	showView(page, target, extra);
-}
-
-function showView(viewName: string, target: JQuery, extra?: string): Promise<JQuery> {
-	console.log(`  rendering template '${viewName}'`);
-	return preRenderController(viewName, extra)
-	.then(() => {
-		return getPage(viewName);
-	})
-	.then(pageData => {
-		const viewContent = $('<div>' + Mustache.render(pageData, model) + '</div>');
-		return processSubviews(viewContent, extra);
-	})
-	.then(viewContent => {
-		target.empty().append(viewContent);
-		processComponents(viewContent);
-		postRenderController(viewName, viewContent);
-		return viewContent;
-	});
+	showViewRecursive(page, target, extra);
 }
 
 function registerController(name: string, controller) {
@@ -70,11 +49,29 @@ function form2obj(form: JQuery): Object {
 
 //-------------------- Privates --------------------
 
+function showViewRecursive(viewName: string, target: JQuery, extra?: string): Promise<JQuery> {
+	console.log(`  rendering template '${viewName}'`);
+	return preRenderController(viewName, extra)
+	.then(() => {
+		return getPage(viewName);
+	})
+	.then(pageData => {
+		const viewContent = $('<div>' + Mustache.render(pageData, model) + '</div>');
+		return processSubviews(viewContent, extra);
+	})
+	.then(viewContent => {
+		target.empty().append(viewContent);
+		processComponents(viewContent);
+		postRenderController(viewName, viewContent);
+		return viewContent;
+	});
+}
+
 function processSubviews(viewContent: JQuery, extra: string): Promise<JQuery> {
 	const showPromises: Promise<JQuery>[] = [];
 	viewContent.find('[mn-view]').each((i, e) => {
 		const subView = $(e);
-		showPromises.push(showView(subView.attr('mn-view'), subView, extra));
+		showPromises.push(showViewRecursive(subView.attr('mn-view'), subView, extra));
 	});
 	return Promise.all(showPromises).then(results => {
 		return viewContent;
@@ -102,8 +99,6 @@ function preRenderController(ctrlName: string, extra: string): Promise<any> {
 	const ctrl = ctrlRegistry[ctrlName]; 
 	if (ctrl) {
 		ctrl.$name = ctrlName;
-		currentCtrls.push(ctrl);
-		// Call prerender
 		if (ctrl.preRender) {
 			const result = ctrl.preRender(extra);
 			if (result instanceof Promise) return result;
@@ -116,13 +111,14 @@ function postRenderController(ctrlName: string, viewContent: JQuery): void {
 	const ctrl = ctrlRegistry[ctrlName]; 
 	if (!ctrl) return;
 	if (ctrl.postRender) ctrl.postRender(viewContent);
+	registerCloseHandler(viewContent, ctrl);
 }
 
-function closeControllers() {
-	while (currentCtrls.length > 0) {
-		const ctrl = currentCtrls.pop();
-		if (ctrl.done) ctrl.done();
-	}
+function registerCloseHandler(viewContent: JQuery, ctrl) {
+	if (!ctrl.done) return;
+	viewContent.bind('destroyed', () => {
+		ctrl.done();
+	});
 }
 
 //---------- Components ----------
@@ -142,3 +138,13 @@ function processComponent(node: JQuery) {
 	}
 	component.render(node);
 }
+
+//----- Startup code -----
+
+$['event'].special.destroyed = {
+    remove: function(o) {
+		if (o && o.handler) {
+			o.handler();
+		}
+    }
+};
