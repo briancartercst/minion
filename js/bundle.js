@@ -89,6 +89,7 @@
 	//-------------------- Publics --------------------
 	function showView(page, target, extra) {
 	    console.log("Showing view '" + page + "'");
+	    target = target || $("[mn-view=" + page + "]");
 	    return showViewRecursive(page, target, extra);
 	}
 	function registerController(name, controller) {
@@ -114,7 +115,8 @@
 	//-------------------- Privates --------------------
 	function showViewRecursive(viewName, target, extra) {
 	    console.log("  rendering template '" + viewName + "'");
-	    return preRenderController(viewName, extra)
+	    var ctrl = ctrlRegistry[viewName];
+	    return preRenderController(ctrl, extra)
 	        .then(function () {
 	        return getPage(viewName);
 	    })
@@ -125,8 +127,8 @@
 	        .then(function (viewContent) {
 	        target.empty().append(viewContent);
 	        processComponents(viewContent);
-	        registerEventHandlers(viewName, viewContent, ['click', 'submit']);
-	        postRenderController(viewName, viewContent);
+	        registerEventHandlers(ctrl, viewContent, ['click', 'submit']);
+	        postRenderController(ctrl, viewContent);
 	        return viewContent;
 	    });
 	}
@@ -154,8 +156,7 @@
 	        }
 	    });
 	}
-	function registerEventHandlers(viewName, viewContent, events) {
-	    var ctrl = ctrlRegistry[viewName];
+	function registerEventHandlers(ctrl, viewContent, events) {
 	    if (!ctrl)
 	        return;
 	    for (var _i = 0; _i < events.length; _i++) {
@@ -164,27 +165,22 @@
 	        viewContent.find("[" + mnAttr + "]").each(function (i, elem) {
 	            var evtHandler = $(elem).attr(mnAttr);
 	            if (!ctrl[evtHandler])
-	                console.warn("Event handler '" + evtHandler + "' not found in controller for view '" + viewName + "'");
+	                console.warn("Event handler '" + evtHandler + "' not found in controller");
 	            else
 	                $(elem).on(eventId, ctrl[evtHandler]);
 	        });
 	    }
 	}
 	//---------- Controllers ----------
-	function preRenderController(ctrlName, extra) {
-	    var ctrl = ctrlRegistry[ctrlName];
-	    if (ctrl) {
-	        ctrl.$name = ctrlName;
-	        if (ctrl.preRender) {
-	            var result = ctrl.preRender(extra);
-	            if (result instanceof Promise)
-	                return result;
-	        }
+	function preRenderController(ctrl, extra) {
+	    if (ctrl && ctrl.preRender) {
+	        var result = ctrl.preRender(extra);
+	        if (result instanceof Promise)
+	            return result;
 	    }
 	    return Promise.resolve();
 	}
-	function postRenderController(ctrlName, viewContent) {
-	    var ctrl = ctrlRegistry[ctrlName];
+	function postRenderController(ctrl, viewContent) {
 	    if (!ctrl)
 	        return;
 	    if (ctrl.postRender)
@@ -340,7 +336,7 @@
 	        minion_1.default.model.userFilter = minion_1.default.form2obj($(this));
 	        users_1.default.getUsers(minion_1.default.model.userFilter).then(function (users) {
 	            minion_1.default.model.users = users;
-	            minion_1.default.showView('user-table', $('[mn-view=user-table]'));
+	            minion_1.default.showView('user-table');
 	        });
 	        return false;
 	    }

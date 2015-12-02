@@ -12,6 +12,8 @@ Testing a simple SPA, using:
 - Minification with proper source maps (webpack plugin is buggy)
 
 ### Runtime
+- Define controller interface (empty?)
+- Use hierarchical, controller-owned model, angular-style
 - Refactor 'search' views & controller to flat search names
 - Test refactor folders by functionality instead of component type 
 - Show waiting animation & block current UI

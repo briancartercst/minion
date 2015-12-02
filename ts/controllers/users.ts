@@ -11,7 +11,7 @@ minion.registerController('users', {
 		minion.model.userFilter = minion.form2obj($(this));
 		userSvc.getUsers(minion.model.userFilter).then(users => {
 			minion.model.users = users;
-			minion.showView('user-table', $('[mn-view=user-table]'));
+			minion.showView('user-table');
 		});
 		return false;
 	}
