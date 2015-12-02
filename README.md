@@ -13,7 +13,6 @@ Testing a simple SPA, using:
 
 ### Runtime
 - Define controller interface (empty?)
-- Use hierarchical, controller-owned model, angular-style
 - Refactor 'search' views & controller to flat search names
 - Test refactor folders by functionality instead of component type 
 - Show waiting animation & block current UI
@@ -29,6 +28,7 @@ Testing a simple SPA, using:
 - Find a better name for "templater"
 - Implement full set of CRUD operations for user table
 - Improve controller lifecycle attached to view lifecycle
+- Use hierarchical, controller-owned model, angular-style
 
 ##Functionality
 

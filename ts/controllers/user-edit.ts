@@ -3,11 +3,10 @@ import userSvc from '../services/users';
 
 minion.registerController('user-edit', {
 	preRender(id: string) {
-		this.user = this.$parent.users[id];
+		this.user = minion.rootModel.users[id];
 	},
-	save() {
-		this.user = minion.form2obj($(this));
-		userSvc.saveUser(this.user).then(() => {
+	save(elem) {
+		userSvc.saveUser(<any>minion.form2obj(elem)).then(() => {
 			window.location.href = '#users';
 		});
 		return false;

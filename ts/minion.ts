@@ -1,6 +1,9 @@
 //-------------------- Exports --------------------
 
+const rootModel = <any>{};
+
 export default {
+	rootModel,			// Model
 	showView,			// View
 	registerController,	// Controllers
 	registerComponent,	// Components
@@ -19,7 +22,7 @@ const cmpRegistry = {};
 function showView(page: string, target?: JQuery, extra?: string): Promise<JQuery> {
 	console.log(`Showing view '${page}'`);
 	target = target || $(`[mn-view=${page}]`);
-	return showViewRecursive(page, target, {}, extra);
+	return showViewRecursive(page, target, rootModel, extra);
 }
 
 function registerController(name: string, controller) {
@@ -49,14 +52,15 @@ function form2obj(form: JQuery): Object {
 
 function showViewRecursive(viewName: string, target: JQuery, parent, extra?: string): Promise<JQuery> {
 	console.log(`  rendering template '${viewName}'`);
-	const ctrl = ctrlRegistry[viewName];
-	if (ctrl) ctrl.$parent = parent;
+	const ctrl = ctrlRegistry[viewName] || {};
+	ctrl.$parent = parent;
 	return preRenderController(ctrl, extra)
 	.then(() => {
 		return getPage(viewName);
 	})
 	.then(pageData => {
-		const viewContent = $('<div>' + Mustache.render(pageData, ctrl) + '</div>');
+		const renderCtx = getRenderContext(ctrl);
+		const viewContent = $('<div>' + Mustache.render(pageData, renderCtx) + '</div>');
 		return processSubviews(viewContent, ctrl, extra);
 	})
 	.then(viewContent => {
@@ -95,14 +99,15 @@ function getPage(page: string): Promise<string> {
 }
 
 function registerEventHandlers(ctrl, viewContent: JQuery, events: string[]) {
-	if (!ctrl) return; 
 	for (var eventId of events) {
 		var mnAttr = "mn-on" + eventId;
 		viewContent.find("[" + mnAttr + "]").each((i, elem) => {
 			const evtHandler = $(elem).attr(mnAttr);
 			if (!ctrl[evtHandler]) console.warn(
 				`Event handler '${evtHandler}' not found in controller`);
-			else $(elem).on(eventId, ctrl[evtHandler]);
+			else $(elem).on(eventId, function() {
+				return ctrl[evtHandler]($(this));
+			});
 		});
 	}
 }
@@ -110,7 +115,7 @@ function registerEventHandlers(ctrl, viewContent: JQuery, events: string[]) {
 //---------- Controllers ----------
 
 function preRenderController(ctrl, extra: string): Promise<any> {
-	if (ctrl && ctrl.preRender) {
+	if (ctrl.preRender) {
 		const result = ctrl.preRender(extra);
 		if (result instanceof Promise) return result;
 	}
@@ -118,16 +123,19 @@ function preRenderController(ctrl, extra: string): Promise<any> {
 }
 
 function postRenderController(ctrl, viewContent: JQuery): void {
-	if (!ctrl) return;
 	if (ctrl.postRender) ctrl.postRender(viewContent);
-	registerCloseHandler(viewContent, ctrl);
-}
-
-function registerCloseHandler(viewContent: JQuery, ctrl) {
-	if (!ctrl.done) return;
-	viewContent.bind('destroyed', () => {
+	if (ctrl.done) viewContent.bind('destroyed', () => {
 		ctrl.done();
 	});
+}
+
+function getRenderContext(ctrl) {
+	const ctrls = [];
+	while (ctrl) {
+		ctrls.push(ctrl);
+		ctrl = ctrl.$parent;	
+	}
+	return $.extend.apply(null, [{}].concat(ctrls.reverse()));
 }
 
 //---------- Components ----------

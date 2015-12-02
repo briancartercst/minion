@@ -73,10 +73,10 @@
 /***/ function(module, exports) {
 
 	//-------------------- Exports --------------------
-	var model = {};
+	var rootModel = {};
 	Object.defineProperty(exports, "__esModule", { value: true });
 	exports.default = {
-	    model: model,
+	    rootModel: rootModel,
 	    showView: showView,
 	    registerController: registerController,
 	    registerComponent: registerComponent,
@@ -90,7 +90,7 @@
 	function showView(page, target, extra) {
 	    console.log("Showing view '" + page + "'");
 	    target = target || $("[mn-view=" + page + "]");
-	    return showViewRecursive(page, target, model, extra);
+	    return showViewRecursive(page, target, rootModel, extra);
 	}
 	function registerController(name, controller) {
 	    ctrlRegistry[name] = controller;
@@ -115,15 +115,15 @@
 	//-------------------- Privates --------------------
 	function showViewRecursive(viewName, target, parent, extra) {
 	    console.log("  rendering template '" + viewName + "'");
-	    var ctrl = ctrlRegistry[viewName];
-	    if (ctrl)
-	        ctrl.$parent = parent;
+	    var ctrl = ctrlRegistry[viewName] || {};
+	    ctrl.$parent = parent;
 	    return preRenderController(ctrl, extra)
 	        .then(function () {
 	        return getPage(viewName);
 	    })
 	        .then(function (pageData) {
-	        var viewContent = $('<div>' + Mustache.render(pageData, model) + '</div>');
+	        var renderCtx = getRenderContext(ctrl);
+	        var viewContent = $('<div>' + Mustache.render(pageData, renderCtx) + '</div>');
 	        return processSubviews(viewContent, ctrl, extra);
 	    })
 	        .then(function (viewContent) {
@@ -159,8 +159,6 @@
 	    });
 	}
 	function registerEventHandlers(ctrl, viewContent, events) {
-	    if (!ctrl)
-	        return;
 	    for (var _i = 0; _i < events.length; _i++) {
 	        var eventId = events[_i];
 	        var mnAttr = "mn-on" + eventId;
@@ -169,13 +167,15 @@
 	            if (!ctrl[evtHandler])
 	                console.warn("Event handler '" + evtHandler + "' not found in controller");
 	            else
-	                $(elem).on(eventId, ctrl[evtHandler]);
+	                $(elem).on(eventId, function () {
+	                    return ctrl[evtHandler]($(this));
+	                });
 	        });
 	    }
 	}
 	//---------- Controllers ----------
 	function preRenderController(ctrl, extra) {
-	    if (ctrl && ctrl.preRender) {
+	    if (ctrl.preRender) {
 	        var result = ctrl.preRender(extra);
 	        if (result instanceof Promise)
 	            return result;
@@ -183,18 +183,20 @@
 	    return Promise.resolve();
 	}
 	function postRenderController(ctrl, viewContent) {
-	    if (!ctrl)
-	        return;
 	    if (ctrl.postRender)
 	        ctrl.postRender(viewContent);
-	    registerCloseHandler(viewContent, ctrl);
+	    if (ctrl.done)
+	        viewContent.bind('destroyed', function () {
+	            ctrl.done();
+	        });
 	}
-	function registerCloseHandler(viewContent, ctrl) {
-	    if (!ctrl.done)
-	        return;
-	    viewContent.bind('destroyed', function () {
-	        ctrl.done();
-	    });
+	function getRenderContext(ctrl) {
+	    var ctrls = [];
+	    while (ctrl) {
+	        ctrls.push(ctrl);
+	        ctrl = ctrl.$parent;
+	    }
+	    return $.extend.apply(null, [{}].concat(ctrls.reverse()));
 	}
 	//---------- Components ----------
 	function processComponents(viewContent) {
@@ -223,7 +225,6 @@
 
 	var minion_1 = __webpack_require__(2);
 	minion_1.default.registerController('search', {
-	    data: {},
 	    postRender: function () {
 	        console.log('ctrl.search postRender');
 	        $('#price-range').slider({});
@@ -250,11 +251,10 @@
 	var users_1 = __webpack_require__(5);
 	minion_1.default.registerController('user-edit', {
 	    preRender: function (id) {
-	        minion_1.default.model.user = minion_1.default.model.users[id];
+	        this.user = minion_1.default.rootModel.users[id];
 	    },
-	    save: function () {
-	        minion_1.default.model.user = minion_1.default.form2obj($(this));
-	        users_1.default.saveUser(minion_1.default.model.user).then(function () {
+	    save: function (elem) {
+	        users_1.default.saveUser(minion_1.default.form2obj(elem)).then(function () {
 	            window.location.href = '#users';
 	        });
 	        return false;
@@ -330,14 +330,14 @@
 	var users_1 = __webpack_require__(5);
 	minion_1.default.registerController('users', {
 	    preRender: function () {
-	        return users_1.default.getUsers(minion_1.default.model.userFilter).then(function (users) {
-	            minion_1.default.model.users = users;
+	        return users_1.default.getUsers(this.userFilter).then(function (users) {
+	            minion_1.default.rootModel.users = users;
 	        });
 	    },
-	    submit: function () {
-	        minion_1.default.model.userFilter = minion_1.default.form2obj($(this));
-	        users_1.default.getUsers(minion_1.default.model.userFilter).then(function (users) {
-	            minion_1.default.model.users = users;
+	    searchUsers: function (elem) {
+	        this.userFilter = minion_1.default.form2obj(elem);
+	        users_1.default.getUsers(this.userFilter).then(function (users) {
+	            minion_1.default.rootModel.users = users;
 	            minion_1.default.showView('user-table');
 	        });
 	        return false;

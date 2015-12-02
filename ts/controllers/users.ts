@@ -4,13 +4,13 @@ import userSvc from '../services/users';
 minion.registerController('users', {
 	preRender() {
 		return userSvc.getUsers(this.userFilter).then(users => {
-			this.$parent.users = users;
+			minion.rootModel.users = users;
 		});
 	},
-	submit() {
-		this.userFilter = minion.form2obj($(this));
+	searchUsers(elem) {
+		this.userFilter = minion.form2obj(elem);
 		userSvc.getUsers(this.userFilter).then(users => {
-			this.$parent.users = users;
+			minion.rootModel.users = users;
 			minion.showView('user-table');
 		});
 		return false;
