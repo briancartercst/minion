@@ -16,10 +16,14 @@ interface User {
 }
 
 function getUsers(filter): Promise<User[]> {
-	const data: User[] = [];
-	for (let i = 0; i < 10; i++)
-		data.push(createUser(i));
-	return Promise.resolve(data);
+	return new Promise(resolve => {
+		setTimeout(()=> {
+			const data: User[] = [];
+			for (let i = 0; i < 10; i++)
+				data.push(createUser(i));
+			resolve(data);
+		}, 1000);
+	});
 }
 
 function saveUser(u: User): Promise<void> {

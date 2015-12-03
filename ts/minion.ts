@@ -113,14 +113,23 @@ function registerEventHandlers(ctrl, viewContent: JQuery, events: string[]) {
 	for (var eventId of events) {
 		var mnAttr = "mn-on" + eventId;
 		viewContent.find("[" + mnAttr + "]").each((i, elem) => {
-			const evtHandler = $(elem).attr(mnAttr);
-			if (!ctrl[evtHandler]) console.warn(
-				`Event handler '${evtHandler}' not found in controller`);
+			const evtHandlerName = $(elem).attr(mnAttr);
+			const evtHandler = findEventHandler(ctrl, evtHandlerName);
+			if (!evtHandler) console.warn(
+				`Event handler '${evtHandlerName}' not found in controller hierarchy`);
 			else $(elem).on(eventId, function() {
-				return ctrl[evtHandler]($(this));
+				return evtHandler($(this));
 			});
 		});
 	}
+}
+
+function findEventHandler(ctrl, evtHandlerName: string) {
+	while (ctrl) {
+		if (ctrl[evtHandlerName]) return ctrl[evtHandlerName];
+		ctrl = ctrl.$parent;
+	}
+	return null;
 }
 
 function showLoading() {

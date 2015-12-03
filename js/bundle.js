@@ -65,6 +65,16 @@
 	        'user/:id': function (id) { return minion_1.default.showView('user-edit', view, id); },
 	        'details/:id': function (id) { return minion_1.default.showView('details', view); }
 	    });
+	    minion_1.default.config.showLoading = function () {
+	        $('#loading-cover').show();
+	        $('#loading-popup').show();
+	        //$('#main').addClass('blurred');
+	    };
+	    minion_1.default.config.hideLoading = function () {
+	        $('#loading-cover').hide();
+	        $('#loading-popup').hide();
+	        //$('#main').removeClass('blurred');
+	    };
 	});
 
 
@@ -174,15 +184,24 @@
 	        var eventId = events[_i];
 	        var mnAttr = "mn-on" + eventId;
 	        viewContent.find("[" + mnAttr + "]").each(function (i, elem) {
-	            var evtHandler = $(elem).attr(mnAttr);
-	            if (!ctrl[evtHandler])
-	                console.warn("Event handler '" + evtHandler + "' not found in controller");
+	            var evtHandlerName = $(elem).attr(mnAttr);
+	            var evtHandler = findEventHandler(ctrl, evtHandlerName);
+	            if (!evtHandler)
+	                console.warn("Event handler '" + evtHandlerName + "' not found in controller hierarchy");
 	            else
 	                $(elem).on(eventId, function () {
-	                    return ctrl[evtHandler]($(this));
+	                    return evtHandler($(this));
 	                });
 	        });
 	    }
+	}
+	function findEventHandler(ctrl, evtHandlerName) {
+	    while (ctrl) {
+	        if (ctrl[evtHandlerName])
+	            return ctrl[evtHandlerName];
+	        ctrl = ctrl.$parent;
+	    }
+	    return null;
 	}
 	function showLoading() {
 	    console.log('Loading...');
@@ -290,10 +309,14 @@
 	    deleteUser: deleteUser
 	};
 	function getUsers(filter) {
-	    var data = [];
-	    for (var i = 0; i < 10; i++)
-	        data.push(createUser(i));
-	    return Promise.resolve(data);
+	    return new Promise(function (resolve) {
+	        setTimeout(function () {
+	            var data = [];
+	            for (var i = 0; i < 10; i++)
+	                data.push(createUser(i));
+	            resolve(data);
+	        }, 1000);
+	    });
 	}
 	function saveUser(u) {
 	    return Promise.resolve(undefined);
