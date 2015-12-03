@@ -1,13 +1,19 @@
 //-------------------- Exports --------------------
 
 const rootModel = <any>{};
+const config = {
+	templatePath: 'templates/',
+	showLoading,
+	hideLoading	
+};
 
 export default {
 	rootModel,		// Model
 	showView,		// View
 	controller,		// Controllers
 	component,		// Components
-	form2obj		// Helper
+	form2obj,		// Helper
+	config			// Configuration
 }
 
 
@@ -21,8 +27,13 @@ const cmpRegistry = {};
 
 function showView(page: string, target?: JQuery, extra?: string): Promise<JQuery> {
 	console.log(`Showing view '${page}'`);
+	config.showLoading();
 	target = target || $(`[mn-view=${page}]`);
-	return showViewRecursive(page, target, rootModel, extra);
+	return showViewRecursive(page, target, rootModel, extra)
+	.then(x => {
+		config.hideLoading();
+		return x;
+	});
 }
 
 function controller(name: string, controller) {
@@ -89,7 +100,7 @@ function getPage(page: string): Promise<string> {
 			resolve(pageCache[page]);
 		}
 		else {
-			$.get('templates/' + page + '.html').done((pageData) => {
+			$.get(config.templatePath + page + '.html').done((pageData) => {
 				pageCache[page] = pageData;
 				Mustache.parse(pageData);
 				resolve(pageData);
@@ -110,6 +121,14 @@ function registerEventHandlers(ctrl, viewContent: JQuery, events: string[]) {
 			});
 		});
 	}
+}
+
+function showLoading() {
+	console.log('Loading...');
+}
+
+function hideLoading() {
+	console.log('...Done');
 }
 
 //---------- Controllers ----------

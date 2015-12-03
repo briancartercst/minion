@@ -74,13 +74,19 @@
 
 	//-------------------- Exports --------------------
 	var rootModel = {};
+	var config = {
+	    templatePath: 'templates/',
+	    showLoading: showLoading,
+	    hideLoading: hideLoading
+	};
 	Object.defineProperty(exports, "__esModule", { value: true });
 	exports.default = {
 	    rootModel: rootModel,
 	    showView: showView,
 	    controller: controller,
 	    component: component,
-	    form2obj: form2obj // Helper
+	    form2obj: form2obj,
+	    config: config // Configuration
 	};
 	//-------------------- Module variables --------------------
 	var pageCache = {};
@@ -89,8 +95,13 @@
 	//-------------------- Publics --------------------
 	function showView(page, target, extra) {
 	    console.log("Showing view '" + page + "'");
+	    config.showLoading();
 	    target = target || $("[mn-view=" + page + "]");
-	    return showViewRecursive(page, target, rootModel, extra);
+	    return showViewRecursive(page, target, rootModel, extra)
+	        .then(function (x) {
+	        config.hideLoading();
+	        return x;
+	    });
 	}
 	function controller(name, controller) {
 	    ctrlRegistry[name] = controller;
@@ -150,7 +161,7 @@
 	            resolve(pageCache[page]);
 	        }
 	        else {
-	            $.get('templates/' + page + '.html').done(function (pageData) {
+	            $.get(config.templatePath + page + '.html').done(function (pageData) {
 	                pageCache[page] = pageData;
 	                Mustache.parse(pageData);
 	                resolve(pageData);
@@ -172,6 +183,12 @@
 	                });
 	        });
 	    }
+	}
+	function showLoading() {
+	    console.log('Loading...');
+	}
+	function hideLoading() {
+	    console.log('...Done');
 	}
 	//---------- Controllers ----------
 	function preRenderController(ctrl, extra) {

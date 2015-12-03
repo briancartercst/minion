@@ -12,11 +12,12 @@ It has some similarities with Angular:
 - Routing (provided by Routie)
 - Templating (provided by Mustache)
 
-##Supported tags
+##Supported tag attributes
 
 ###mn-view
-Loads and renders referneced view. If a controller with the same id is
-available, will bind the controller and invoke its optional lifecycle methods:
+Loads and renders a html file as a child of the tag containing this attribute.
+If a controller with the same id is available, will bind the controller and
+invoke its optional lifecycle methods:
 
 - **preRender**: Invoked before the view is rendered. Usually this is
 	where the controller will retrieve some remote data to be displayed by
@@ -92,4 +93,6 @@ into a full label / input tag pair.
 - Implement full set of CRUD operations for user table
 - Improve controller lifecycle attached to view lifecycle
 - Use hierarchical, controller-owned model, angular-style
-
+- Config object to specify parameters such as:
+	- Base path for loading templates
+	- showLoading / hideLoading functions
