@@ -43,8 +43,29 @@ bind it to the Mustache template context.
 Registers a listener so that *methodName* is invoked in the current controller
 when the event takes place.
 
+####Examples:
+```HTML
+	<form mn-onsubmit="save">
+```
+Will call the *save* method of the current controller when the form is submitted.
+Notice that the method should return false to avoid the browser from posting the
+form to the server.
+
+```HTML
+	<button mn-onclick="cancel">
+```
+Will call the *cancel* method of the current controller when the button is clicked. 
+
 ###mn-component="componentName"
-Locates the component registered by *componentName* and invokes its *render* method.  
+Locates the component registered by *componentName* and invokes its *render* method.
+  
+####Example:
+```HTML
+	<div mn-component="my-input" name="email" label="Your e-mail"></div>
+```
+Locates the component registered as *my-input* and invokes its *render* method. The
+component has access to the *name* and *label* attributes, so it can expand the div
+into a full label / input tag pair. 
 
 ##ToDo:
 ### Development
