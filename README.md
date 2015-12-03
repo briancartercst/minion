@@ -82,7 +82,6 @@ into a full label / input tag pair.
 - Define controller interface (empty?)
 - Refactor 'search' views & controller to flat search names
 - Test refactor folders by functionality instead of component type 
-- Show waiting animation & block current UI
 - NLS/multilanguage
 
 ##Done:
@@ -96,3 +95,4 @@ into a full label / input tag pair.
 - Config object to specify parameters such as:
 	- Base path for loading templates
 	- showLoading / hideLoading functions
+- Show waiting popup & block current UI
