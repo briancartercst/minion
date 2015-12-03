@@ -27,12 +27,9 @@ It has some similarities with Angular:
 
 ##Done:
 - Infinitely nested subviews
-- JS minifier with support for source maps
 - npm scripts with proper build / watch / serve
 - Templating engine: Mustache
-- Execute Mustache from templater
 - Simple Web components
-- Find a better name for "templater"
 - Implement full set of CRUD operations for user table
 - Improve controller lifecycle attached to view lifecycle
 - Use hierarchical, controller-owned model, angular-style
