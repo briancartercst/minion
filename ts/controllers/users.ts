@@ -2,24 +2,19 @@ import minion from '../minion';
 import userSvc from '../services/users';
 
 minion.controller('users', {
-	preRender() {
-		return userSvc.getUsers(this.userFilter).then(users => {
-			minion.rootModel.users = users;
-		});
-	},
 	searchUsers(elem) {
 		this.userFilter = minion.form2obj(elem);
-		minion.showLoading();
-		userSvc.getUsers(this.userFilter).then(users => {
-			minion.rootModel.users = users;
-			return minion.showView('user-table');
-		})
-		.then(() => minion.hideLoading());
+		minion.showView('user-table');
 		return false;
 	}
 });
 
 minion.controller('user-table', {
+	preRender() {
+		return userSvc.getUsers(this.userFilter).then(users => {
+			minion.rootModel.users = users;
+		});
+	},
 	postRender(viewContent: JQuery) {
 		handleDeleteButton(viewContent);
 	},

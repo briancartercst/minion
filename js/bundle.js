@@ -374,23 +374,18 @@
 	var minion_1 = __webpack_require__(2);
 	var users_1 = __webpack_require__(5);
 	minion_1.default.controller('users', {
+	    searchUsers: function (elem) {
+	        this.userFilter = minion_1.default.form2obj(elem);
+	        minion_1.default.showView('user-table');
+	        return false;
+	    }
+	});
+	minion_1.default.controller('user-table', {
 	    preRender: function () {
 	        return users_1.default.getUsers(this.userFilter).then(function (users) {
 	            minion_1.default.rootModel.users = users;
 	        });
 	    },
-	    searchUsers: function (elem) {
-	        this.userFilter = minion_1.default.form2obj(elem);
-	        minion_1.default.showLoading();
-	        users_1.default.getUsers(this.userFilter).then(function (users) {
-	            minion_1.default.rootModel.users = users;
-	            return minion_1.default.showView('user-table');
-	        })
-	            .then(function () { return minion_1.default.hideLoading(); });
-	        return false;
-	    }
-	});
-	minion_1.default.controller('user-table', {
 	    postRender: function (viewContent) {
 	        handleDeleteButton(viewContent);
 	    },
