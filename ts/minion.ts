@@ -1,21 +1,19 @@
 //-------------------- Exports --------------------
 
-const rootModel = <any>{};
-const config = {
-	templatePath: 'templates/',
+const minion = {
+	rootModel: <any>{},	// Model
+	showView,			// View
+	controller,			// Controllers
+	component,			// Components
+	form2obj,			// Helper
+	config: {			// Configuration
+		templatePath: 'templates/'
+	},
 	showLoading,
-	hideLoading	
+	hideLoading
 };
 
-export default {
-	rootModel,		// Model
-	showView,		// View
-	controller,		// Controllers
-	component,		// Components
-	form2obj,		// Helper
-	config			// Configuration
-}
-
+export default minion;
 
 //-------------------- Module variables --------------------
 
@@ -27,11 +25,11 @@ const cmpRegistry = {};
 
 function showView(page: string, target?: JQuery, extra?: string): Promise<JQuery> {
 	console.log(`Showing view '${page}'`);
-	config.showLoading();
+	minion.showLoading();
 	target = target || $(`[mn-view=${page}]`);
-	return showViewRecursive(page, target, rootModel, extra)
+	return showViewRecursive(page, target, minion.rootModel, extra)
 	.then(x => {
-		config.hideLoading();
+		minion.hideLoading();
 		return x;
 	});
 }
@@ -100,7 +98,7 @@ function getPage(page: string): Promise<string> {
 			resolve(pageCache[page]);
 		}
 		else {
-			$.get(config.templatePath + page + '.html').done((pageData) => {
+			$.get(minion.config.templatePath + page + '.html').done((pageData) => {
 				pageCache[page] = pageData;
 				Mustache.parse(pageData);
 				resolve(pageData);

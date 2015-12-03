@@ -67,7 +67,7 @@
 	    });
 	    var isLoading = false;
 	    var LOAD_POPUP_DELAY = 100;
-	    minion_1.default.config.showLoading = function () {
+	    minion_1.default.showLoading = function () {
 	        isLoading = true;
 	        setTimeout(function () {
 	            if (!isLoading)
@@ -76,7 +76,7 @@
 	            $('#loading-popup').show();
 	        }, LOAD_POPUP_DELAY);
 	    };
-	    minion_1.default.config.hideLoading = function () {
+	    minion_1.default.hideLoading = function () {
 	        isLoading = false;
 	        $('#loading-cover').hide();
 	        $('#loading-popup').hide();
@@ -89,21 +89,20 @@
 /***/ function(module, exports) {
 
 	//-------------------- Exports --------------------
-	var rootModel = {};
-	var config = {
-	    templatePath: 'templates/',
-	    showLoading: showLoading,
-	    hideLoading: hideLoading
-	};
-	Object.defineProperty(exports, "__esModule", { value: true });
-	exports.default = {
-	    rootModel: rootModel,
+	var minion = {
+	    rootModel: {},
 	    showView: showView,
 	    controller: controller,
 	    component: component,
 	    form2obj: form2obj,
-	    config: config // Configuration
+	    config: {
+	        templatePath: 'templates/'
+	    },
+	    showLoading: showLoading,
+	    hideLoading: hideLoading
 	};
+	Object.defineProperty(exports, "__esModule", { value: true });
+	exports.default = minion;
 	//-------------------- Module variables --------------------
 	var pageCache = {};
 	var ctrlRegistry = {};
@@ -111,11 +110,11 @@
 	//-------------------- Publics --------------------
 	function showView(page, target, extra) {
 	    console.log("Showing view '" + page + "'");
-	    config.showLoading();
+	    minion.showLoading();
 	    target = target || $("[mn-view=" + page + "]");
-	    return showViewRecursive(page, target, rootModel, extra)
+	    return showViewRecursive(page, target, minion.rootModel, extra)
 	        .then(function (x) {
-	        config.hideLoading();
+	        minion.hideLoading();
 	        return x;
 	    });
 	}
@@ -177,7 +176,7 @@
 	            resolve(pageCache[page]);
 	        }
 	        else {
-	            $.get(config.templatePath + page + '.html').done(function (pageData) {
+	            $.get(minion.config.templatePath + page + '.html').done(function (pageData) {
 	                pageCache[page] = pageData;
 	                Mustache.parse(pageData);
 	                resolve(pageData);
@@ -382,12 +381,12 @@
 	    },
 	    searchUsers: function (elem) {
 	        this.userFilter = minion_1.default.form2obj(elem);
-	        minion_1.default.config.showLoading();
+	        minion_1.default.showLoading();
 	        users_1.default.getUsers(this.userFilter).then(function (users) {
 	            minion_1.default.rootModel.users = users;
 	            return minion_1.default.showView('user-table');
 	        })
-	            .then(function () { return minion_1.default.config.hideLoading(); });
+	            .then(function () { return minion_1.default.hideLoading(); });
 	        return false;
 	    }
 	});

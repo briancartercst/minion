@@ -14,7 +14,7 @@ $(() => {
 	var isLoading = false;
 	const LOAD_POPUP_DELAY = 100;
 
-	minion.config.showLoading = function() {
+	minion.showLoading = function() {
 		isLoading = true;
 		setTimeout(function() {
 			if (!isLoading) return;
@@ -23,7 +23,7 @@ $(() => {
 		}, LOAD_POPUP_DELAY);
 	};
 
-	minion.config.hideLoading = function() {
+	minion.hideLoading = function() {
 		isLoading = false;
 		$('#loading-cover').hide();
 		$('#loading-popup').hide();
