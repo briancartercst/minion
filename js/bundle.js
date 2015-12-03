@@ -65,15 +65,21 @@
 	        'user/:id': function (id) { return minion_1.default.showView('user-edit', view, id); },
 	        'details/:id': function (id) { return minion_1.default.showView('details', view); }
 	    });
+	    var isLoading = false;
+	    var LOAD_POPUP_DELAY = 100;
 	    minion_1.default.config.showLoading = function () {
-	        $('#loading-cover').show();
-	        $('#loading-popup').show();
-	        //$('#main').addClass('blurred');
+	        isLoading = true;
+	        setTimeout(function () {
+	            if (!isLoading)
+	                return;
+	            $('#loading-cover').show();
+	            $('#loading-popup').show();
+	        }, LOAD_POPUP_DELAY);
 	    };
 	    minion_1.default.config.hideLoading = function () {
+	        isLoading = false;
 	        $('#loading-cover').hide();
 	        $('#loading-popup').hide();
-	        //$('#main').removeClass('blurred');
 	    };
 	});
 
@@ -376,10 +382,12 @@
 	    },
 	    searchUsers: function (elem) {
 	        this.userFilter = minion_1.default.form2obj(elem);
+	        minion_1.default.config.showLoading();
 	        users_1.default.getUsers(this.userFilter).then(function (users) {
 	            minion_1.default.rootModel.users = users;
-	            minion_1.default.showView('user-table');
-	        });
+	            return minion_1.default.showView('user-table');
+	        })
+	            .then(function () { return minion_1.default.config.hideLoading(); });
 	        return false;
 	    }
 	});

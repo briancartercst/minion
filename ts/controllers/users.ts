@@ -9,10 +9,12 @@ minion.controller('users', {
 	},
 	searchUsers(elem) {
 		this.userFilter = minion.form2obj(elem);
+		minion.config.showLoading();
 		userSvc.getUsers(this.userFilter).then(users => {
 			minion.rootModel.users = users;
-			minion.showView('user-table');
-		});
+			return minion.showView('user-table');
+		})
+		.then(() => minion.config.hideLoading());
 		return false;
 	}
 });
