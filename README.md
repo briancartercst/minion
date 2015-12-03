@@ -1,6 +1,6 @@
 #Minion
 
-<img src="img/minion.jpg">
+<img src="img/minion.jpg" width="50%">
 
 Minion is a tiny MVC framework. It can be learned very fast and is good enough
 for small to medium single-page applications.
