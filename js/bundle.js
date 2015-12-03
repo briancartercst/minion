@@ -375,14 +375,14 @@
 	var users_1 = __webpack_require__(5);
 	minion_1.default.controller('users', {
 	    searchUsers: function (elem) {
-	        this.userFilter = minion_1.default.form2obj(elem);
+	        minion_1.default.rootModel.userFilter = minion_1.default.form2obj(elem);
 	        minion_1.default.showView('user-table');
 	        return false;
 	    }
 	});
 	minion_1.default.controller('user-table', {
 	    preRender: function () {
-	        return users_1.default.getUsers(this.userFilter).then(function (users) {
+	        return users_1.default.getUsers(minion_1.default.rootModel.userFilter).then(function (users) {
 	            minion_1.default.rootModel.users = users;
 	        });
 	    },
