@@ -132,7 +132,7 @@
 	    for (var _i = 0, _a = form.serializeArray(); _i < _a.length; _i++) {
 	        var input = _a[_i];
 	        if (input.value)
-	            result[input.name] = input.value;
+	            result[input.name] = Mustache.escape(input.value);
 	        var inputType = form.find(":input[name=" + input.name + "]").attr('type');
 	        if (inputType == 'number')
 	            result[input.name] = parseFloat(input.value);
@@ -245,7 +245,15 @@
 	        console.warn("Component " + compName + " not found");
 	        return;
 	    }
-	    component.render(node);
+	    component.render(node, attrs2obj(node[0].attributes));
+	}
+	function attrs2obj(attrs) {
+	    var result = {};
+	    for (var i = 0; i < attrs.length; i++) {
+	        var attr = attrs[i];
+	        result[attr.name] = Mustache.escape(attr.value);
+	    }
+	    return result;
 	}
 	//--------------- Startup  ---------------
 	$['event'].special.destroyed = {
@@ -403,33 +411,24 @@
 
 	var minion_1 = __webpack_require__(2);
 	minion_1.default.component('input-wide', {
-	    render: function (node) {
-	        var attrs = getInputAttrs(node);
+	    render: function (node, attrs) {
+	        attrs = getInputAttrs(attrs);
 	        var template = "\n\t\t\t<div class=\"form-group\">\n\t\t\t\t<label for=\"" + attrs.name + "\" class=\"col-sm-3 control-label\">" + attrs.label + "</label>\n\t\t\t\t<div class=\"col-sm-9\">\n\t\t\t\t\t<input class=\"form-control\" id=\"" + attrs.name + "\" name=\"" + attrs.name + "\"\n\t\t\t\t\t\tvalue=\"" + attrs.value + "\" type=\"" + attrs.type + "\">\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t";
 	        node.html(template);
 	    }
 	});
 	minion_1.default.component('input-narrow', {
-	    render: function (node) {
-	        var attrs = getInputAttrs(node);
+	    render: function (node, attrs) {
+	        attrs = getInputAttrs(attrs);
 	        var template = "\n\t\t\t<div class=\"form-group\">\n\t\t\t\t<label for=\"" + attrs.name + "\">" + attrs.label + "</label>\n\t\t\t\t<input class=\"form-control\" id=\"" + attrs.name + "\" name=\"" + attrs.name + "\"\n\t\t\t\t\tvalue=\"" + attrs.value + "\" type=\"" + attrs.type + "\">\n\t\t\t</div>\n\t\t";
 	        node.html(template);
 	    }
 	});
 	///--------------------------------------------------
-	function getInputAttrs(node) {
-	    var attrs = getAttrs(node, 'name label value type'.split(' '));
+	function getInputAttrs(attrs) {
 	    attrs.type = attrs.type || 'text';
 	    attrs.value = attrs.value || '';
 	    return attrs;
-	}
-	function getAttrs(node, attrs) {
-	    var result = {};
-	    for (var _i = 0; _i < attrs.length; _i++) {
-	        var attr = attrs[_i];
-	        result[attr] = node.attr(attr);
-	    }
-	    return result;
 	}
 
 

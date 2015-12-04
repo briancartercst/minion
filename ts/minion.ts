@@ -46,7 +46,7 @@ function form2obj(form: JQuery): Object {
 	var result = {};
 	for (const input of form.serializeArray()) {
 		if (input.value)
-			result[input.name] = input.value;
+			result[input.name] = Mustache.escape(input.value);
 		const inputType = form.find(`:input[name=${input.name}]`).attr('type');
 		if (inputType == 'number')
 			result[input.name] = parseFloat(input.value);
@@ -170,7 +170,16 @@ function processComponent(node: JQuery) {
 		console.warn(`Component ${compName} not found`);
 		return;
 	}
-	component.render(node);
+	component.render(node, attrs2obj(node[0].attributes));
+}
+
+function attrs2obj(attrs: NamedNodeMap) {
+	const result = {};
+	for (let i = 0; i < attrs.length; i++) {
+		const attr = attrs[i];
+		result[attr.name] = Mustache.escape(attr.value);
+	}
+	return result;
 }
 
 //--------------- Startup  ---------------

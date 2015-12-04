@@ -1,8 +1,8 @@
 import minion from '../minion';
 
 minion.component('input-wide', {
-	render(node: JQuery): void {
-		const attrs: any = getInputAttrs(node);
+	render(node: JQuery, attrs): void {
+		attrs = getInputAttrs(attrs);
 		const template = `
 			<div class="form-group">
 				<label for="${attrs.name}" class="col-sm-3 control-label">${attrs.label}</label>
@@ -17,8 +17,8 @@ minion.component('input-wide', {
 });
 
 minion.component('input-narrow', {
-	render(node: JQuery): void {
-		const attrs: any = getInputAttrs(node);
+	render(node: JQuery, attrs): void {
+		attrs = getInputAttrs(attrs);
 		const template = `
 			<div class="form-group">
 				<label for="${attrs.name}">${attrs.label}</label>
@@ -33,17 +33,8 @@ minion.component('input-narrow', {
 
 ///--------------------------------------------------
 
-function getInputAttrs(node: JQuery) {
-	const attrs: any = getAttrs(node, 'name label value type'.split(' '));
+function getInputAttrs(attrs) {
 	attrs.type = attrs.type || 'text';
 	attrs.value = attrs.value || '';
 	return attrs;
-}
-
-function getAttrs(node: JQuery, attrs: string[]) {
-	const result = {};
-	for (let attr of attrs) {
-		result[attr] = node.attr(attr);
-	}
-	return result;
 }
