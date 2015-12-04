@@ -125,7 +125,7 @@ function showLoading() {
 }
 
 function hideLoading() {
-	console.log('...Done');
+	console.log('...Loaded');
 }
 
 //---------- Controllers ----------

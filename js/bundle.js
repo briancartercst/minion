@@ -204,7 +204,7 @@
 	    console.log('Loading...');
 	}
 	function hideLoading() {
-	    console.log('...Done');
+	    console.log('...Loaded');
 	}
 	//---------- Controllers ----------
 	function preRenderController(ctrl, extra) {
