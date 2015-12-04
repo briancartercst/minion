@@ -16,24 +16,16 @@ minion.controller('user-table', {
 		});
 	},
 	postRender(viewContent: JQuery) {
-		handleDeleteButton(viewContent);
+		$('#modal-delete-btn').click(() => {
+			if (!this.delUserId) return;
+			console.log('Deleting user:', this.delUserId);
+			userSvc.deleteUser(this.delUserId);
+		});
 	},
 	done() {
 		$('#modal-delete-btn').unbind('click');
+	},
+	openDeletePopup(button) {
+		this.delUserId = button.attr('data-delete-id');	
 	}
 });
-
-
-//--------------------------------------------------
-
-function handleDeleteButton(viewContent: JQuery) {
-	let delUserId = null;
-	viewContent.find('[data-delete-id]').click(function() {
-		delUserId = $(this).attr('data-delete-id');
-	});
-	$('#modal-delete-btn').click(() => {
-		if (!delUserId) return;
-		console.log('Deleting user:', delUserId);
-		userSvc.deleteUser(delUserId);
-	});
-}

@@ -113,9 +113,9 @@
 	    minion.showLoading();
 	    target = target || $("[mn-view=" + page + "]");
 	    return showViewRecursive(page, target, minion.rootModel, extra)
-	        .then(function (x) {
+	        .then(function (viewContent) {
 	        minion.hideLoading();
-	        return x;
+	        return viewContent;
 	    });
 	}
 	function controller(name, controller) {
@@ -185,17 +185,18 @@
 	    });
 	}
 	function registerEventHandlers(ctrl, viewContent, events) {
+	    //TODO test without findEventHandler
 	    for (var _i = 0; _i < events.length; _i++) {
 	        var eventId = events[_i];
 	        var mnAttr = "mn-on" + eventId;
 	        viewContent.find("[" + mnAttr + "]").each(function (i, elem) {
-	            var evtHandlerName = $(elem).attr(mnAttr);
-	            var evtHandler = findEventHandler(ctrl, evtHandlerName);
-	            if (!evtHandler)
-	                console.warn("Event handler '" + evtHandlerName + "' not found in controller hierarchy");
+	            var handlerName = $(elem).attr(mnAttr);
+	            var ownerCtrl = findEventHandler(ctrl, handlerName);
+	            if (!ownerCtrl)
+	                return;
 	            else
 	                $(elem).on(eventId, function () {
-	                    return evtHandler($(this));
+	                    return ownerCtrl[handlerName]($(this));
 	                });
 	        });
 	    }
@@ -203,7 +204,7 @@
 	function findEventHandler(ctrl, evtHandlerName) {
 	    while (ctrl) {
 	        if (ctrl[evtHandlerName])
-	            return ctrl[evtHandlerName];
+	            return ctrl;
 	        ctrl = ctrl.$parent;
 	    }
 	    return null;
@@ -387,25 +388,21 @@
 	        });
 	    },
 	    postRender: function (viewContent) {
-	        handleDeleteButton(viewContent);
+	        var _this = this;
+	        $('#modal-delete-btn').click(function () {
+	            if (!_this.delUserId)
+	                return;
+	            console.log('Deleting user:', _this.delUserId);
+	            users_1.default.deleteUser(_this.delUserId);
+	        });
 	    },
 	    done: function () {
 	        $('#modal-delete-btn').unbind('click');
+	    },
+	    openDeletePopup: function (button) {
+	        this.delUserId = button.attr('data-delete-id');
 	    }
 	});
-	//--------------------------------------------------
-	function handleDeleteButton(viewContent) {
-	    var delUserId = null;
-	    viewContent.find('[data-delete-id]').click(function () {
-	        delUserId = $(this).attr('data-delete-id');
-	    });
-	    $('#modal-delete-btn').click(function () {
-	        if (!delUserId)
-	            return;
-	        console.log('Deleting user:', delUserId);
-	        users_1.default.deleteUser(delUserId);
-	    });
-	}
 
 
 /***/ },

@@ -28,9 +28,9 @@ function showView(page: string, target?: JQuery, extra?: string): Promise<JQuery
 	minion.showLoading();
 	target = target || $(`[mn-view=${page}]`);
 	return showViewRecursive(page, target, minion.rootModel, extra)
-	.then(x => {
+	.then(viewContent => {
 		minion.hideLoading();
-		return x;
+		return viewContent;
 	});
 }
 
@@ -108,15 +108,15 @@ function getPage(page: string): Promise<string> {
 }
 
 function registerEventHandlers(ctrl, viewContent: JQuery, events: string[]) {
+	//TODO test without findEventHandler
 	for (var eventId of events) {
 		var mnAttr = "mn-on" + eventId;
 		viewContent.find("[" + mnAttr + "]").each((i, elem) => {
-			const evtHandlerName = $(elem).attr(mnAttr);
-			const evtHandler = findEventHandler(ctrl, evtHandlerName);
-			if (!evtHandler) console.warn(
-				`Event handler '${evtHandlerName}' not found in controller hierarchy`);
+			const handlerName = $(elem).attr(mnAttr);
+			const ownerCtrl  = findEventHandler(ctrl, handlerName);
+			if (!ownerCtrl) return;
 			else $(elem).on(eventId, function() {
-				return evtHandler($(this));
+				return ownerCtrl[handlerName]($(this));
 			});
 		});
 	}
@@ -124,7 +124,7 @@ function registerEventHandlers(ctrl, viewContent: JQuery, events: string[]) {
 
 function findEventHandler(ctrl, evtHandlerName: string) {
 	while (ctrl) {
-		if (ctrl[evtHandlerName]) return ctrl[evtHandlerName];
+		if (ctrl[evtHandlerName]) return ctrl;
 		ctrl = ctrl.$parent;
 	}
 	return null;
