@@ -164,6 +164,7 @@ function processComponents(viewContent: JQuery) {
 
 function processComponent(node: JQuery) {
 	const compName = node.attr('mn-component');
+	node.removeAttr('mn-component').attr('mn-component-rendered', compName);
 	const component = cmpRegistry[compName];
 	if (!component) {
 		console.warn(`Component ${compName} not found`);

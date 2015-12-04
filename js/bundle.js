@@ -236,6 +236,7 @@
 	}
 	function processComponent(node) {
 	    var compName = node.attr('mn-component');
+	    node.removeAttr('mn-component').attr('mn-component-rendered', compName);
 	    var component = cmpRegistry[compName];
 	    if (!component) {
 	        console.warn("Component " + compName + " not found");
