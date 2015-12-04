@@ -109,7 +109,7 @@ function getPage(page: string): Promise<string> {
 
 function registerEventHandlers(ctrl, viewContent: JQuery, events: string[]) {
 	for (var eventId of events) {
-		var mnAttr = "mn-on" + eventId;
+		var mnAttr = "mn-" + eventId;
 		viewContent.find("[" + mnAttr + "]").each((i, elem) => {
 			const handlerName = $(elem).attr(mnAttr);
 			if (ctrl[handlerName])

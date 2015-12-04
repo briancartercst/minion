@@ -27,7 +27,7 @@ invoke its optional lifecycle methods:
 - **postRender**: Invoked after the view is rendered. Usually this is where
 	the controller performs DOM manipulations with the rendered view or
 	registers event listeners to some of the view elements. Notice that
-	mn-on*event* is a simpler way of performing this, so this method should
+	mn-*event* is a simpler way of performing this, so this method should
 	be used only for more complex requirements.
 
 - **done**: Invoked when the view is removed from the DOM. This is where
@@ -43,20 +43,20 @@ Will load, cache and render users.html. If a controller has been registered
 with the name "users", then it will invoke its lifecycle methods and will
 bind it to the Mustache template context.
 
-###mn-onclick="*methodName*", mn-onsubmit="*methodName*"
+###mn-click="*methodName*", mn-submit="*methodName*"
 Registers a listener so that *methodName* is invoked in the current controller
 when the event takes place.
 
 ####Examples:
 ```HTML
-	<form mn-onsubmit="save">
+	<form mn-submit="save">
 ```
 Will call the *save* method of the current controller when the form is submitted.
 Notice that the method should return false to avoid the browser from posting the
 form to the server.
 
 ```HTML
-	<button mn-onclick="cancel">
+	<button mn-click="cancel">
 ```
 Will call the *cancel* method of the current controller when the button is clicked. 
 

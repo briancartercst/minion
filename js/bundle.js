@@ -190,7 +190,7 @@
 	function registerEventHandlers(ctrl, viewContent, events) {
 	    for (var _i = 0; _i < events.length; _i++) {
 	        var eventId = events[_i];
-	        var mnAttr = "mn-on" + eventId;
+	        var mnAttr = "mn-" + eventId;
 	        viewContent.find("[" + mnAttr + "]").each(function (i, elem) {
 	            var handlerName = $(elem).attr(mnAttr);
 	            if (ctrl[handlerName])
