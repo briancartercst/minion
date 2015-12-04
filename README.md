@@ -22,7 +22,7 @@ invoke its optional lifecycle methods:
 - **preRender**: Invoked before the view is rendered. Usually this is
 	where the controller will retrieve some remote data to be displayed by
 	the view. If a promise is returned, then the view will be rendered after
-	the promise resolves, to make sure the data is available to the view. 
+	the promise resolves, to make sure the data is available to the view.
 
 - **postRender**: Invoked after the view is rendered. Usually this is where
 	the controller performs DOM manipulations with the rendered view or
@@ -33,7 +33,7 @@ invoke its optional lifecycle methods:
 - **done**: Invoked when the view is removed from the DOM. This is where
 	the controller can perform any teardown if required. Notice that event
 	listeners bound to elements of the view will be auomatically removed
-	by jQuery. 
+	by jQuery.
 
 ####Example:
 ```HTML
@@ -58,18 +58,18 @@ form to the server.
 ```HTML
 	<button mn-click="cancel">
 ```
-Will call the *cancel* method of the current controller when the button is clicked. 
+Will call the *cancel* method of the current controller when the button is clicked.
 
 ###mn-component="componentName"
 Locates the component registered by *componentName* and invokes its *render* method.
-  
+
 ####Example:
 ```HTML
 	<div mn-component="my-input" name="email" label="Your e-mail"></div>
 ```
 Locates the component registered as *my-input* and invokes its *render* method. The
 component has access to the *name* and *label* attributes, so it can expand the div
-into a full label / input tag pair. 
+into a full label / input tag pair.
 
 ##ToDo:
 ### Development
@@ -79,9 +79,10 @@ into a full label / input tag pair.
 	- And maybe the Promise shim will no longer be required.
 
 ### Runtime
+- Properly setup Modernizr in order to support form validation shims
 - Define controller interface (empty?)
 - Refactor 'search' views & controller to flat search names
-- Test refactor folders by functionality instead of component type 
+- Test refactor folders by functionality instead of component type
 - NLS/multilanguage
 
 ##Done:
