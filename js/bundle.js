@@ -57,6 +57,7 @@
 
 	var minion_1 = __webpack_require__(2);
 	var view = $('#view');
+	setupLoadingPopup();
 	$(function () {
 	    routie({
 	        '': function () { return routie('search'); },
@@ -65,6 +66,8 @@
 	        'user/:id': function (id) { return minion_1.default.showView('user-edit', view, id); },
 	        'details/:id': function (id) { return minion_1.default.showView('details', view); }
 	    });
+	});
+	function setupLoadingPopup() {
 	    var isLoading = false;
 	    var LOAD_POPUP_DELAY = 100;
 	    minion_1.default.showLoading = function () {
@@ -81,7 +84,7 @@
 	        $('#loading-cover').hide();
 	        $('#loading-popup').hide();
 	    };
-	});
+	}
 
 
 /***/ },
