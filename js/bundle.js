@@ -185,29 +185,17 @@
 	    });
 	}
 	function registerEventHandlers(ctrl, viewContent, events) {
-	    //TODO test without findEventHandler
 	    for (var _i = 0; _i < events.length; _i++) {
 	        var eventId = events[_i];
 	        var mnAttr = "mn-on" + eventId;
 	        viewContent.find("[" + mnAttr + "]").each(function (i, elem) {
 	            var handlerName = $(elem).attr(mnAttr);
-	            var ownerCtrl = findEventHandler(ctrl, handlerName);
-	            if (!ownerCtrl)
-	                return;
-	            else
+	            if (ctrl[handlerName])
 	                $(elem).on(eventId, function () {
-	                    return ownerCtrl[handlerName]($(this));
+	                    return ctrl[handlerName]($(this));
 	                });
 	        });
 	    }
-	}
-	function findEventHandler(ctrl, evtHandlerName) {
-	    while (ctrl) {
-	        if (ctrl[evtHandlerName])
-	            return ctrl;
-	        ctrl = ctrl.$parent;
-	    }
-	    return null;
 	}
 	function showLoading() {
 	    console.log('Loading...');

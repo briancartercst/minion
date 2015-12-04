@@ -108,26 +108,16 @@ function getPage(page: string): Promise<string> {
 }
 
 function registerEventHandlers(ctrl, viewContent: JQuery, events: string[]) {
-	//TODO test without findEventHandler
 	for (var eventId of events) {
 		var mnAttr = "mn-on" + eventId;
 		viewContent.find("[" + mnAttr + "]").each((i, elem) => {
 			const handlerName = $(elem).attr(mnAttr);
-			const ownerCtrl  = findEventHandler(ctrl, handlerName);
-			if (!ownerCtrl) return;
-			else $(elem).on(eventId, function() {
-				return ownerCtrl[handlerName]($(this));
-			});
+			if (ctrl[handlerName])
+				$(elem).on(eventId, function() {
+					return ctrl[handlerName]($(this));
+				});
 		});
 	}
-}
-
-function findEventHandler(ctrl, evtHandlerName: string) {
-	while (ctrl) {
-		if (ctrl[evtHandlerName]) return ctrl;
-		ctrl = ctrl.$parent;
-	}
-	return null;
 }
 
 function showLoading() {
