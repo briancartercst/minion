@@ -79,7 +79,8 @@ into a full label / input tag pair.
 	- And maybe the Promise shim will no longer be required.
 
 ### Runtime
-- Deal with XSS attacks providing input values such as: **"&gt;&lt;script&gt;alert("haha!")&lt;/script&gt;**
+- Deal with XSS attacks providing input values such as:
+	**"&gt;&lt;script&gt;alert("haha!")&lt;/script&gt;**
 - Define controller interface (empty?)
 - Refactor 'search' views & controller to flat search names
 - Test refactor folders by functionality instead of component type 
