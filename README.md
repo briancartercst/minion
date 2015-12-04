@@ -14,7 +14,7 @@ It has some similarities with Angular:
 
 ##Supported tag attributes
 
-###mn-view
+###mn-view="*viewName*"
 Loads and renders a html file as a child of the tag containing this attribute.
 If a controller with the same id is available, will bind the controller and
 invoke its optional lifecycle methods:
