@@ -1,7 +1,7 @@
 {
-  "name": "tsfz2",
+  "name": "minion",
   "version": "1.0.0",
-  "description": "Flatzoom client environment",
+  "description": "Minion demo",
   "main": "index.js",
   "scripts": {
     "test": "test",
@@ -15,7 +15,7 @@
     "url": "https://github.com/lcrespom/fz2.git"
   },
   "keywords": [
-    "flatzoom",
+    "minion",
     "initializr",
     "bootstrap",
     "routie",
@@ -26,9 +26,9 @@
   "author": "Luis Crespo",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/lcrespom/fz2/issues"
+    "url": "https://github.com/lcrespom/minion/issues"
   },
-  "homepage": "https://github.com/lcrespom/fz2",
+  "homepage": "https://github.com/lcrespom/minion",
   "devDependencies": {
     "glob": "^6.0.1",
     "http-server": "^0.8.5",
