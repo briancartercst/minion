@@ -46,9 +46,7 @@
 
 	__webpack_require__(1);
 	__webpack_require__(3);
-	__webpack_require__(4);
-	__webpack_require__(6);
-	module.exports = __webpack_require__(7);
+	module.exports = __webpack_require__(4);
 
 
 /***/ },
@@ -61,10 +59,11 @@
 	$(function () {
 	    routie({
 	        '': function () { return routie('search'); },
-	        'search': function () { return minion_1.default.showView('search', view); },
-	        'users': function () { return minion_1.default.showView('users', view); },
-	        'user/:id': function (id) { return minion_1.default.showView('user-edit', view, id); },
-	        'details/:id': function (id) { return minion_1.default.showView('details', view); }
+	        'search': function () { return minion_1.default.render('search', view); },
+	        'users': function () { return minion_1.default.render('users', view); },
+	        //TODO think of a clean way to pass "id" and other route parameters
+	        'user/:id': function (id) { return minion_1.default.render('user-edit', view); },
+	        'details/:id': function (id) { return minion_1.default.render('details', view); }
 	    });
 	});
 	function setupLoadingPopup() {
@@ -91,11 +90,9 @@
 /* 2 */
 /***/ function(module, exports) {
 
-	//-------------------- Exports --------------------
+	//-------------------- Exports & interfaces --------------------
 	var minion = {
-	    rootModel: {},
-	    showView: showView,
-	    controller: controller,
+	    render: render,
 	    component: component,
 	    form2obj: form2obj,
 	    config: {
@@ -107,25 +104,25 @@
 	Object.defineProperty(exports, "__esModule", { value: true });
 	exports.default = minion;
 	//-------------------- Module variables --------------------
-	var pageCache = {};
-	var ctrlRegistry = {};
-	var cmpRegistry = {};
+	var templates = {}; // Template cache
+	var components = {}; // Component registry
 	//-------------------- Publics --------------------
-	function showView(page, target, extra) {
-	    console.log("Showing view '" + page + "'");
+	function render(tagName, node) {
 	    minion.showLoading();
-	    target = target || $("[mn-view=" + page + "]");
-	    return showViewRecursive(page, target, minion.rootModel, extra)
+	    return renderRecursive(tagName, node)
 	        .then(function (viewContent) {
 	        minion.hideLoading();
 	        return viewContent;
 	    });
 	}
-	function controller(name, controller) {
-	    ctrlRegistry[name] = controller;
-	}
 	function component(name, component) {
-	    cmpRegistry[name] = component;
+	    components[name] = component;
+	}
+	function showLoading() {
+	    console.log('Loading...');
+	}
+	function hideLoading() {
+	    console.log('...Loaded');
 	}
 	function form2obj(form) {
 	    var result = {};
@@ -142,271 +139,115 @@
 	    return result;
 	}
 	//-------------------- Privates --------------------
-	function showViewRecursive(viewName, target, parent, extra) {
-	    console.log("  rendering template '" + viewName + "'");
-	    var ctrl = ctrlRegistry[viewName] || {};
-	    ctrl.$parent = parent;
-	    return preRenderController(ctrl, extra)
+	function renderRecursive(tagName, target) {
+	    var component = getComponent(tagName);
+	    return (component.init(target) || Promise.resolve())
 	        .then(function () {
-	        return getPage(viewName);
+	        return getTemplate(tagName, component);
 	    })
-	        .then(function (pageData) {
-	        var renderCtx = getRenderContext(ctrl);
-	        var viewContent = $('<div>' + Mustache.render(pageData, renderCtx) + '</div>');
-	        return processSubviews(viewContent, ctrl, extra);
+	        .then(function (template) {
+	        var node = $('<div>' + Mustache.render(template, component) + '</div>');
+	        return renderSubcomponents(node);
 	    })
-	        .then(function (viewContent) {
-	        target.empty().append(viewContent);
-	        processComponents(viewContent);
-	        registerEventHandlers(ctrl, viewContent, ['click', 'submit']);
-	        postRenderController(ctrl, viewContent);
-	        return viewContent;
+	        .then(function (node) {
+	        target.empty().append(node);
+	        registerEventHandlers(component, node);
+	        component.ready(node);
+	        if (component.done)
+	            node.bind('destroyed', component.done);
+	        return node;
 	    });
 	}
-	function processSubviews(viewContent, parent, extra) {
-	    var showPromises = [];
-	    viewContent.find('[mn-view]').each(function (i, e) {
-	        var subView = $(e);
-	        showPromises.push(showViewRecursive(subView.attr('mn-view'), subView, parent, extra));
-	    });
-	    return Promise.all(showPromises).then(function (results) {
-	        return viewContent;
-	    });
+	function getComponent(tagName) {
+	    var compDef = components[tagName] || {};
+	    var component = (compDef instanceof Function) ? new compDef() : $.extend({}, compDef);
+	    component.init = component.init || function () { };
+	    component.ready = component.ready || function () { };
+	    return component;
 	}
-	function getPage(page) {
+	function getTemplate(tagName, component) {
 	    return new Promise(function (resolve) {
-	        if (pageCache[page]) {
-	            resolve(pageCache[page]);
-	        }
-	        else {
-	            $.get(minion.config.templatePath + page + '.html').done(function (pageData) {
-	                pageCache[page] = pageData;
+	        if (templates[tagName])
+	            resolve(templates[tagName]);
+	        else
+	            return getTemplateFromComponent(tagName, component)
+	                .then(function (pageData) {
 	                Mustache.parse(pageData);
+	                if (!component.dynamic)
+	                    templates[tagName] = pageData;
 	                resolve(pageData);
 	            });
-	        }
 	    });
 	}
-	function registerEventHandlers(ctrl, viewContent, events) {
-	    for (var _i = 0; _i < events.length; _i++) {
-	        var eventId = events[_i];
+	function getTemplateFromComponent(tagName, component) {
+	    return new Promise(function (resolve) {
+	        if (component.template)
+	            return resolve(component.template);
+	        var templateUrl = component.templateUrl || tagName;
+	        $.get(minion.config.templatePath + templateUrl + '.html')
+	            .done(function (pageData) { return resolve(pageData); });
+	    });
+	}
+	function registerEventHandlers(component, node) {
+	    for (var _i = 0, _a = ['click', 'submit']; _i < _a.length; _i++) {
+	        var eventId = _a[_i];
 	        var mnAttr = "mn-" + eventId;
-	        viewContent.find("[" + mnAttr + "]").each(function (i, elem) {
+	        node.find("[" + mnAttr + "]").each(function (i, elem) {
 	            var handlerName = $(elem).attr(mnAttr);
-	            if (ctrl[handlerName])
+	            if (component[handlerName])
 	                $(elem).on(eventId, function () {
-	                    return ctrl[handlerName]($(this));
+	                    return component[handlerName]($(this));
 	                });
 	        });
 	    }
 	}
-	function showLoading() {
-	    console.log('Loading...');
-	}
-	function hideLoading() {
-	    console.log('...Loaded');
-	}
-	//---------- Controllers ----------
-	function preRenderController(ctrl, extra) {
-	    if (ctrl.preRender) {
-	        var result = ctrl.preRender(extra);
-	        if (result instanceof Promise)
-	            return result;
-	    }
-	    return Promise.resolve();
-	}
-	function postRenderController(ctrl, viewContent) {
-	    if (ctrl.postRender)
-	        ctrl.postRender(viewContent);
-	    if (ctrl.done)
-	        viewContent.bind('destroyed', function () {
-	            ctrl.done();
-	        });
-	}
-	function getRenderContext(ctrl) {
-	    var ctrls = [];
-	    while (ctrl) {
-	        ctrls.push(ctrl);
-	        ctrl = ctrl.$parent;
-	    }
-	    return $.extend.apply(null, [{}].concat(ctrls.reverse()));
-	}
-	//---------- Components ----------
-	function processComponents(viewContent) {
-	    viewContent.find('[mn-component]').each(function (i, e) {
-	        processComponent($(e));
+	function renderSubcomponents(node) {
+	    var promises = [];
+	    node.find(getComponentsQuery()).each(function (i, e) {
+	        promises.push(renderRecursive(e.localName, $(e)));
 	    });
+	    return Promise.all(promises).then(function () { return node; });
 	}
-	function processComponent(node) {
-	    var compName = node.attr('mn-component');
-	    node.removeAttr('mn-component').attr('mn-component-rendered', compName);
-	    var component = cmpRegistry[compName];
-	    if (!component) {
-	        console.warn("Component " + compName + " not found");
-	        return;
-	    }
-	    component.render(node, attrs2obj(node[0].attributes));
+	function getComponentsQuery() {
+	    var compTags = [];
+	    for (var tag in components)
+	        if (components.hasOwnProperty(tag))
+	            compTags.push(tag);
+	    return compTags.join(',');
 	}
-	function attrs2obj(attrs) {
-	    var result = {};
-	    for (var i = 0; i < attrs.length; i++) {
-	        var attr = attrs[i];
-	        result[attr.name] = Mustache.escape(attr.value);
-	    }
-	    return result;
-	}
-	//--------------- Startup  ---------------
+	//--------------- Setup  ---------------
 	$['event'].special.destroyed = {
 	    remove: function (o) { return (o && o.handler) ? o.handler() : null; }
 	};
+	var viewCache = {};
+	component('mn-view', (function () {
+	    function class_1() {
+	        this.dynamic = true;
+	    }
+	    class_1.prototype.init = function (node) {
+	        var _this = this;
+	        return new Promise(function (resolve) {
+	            var viewName = node.attr('template');
+	            if (viewCache[viewName]) {
+	                _this.template = viewCache[viewName];
+	                resolve();
+	            }
+	            else {
+	                $.get(minion.config.templatePath + viewName + '.html')
+	                    .done(function (pageData) {
+	                    _this.template = pageData;
+	                    viewCache[viewName] = pageData;
+	                    resolve();
+	                });
+	            }
+	        });
+	    };
+	    return class_1;
+	})());
 
 
 /***/ },
 /* 3 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var minion_1 = __webpack_require__(2);
-	minion_1.default.controller('search', {
-	    postRender: function () {
-	        console.log('ctrl.search postRender');
-	        $('#price-range').slider({});
-	        $('.slider-selection').css({
-	            backgroundImage: 'initial',
-	            backgroundColor: '#AAA'
-	        });
-	    },
-	    done: function () {
-	        console.log('ctrl.search done');
-	    },
-	    hello: function (evt) {
-	        alert('hello!');
-	        console.log(evt);
-	    }
-	});
-
-
-/***/ },
-/* 4 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var minion_1 = __webpack_require__(2);
-	var users_1 = __webpack_require__(5);
-	minion_1.default.controller('user-edit', {
-	    preRender: function (id) {
-	        this.user = minion_1.default.rootModel.users[id];
-	    },
-	    save: function (elem) {
-	        users_1.default.saveUser(minion_1.default.form2obj(elem)).then(function () {
-	            window.location.href = '#users';
-	        });
-	        return false;
-	    }
-	});
-
-
-/***/ },
-/* 5 */
-/***/ function(module, exports) {
-
-	Object.defineProperty(exports, "__esModule", { value: true });
-	exports.default = {
-	    getUsers: getUsers,
-	    saveUser: saveUser,
-	    deleteUser: deleteUser
-	};
-	function getUsers(filter) {
-	    return new Promise(function (resolve) {
-	        setTimeout(function () {
-	            var data = [];
-	            for (var i = 0; i < 10; i++)
-	                data.push(createUser(i));
-	            resolve(data);
-	        }, 1000);
-	    });
-	}
-	function saveUser(u) {
-	    return Promise.resolve(undefined);
-	}
-	function deleteUser(id) {
-	    return Promise.resolve(undefined);
-	}
-	//-------------------- Public --------------------
-	function createUser(id) {
-	    var usr = {};
-	    usr.name = randomName(3, 6);
-	    usr.surname = randomName(4, 7);
-	    usr.email = usr.name + '.' + usr.surname + '@gmail.com';
-	    usr.mobile = randomMobile();
-	    usr.id = id;
-	    return usr;
-	}
-	var CONSONANTS = 'bcdfghjklmnpqrstvwxyz';
-	var VOWELS = 'aeiou';
-	function randomName(min, max) {
-	    var name = '';
-	    var letters;
-	    var len = randomNum(min, max);
-	    for (var i = 0; i < len; i++) {
-	        letters = (i % 2 == 0) ? CONSONANTS : VOWELS;
-	        name += letters[randomNum(0, letters.length)];
-	        if (name.length == 1)
-	            name = name.toUpperCase();
-	    }
-	    return name;
-	}
-	function randomMobile() {
-	    var num = '6';
-	    for (var i = 1; i < 9; i++) {
-	        if (i % 3 == 0)
-	            num += ' ';
-	        num += randomNum(0, 10);
-	    }
-	    return num;
-	}
-	function randomNum(min, max) {
-	    return min + Math.floor(Math.random() * (max - min));
-	}
-
-
-/***/ },
-/* 6 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var minion_1 = __webpack_require__(2);
-	var users_1 = __webpack_require__(5);
-	minion_1.default.controller('users', {
-	    searchUsers: function (elem) {
-	        minion_1.default.rootModel.userFilter = minion_1.default.form2obj(elem);
-	        minion_1.default.showView('user-table');
-	        return false;
-	    }
-	});
-	minion_1.default.controller('user-table', {
-	    preRender: function () {
-	        return users_1.default.getUsers(minion_1.default.rootModel.userFilter).then(function (users) {
-	            minion_1.default.rootModel.users = users;
-	        });
-	    },
-	    postRender: function (viewContent) {
-	        var _this = this;
-	        $('#modal-delete-btn').click(function () {
-	            if (!_this.delUserId)
-	                return;
-	            console.log('Deleting user:', _this.delUserId);
-	            users_1.default.deleteUser(_this.delUserId);
-	        });
-	    },
-	    done: function () {
-	        $('#modal-delete-btn').unbind('click');
-	    },
-	    openDeletePopup: function (button) {
-	        this.delUserId = button.attr('data-delete-id');
-	    }
-	});
-
-
-/***/ },
-/* 7 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var minion_1 = __webpack_require__(2);
@@ -430,6 +271,33 @@
 	    attrs.value = attrs.value || '';
 	    return attrs;
 	}
+
+
+/***/ },
+/* 4 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var minion_1 = __webpack_require__(2);
+	minion_1.default.component('search', (function () {
+	    function class_1() {
+	    }
+	    class_1.prototype.init = function () {
+	        this.potato = "I am a potato";
+	    };
+	    class_1.prototype.ready = function () {
+	        console.log('search ready', arguments);
+	        $('#price-range').slider({});
+	        $('.slider-selection').css({
+	            backgroundImage: 'initial',
+	            backgroundColor: '#AAA'
+	        });
+	    };
+	    class_1.prototype.hello = function (evt) {
+	        alert('hello!');
+	        console.log(evt);
+	    };
+	    return class_1;
+	})());
 
 
 /***/ }

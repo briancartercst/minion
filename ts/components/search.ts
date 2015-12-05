@@ -1,18 +1,20 @@
 import minion from '../minion';
 
-minion.controller('search', {
-	postRender() {
-		console.log('ctrl.search postRender');
+minion.component('search', class {
+	potato: string;
+
+	init() {
+		this.potato = "I am a potato";
+	}
+
+	ready() {
+		console.log('search ready', arguments);
 		$('#price-range').slider({});
 		$('.slider-selection').css({
 			backgroundImage: 'initial',
 			backgroundColor: '#AAA'
 		});
-	},
-
-	done() {
-		console.log('ctrl.search done');
-	},
+	}
 
 	hello(evt) {
 		alert('hello!');
