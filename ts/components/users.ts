@@ -13,9 +13,10 @@ minion.component('users', class {
 minion.component('user-table', {
 	init() {
 		// TODO adapt
-		// return userSvc.getUsers(minion.rootModel.userFilter).then(users => {
-		// 	minion.rootModel.users = users;
-		// });
+		return userSvc.getUsers(null/*minion.rootModel.userFilter*/).then(users => {
+			// 	minion.rootModel.users = users;
+			this.users = users;
+		});
 	},
 	ready(viewContent: JQuery) {
 		$('#modal-delete-btn').click(() => {

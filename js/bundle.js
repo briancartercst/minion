@@ -350,10 +350,12 @@
 	})());
 	minion_1.default.component('user-table', {
 	    init: function () {
+	        var _this = this;
 	        // TODO adapt
-	        // return userSvc.getUsers(minion.rootModel.userFilter).then(users => {
-	        // 	minion.rootModel.users = users;
-	        // });
+	        return users_1.default.getUsers(null /*minion.rootModel.userFilter*/).then(function (users) {
+	            // 	minion.rootModel.users = users;
+	            _this.users = users;
+	        });
 	    },
 	    ready: function (viewContent) {
 	        var _this = this;
