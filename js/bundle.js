@@ -258,7 +258,7 @@
 	        this.template = "\n\t\t<div class=\"form-group\">\n\t\t\t<label for=\"{{attrs.name}}\" class=\"col-sm-3 control-label\">{{attrs.label}}</label>\n\t\t\t<div class=\"col-sm-9\">\n\t\t\t\t<input class=\"form-control\" id=\"{{attrs.name}}\" name=\"{{attrs.name}}\"\n\t\t\t\t\tvalue=\"{{attrs.value}}\" type=\"{{attrs.type}}\">\n\t\t\t</div>\n\t\t</div>\n\t";
 	    }
 	    class_1.prototype.init = function (node) {
-	        this.attrs = getInputAttrs(node, 'name label value type');
+	        this.attrs = getInputAttrs(node);
 	    };
 	    return class_1;
 	})());
@@ -267,14 +267,14 @@
 	        this.template = "\n\t\t<div class=\"form-group\">\n\t\t\t<label for=\"{{attrs.name}}\">{{attrs.label}}</label>\n\t\t\t<input class=\"form-control\" id=\"{{attrs.name}}\" name=\"{{attrs.name}}\"\n\t\t\t\tvalue=\"{{attrs.value}}\" type=\"{{attrs.type}}\">\n\t\t</div>\n\t";
 	    }
 	    class_2.prototype.init = function (node) {
-	        this.attrs = getInputAttrs(node, 'name label value type');
+	        this.attrs = getInputAttrs(node);
 	    };
 	    return class_2;
 	})());
 	///--------------------------------------------------
-	function getInputAttrs(node, attrList) {
+	function getInputAttrs(node) {
 	    var attrs = {};
-	    for (var _i = 0, _a = attrList.split(' '); _i < _a.length; _i++) {
+	    for (var _i = 0, _a = 'name label value type'.split(' '); _i < _a.length; _i++) {
 	        var attr = _a[_i];
 	        attrs[attr] = node.attr(attr);
 	    }

@@ -12,7 +12,7 @@ minion.component('input-wide', class {
 		</div>
 	`;
 	init(node: JQuery) {
-		this.attrs = getInputAttrs(node, 'name label value type');
+		this.attrs = getInputAttrs(node);
 	}
 });
 
@@ -26,16 +26,16 @@ minion.component('input-narrow', class {
 		</div>
 	`;
 	init(node: JQuery) {
-		this.attrs = getInputAttrs(node, 'name label value type');
+		this.attrs = getInputAttrs(node);
 	}
 });
 
 
 ///--------------------------------------------------
 
-function getInputAttrs(node, attrList) {
+function getInputAttrs(node) {
 	const attrs = <any>{};
-	for (let attr of attrList.split(' '))
+	for (let attr of 'name label value type'.split(' '))
 		attrs[attr] = node.attr(attr);
 	attrs.type = attrs.type || 'text';
 	attrs.value = attrs.value || '';
