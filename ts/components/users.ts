@@ -1,7 +1,7 @@
 import minion from '../minion';
 import userSvc from '../services/users';
 
-minion.component('users', {
+minion.component('users', class {
 	searchUsers(elem) {
 		// TODO adapt
 		// minion.rootModel.userFilter = minion.form2obj(elem);

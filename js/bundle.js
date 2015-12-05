@@ -46,7 +46,9 @@
 
 	__webpack_require__(1);
 	__webpack_require__(3);
-	module.exports = __webpack_require__(4);
+	__webpack_require__(4);
+	__webpack_require__(5);
+	module.exports = __webpack_require__(6);
 
 
 /***/ },
@@ -251,22 +253,31 @@
 /***/ function(module, exports, __webpack_require__) {
 
 	var minion_1 = __webpack_require__(2);
-	minion_1.default.component('input-wide', {
-	    render: function (node, attrs) {
-	        attrs = getInputAttrs(attrs);
-	        var template = "\n\t\t\t<div class=\"form-group\">\n\t\t\t\t<label for=\"" + attrs.name + "\" class=\"col-sm-3 control-label\">" + attrs.label + "</label>\n\t\t\t\t<div class=\"col-sm-9\">\n\t\t\t\t\t<input class=\"form-control\" id=\"" + attrs.name + "\" name=\"" + attrs.name + "\"\n\t\t\t\t\t\tvalue=\"" + attrs.value + "\" type=\"" + attrs.type + "\">\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t";
-	        node.html(template);
+	minion_1.default.component('input-wide', (function () {
+	    function class_1() {
+	        this.template = "\n\t\t<div class=\"form-group\">\n\t\t\t<label for=\"{{attrs.name}}\" class=\"col-sm-3 control-label\">{{attrs.label}}</label>\n\t\t\t<div class=\"col-sm-9\">\n\t\t\t\t<input class=\"form-control\" id=\"{{attrs.name}}\" name=\"{{attrs.name}}\"\n\t\t\t\t\tvalue=\"{{attrs.value}}\" type=\"{{attrs.type}}\">\n\t\t\t</div>\n\t\t</div>\n\t";
 	    }
-	});
-	minion_1.default.component('input-narrow', {
-	    render: function (node, attrs) {
-	        attrs = getInputAttrs(attrs);
-	        var template = "\n\t\t\t<div class=\"form-group\">\n\t\t\t\t<label for=\"" + attrs.name + "\">" + attrs.label + "</label>\n\t\t\t\t<input class=\"form-control\" id=\"" + attrs.name + "\" name=\"" + attrs.name + "\"\n\t\t\t\t\tvalue=\"" + attrs.value + "\" type=\"" + attrs.type + "\">\n\t\t\t</div>\n\t\t";
-	        node.html(template);
+	    class_1.prototype.init = function (node) {
+	        this.attrs = getInputAttrs(node, 'name label value type');
+	    };
+	    return class_1;
+	})());
+	minion_1.default.component('input-narrow', (function () {
+	    function class_2() {
+	        this.template = "\n\t\t<div class=\"form-group\">\n\t\t\t<label for=\"{{attrs.name}}\">{{attrs.label}}</label>\n\t\t\t<input class=\"form-control\" id=\"{{attrs.name}}\" name=\"{{attrs.name}}\"\n\t\t\t\tvalue=\"{{attrs.value}}\" type=\"{{attrs.type}}\">\n\t\t</div>\n\t";
 	    }
-	});
+	    class_2.prototype.init = function (node) {
+	        this.attrs = getInputAttrs(node, 'name label value type');
+	    };
+	    return class_2;
+	})());
 	///--------------------------------------------------
-	function getInputAttrs(attrs) {
+	function getInputAttrs(node, attrList) {
+	    var attrs = {};
+	    for (var _i = 0, _a = attrList.split(' '); _i < _a.length; _i++) {
+	        var attr = _a[_i];
+	        attrs[attr] = node.attr(attr);
+	    }
 	    attrs.type = attrs.type || 'text';
 	    attrs.value = attrs.value || '';
 	    return attrs;
@@ -298,6 +309,132 @@
 	    };
 	    return class_1;
 	})());
+
+
+/***/ },
+/* 5 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var minion_1 = __webpack_require__(2);
+	minion_1.default.component('user-edit', {
+	    init: function (id) {
+	        // TODO adapt
+	        // this.user = minion.rootModel.users[id];
+	    },
+	    save: function (elem) {
+	        // TODO adapt
+	        // userSvc.saveUser(<any>minion.form2obj(elem)).then(() => {
+	        // 	window.location.href = '#users';
+	        // });
+	        return false;
+	    }
+	});
+
+
+/***/ },
+/* 6 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var minion_1 = __webpack_require__(2);
+	var users_1 = __webpack_require__(7);
+	minion_1.default.component('users', (function () {
+	    function class_1() {
+	    }
+	    class_1.prototype.searchUsers = function (elem) {
+	        // TODO adapt
+	        // minion.rootModel.userFilter = minion.form2obj(elem);
+	        // minion.showView('user-table');
+	        return false;
+	    };
+	    return class_1;
+	})());
+	minion_1.default.component('user-table', {
+	    init: function () {
+	        // TODO adapt
+	        // return userSvc.getUsers(minion.rootModel.userFilter).then(users => {
+	        // 	minion.rootModel.users = users;
+	        // });
+	    },
+	    ready: function (viewContent) {
+	        var _this = this;
+	        $('#modal-delete-btn').click(function () {
+	            if (!_this.delUserId)
+	                return;
+	            console.log('Deleting user:', _this.delUserId);
+	            users_1.default.deleteUser(_this.delUserId);
+	        });
+	    },
+	    done: function () {
+	        $('#modal-delete-btn').unbind('click');
+	    },
+	    openDeletePopup: function (button) {
+	        this.delUserId = button.attr('data-delete-id');
+	    }
+	});
+
+
+/***/ },
+/* 7 */
+/***/ function(module, exports) {
+
+	Object.defineProperty(exports, "__esModule", { value: true });
+	exports.default = {
+	    getUsers: getUsers,
+	    saveUser: saveUser,
+	    deleteUser: deleteUser
+	};
+	function getUsers(filter) {
+	    return new Promise(function (resolve) {
+	        setTimeout(function () {
+	            var data = [];
+	            for (var i = 0; i < 10; i++)
+	                data.push(createUser(i));
+	            resolve(data);
+	        }, 1000);
+	    });
+	}
+	function saveUser(u) {
+	    return Promise.resolve(undefined);
+	}
+	function deleteUser(id) {
+	    return Promise.resolve(undefined);
+	}
+	//-------------------- Public --------------------
+	function createUser(id) {
+	    var usr = {};
+	    usr.name = randomName(3, 6);
+	    usr.surname = randomName(4, 7);
+	    usr.email = usr.name + '.' + usr.surname + '@gmail.com';
+	    usr.mobile = randomMobile();
+	    usr.id = id;
+	    return usr;
+	}
+	var CONSONANTS = 'bcdfghjklmnpqrstvwxyz';
+	var VOWELS = 'aeiou';
+	function randomName(min, max) {
+	    var name = '';
+	    var letters;
+	    var len = randomNum(min, max);
+	    for (var i = 0; i < len; i++) {
+	        letters = (i % 2 == 0) ? CONSONANTS : VOWELS;
+	        name += letters[randomNum(0, letters.length)];
+	        if (name.length == 1)
+	            name = name.toUpperCase();
+	    }
+	    return name;
+	}
+	function randomMobile() {
+	    var num = '6';
+	    for (var i = 1; i < 9; i++) {
+	        if (i % 3 == 0)
+	            num += ' ';
+	        num += randomNum(0, 10);
+	    }
+	    return num;
+	}
+	function randomNum(min, max) {
+	    return min + Math.floor(Math.random() * (max - min));
+	}
 
 
 /***/ }
