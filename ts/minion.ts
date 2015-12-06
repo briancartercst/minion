@@ -60,8 +60,7 @@ function form2obj(form: JQuery, dest?): Object {
 
 function renderRecursive(tagName: string, target: JQuery, parent, bindProp?): Promise<JQuery> {
 	const component = getComponent(tagName);
-	if (bindProp) target.attr('bind', bindProp);
-	bindComponent(component, target, parent);
+	bindComponent(component, bindProp || target.attr('bind'), parent);
 	return (component.init(target) || Promise.resolve())
 	.then(() => {
 		return getTemplate(tagName, component);
@@ -87,18 +86,17 @@ function getComponent(tagName: string) {
 	return component;
 }
 
-function bindComponent(component, target, parent) {
-	const bindAttr = target.attr('bind');
-	if (!bindAttr) return;
+function bindComponent(component, bindExpr, parent) {
+	if (!bindExpr) return;
 	let bindFrom, bindTo;
-	const match = /(.+) as (.+)/.exec(bindAttr);
+	const match = /(\S+)\s+as\s+(\S+)/.exec(bindExpr);
 	if (match) {
 		bindFrom = match[1];
 		bindTo = match[2];
 	}
 	else {
-		bindFrom = bindAttr;
-		bindTo = bindAttr;
+		bindFrom = bindExpr;
+		bindTo = bindExpr;
 	}
 	component[bindTo] = getNestedProp(parent, bindFrom);
 }

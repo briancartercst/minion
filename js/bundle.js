@@ -153,9 +153,7 @@
 	//-------------------- Privates --------------------
 	function renderRecursive(tagName, target, parent, bindProp) {
 	    var component = getComponent(tagName);
-	    if (bindProp)
-	        target.attr('bind', bindProp);
-	    bindComponent(component, target, parent);
+	    bindComponent(component, bindProp || target.attr('bind'), parent);
 	    return (component.init(target) || Promise.resolve())
 	        .then(function () {
 	        return getTemplate(tagName, component);
@@ -180,19 +178,18 @@
 	    component.ready = component.ready || function () { };
 	    return component;
 	}
-	function bindComponent(component, target, parent) {
-	    var bindAttr = target.attr('bind');
-	    if (!bindAttr)
+	function bindComponent(component, bindExpr, parent) {
+	    if (!bindExpr)
 	        return;
 	    var bindFrom, bindTo;
-	    var match = /(.+) as (.+)/.exec(bindAttr);
+	    var match = /(\S+)\s+as\s+(\S+)/.exec(bindExpr);
 	    if (match) {
 	        bindFrom = match[1];
 	        bindTo = match[2];
 	    }
 	    else {
-	        bindFrom = bindAttr;
-	        bindTo = bindAttr;
+	        bindFrom = bindExpr;
+	        bindTo = bindExpr;
 	    }
 	    component[bindTo] = getNestedProp(parent, bindFrom);
 	}
