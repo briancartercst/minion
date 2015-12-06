@@ -18,7 +18,7 @@ is defined as:
 	from elements it contains.
 
 ####Hello world example:
-#####hello.js in ES5
+#####The component: hello.js in ES5
 ```JavaScript
 	minion.component('my-component', {
 		init: function() {
@@ -26,7 +26,7 @@ is defined as:
 		}
 	});
 ```
-#####hello.js in ES6
+#####The same hello.js component, in ES6
 ```JavaScript
 	minion.component('my-component', class {
 		init() {
@@ -34,16 +34,16 @@ is defined as:
 		}
 	});
 ```
-#####hello.html
+#####The template: hello.html
 ```HTML
 	<p>{{greeting}}, world!</p>
 ```
-#####someOtherPage.html
+#####A HTML page referencing the component: someOtherPage.html
 ```HTML
 	Greeting component below:
 	<my-hello></my-hello>
 ```
-#####Output
+#####The resulting output:
 ```HTML
 	Greeting component below:
 	<p>Hello, world!</p>
