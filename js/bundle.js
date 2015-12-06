@@ -48,7 +48,7 @@
 	__webpack_require__(3);
 	__webpack_require__(4);
 	__webpack_require__(5);
-	module.exports = __webpack_require__(6);
+	module.exports = __webpack_require__(7);
 
 
 /***/ },
@@ -355,7 +355,7 @@
 /***/ function(module, exports, __webpack_require__) {
 
 	var minion_1 = __webpack_require__(2);
-	var users_1 = __webpack_require__(7);
+	var users_1 = __webpack_require__(6);
 	minion_1.default.component('user-edit', {
 	    init: function () {
 	        this.user = this.userAdmin.users[this.userAdmin.userId];
@@ -371,47 +371,6 @@
 
 /***/ },
 /* 6 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var minion_1 = __webpack_require__(2);
-	var users_1 = __webpack_require__(7);
-	minion_1.default.component('users', (function () {
-	    function class_1() {
-	    }
-	    class_1.prototype.searchUsers = function (elem) {
-	        this.userAdmin.searchFilter = minion_1.default.form2obj(elem);
-	        minion_1.default.render('user-table', $('user-table'), this);
-	        return false;
-	    };
-	    return class_1;
-	})());
-	minion_1.default.component('user-table', {
-	    init: function () {
-	        var _this = this;
-	        return users_1.default.getUsers(this.userAdmin.searchFilter).then(function (users) {
-	            _this.userAdmin.users = users;
-	        });
-	    },
-	    ready: function (viewContent) {
-	        var _this = this;
-	        $('#modal-delete-btn').click(function () {
-	            if (!_this.delUserId)
-	                return;
-	            console.log('Deleting user:', _this.delUserId);
-	            users_1.default.deleteUser(_this.delUserId);
-	        });
-	    },
-	    done: function () {
-	        $('#modal-delete-btn').unbind('click');
-	    },
-	    openDeletePopup: function (button) {
-	        this.delUserId = button.attr('data-delete-id');
-	    }
-	});
-
-
-/***/ },
-/* 7 */
 /***/ function(module, exports) {
 
 	Object.defineProperty(exports, "__esModule", { value: true });
@@ -473,6 +432,47 @@
 	function randomNum(min, max) {
 	    return min + Math.floor(Math.random() * (max - min));
 	}
+
+
+/***/ },
+/* 7 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var minion_1 = __webpack_require__(2);
+	var users_1 = __webpack_require__(6);
+	minion_1.default.component('users', (function () {
+	    function class_1() {
+	    }
+	    class_1.prototype.searchUsers = function (elem) {
+	        this.userAdmin.searchFilter = minion_1.default.form2obj(elem);
+	        minion_1.default.render('user-table', $('user-table'), this);
+	        return false;
+	    };
+	    return class_1;
+	})());
+	minion_1.default.component('user-table', {
+	    init: function () {
+	        var _this = this;
+	        return users_1.default.getUsers(this.userAdmin.searchFilter).then(function (users) {
+	            _this.userAdmin.users = users;
+	        });
+	    },
+	    ready: function (viewContent) {
+	        var _this = this;
+	        $('#modal-delete-btn').click(function () {
+	            if (!_this.delUserId)
+	                return;
+	            console.log('Deleting user:', _this.delUserId);
+	            users_1.default.deleteUser(_this.delUserId);
+	        });
+	    },
+	    done: function () {
+	        $('#modal-delete-btn').unbind('click');
+	    },
+	    openDeletePopup: function (button) {
+	        this.delUserId = button.attr('data-delete-id');
+	    }
+	});
 
 
 /***/ }
