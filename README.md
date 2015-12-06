@@ -49,8 +49,25 @@ is defined as:
 	<p>Hello, world!</p>
 ```
 
+##Component lifecycle
+Components can contain other components. When Minion finds a component tag such as the above
+`<my-hello>`, it loads and renders its HTML template, invoking the component methods in a
+specific sequence. All lifecycle methods are optional, and most of them are seldom required,
+with the exception of the init method:
+- **init()**: invoked immediately after the component is instantiated. This is where
+	the component initializes values to be rendered by the template or manipulated by
+	the component itself, or nested components. A typical case is to invoke some remote
+	service in order to retrieve some data from the server. If a
+	[Promise](https://www.promisejs.org/) is returned, then Minion will wait for the promise
+	to resolve before rendering the template. This ensures that when the template is rendered,
+	all data has been properly initialized.
+- **ready(rootNode)**: invoked after the HTML template has been fully rendered, including
+	the mustache expansions and any nested components. The rendered component root element
+	is passed as a jQuery object, so it can be used to perform DOM manipulations or registering
+	event handlers. However, events can also be handled by the mn-click and mn-submit directives,
+	so this method is seldom required.
+- **done(rootNode)**:
 
-##Supported tag attributes
 
 ###mn-view="*viewName*"
 Loads and renders a html file as a child of the tag containing this attribute.
