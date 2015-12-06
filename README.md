@@ -18,7 +18,7 @@ is defined as:
 	from elements it contains.
 
 ####Hello world example:
-#####The component: hello.js in ES5
+The component: hello.js in ES5
 ```JavaScript
 	minion.component('hello', {
 		init: function() {
@@ -26,7 +26,7 @@ is defined as:
 		}
 	});
 ```
-#####The same hello.js component, in ES6
+The same hello.js component, in ES6
 ```JavaScript
 	minion.component('hello', class {
 		init() {
@@ -34,16 +34,16 @@ is defined as:
 		}
 	});
 ```
-#####The template: hello.html
+The template: hello.html
 ```HTML
 	<p>{{greeting}}, world!</p>
 ```
-#####A HTML page referencing the component: someOtherPage.html
+A HTML page referencing the component: someOtherPage.html
 ```HTML
 	Greeting component below:
 	<hello></hello>
 ```
-#####The resulting output:
+The resulting output:
 ```HTML
 	Greeting component below:
 	<p>Hello, world!</p>
@@ -85,13 +85,14 @@ There are several approaches for specifying the template of a component:
 	use of small templates.
 - If a template does not require of a component, the `<mn-view template="templateUrl">` tag
 	can be used.
+
 All templates are cached, so they are loaded only once.
 
 ##Event handling
-
-###mn-click="*methodName*", mn-submit="*methodName*"
-Registers a listener so that *methodName* is invoked in the parent component(s) when the
-event takes place.
+Events handlers are registered by adding an `mn-click="methodName` or `mn-submit="methodName`
+attribute to an HTML element. When the event is triggered by the HTML element containing the
+attribute, methodName is invoked in the parent component(s). The handler gets passed a parameter
+with the jQuery object of the element that triggered the event.
 
 ####Examples:
 ```HTML
