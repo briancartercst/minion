@@ -61,7 +61,7 @@ with the exception of the init method:
 	to resolve before rendering the template. This ensures that when the template is rendered,
 	all data has been properly initialized.
 	The HTML node of the component (e.g. `<hello>` in the previous example) is passed as
-	a jQuery object, so the component can examine its atributes and content before its template
+	a jQuery object, so the component can examine its attributes and content before its template
 	is rendered.
 - **ready(rootNode)**: invoked after the HTML template has been fully rendered, including
 	the mustache expansions and any nested components. The rendered template root element
@@ -70,7 +70,7 @@ with the exception of the init method:
 	so this method is seldom required.
 - **done(rootNode)**: Invoked right before the component is removed from the DOM. This is where
 	the controller can perform any teardown if required. Notice that event listeners bound to
-	elements of the template will be auomatically removed by jQuery, and therefore this method
+	elements of the template will be automatically removed by jQuery, and therefore this method
 	is seldom required.
 
 ##How Minion gets a template from a component
@@ -89,7 +89,7 @@ There are several approaches for specifying the template of a component:
 All templates are cached, so they are loaded from the server only once.
 
 ##Event handling
-Events handlers are registered by adding an `mn-click="methodName` or `mn-submit="methodName`
+Events handlers are registered by adding an `mn-click="methodName"` or `mn-submit="methodName"`
 attribute to an HTML element. When the event is triggered by the HTML element containing the
 attribute, methodName is invoked in the parent component(s). The handler gets passed a parameter
 with the jQuery object of the element that triggered the event.
@@ -117,7 +117,6 @@ Will call the *cancel* method of the current controller when the button is click
 
 ### Runtime
 - Properly setup Modernizr in order to support form validation shims
-- Define controller interface (empty?)
 - Refactor 'search' views & controller to flat search names
 - Test refactor folders by functionality instead of component type
 - NLS/multilanguage
@@ -131,4 +130,4 @@ Will call the *cancel* method of the current controller when the button is click
 	- Base path for loading templates
 	- showLoading / hideLoading functions
 - Show waiting popup & block current UI
-- Added extra HTML escaping to avoid XSS attacks
+- Add extra HTML escaping to avoid XSS attacks
