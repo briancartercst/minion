@@ -69,7 +69,7 @@ with the exception of the init method:
 	event handlers. However, events can also be handled by the mn-click and mn-submit directives,
 	so this method is seldom required.
 - **done(rootNode)**: Invoked right before the component is removed from the DOM. This is where
-	the controller can perform any teardown if required. Notice that event listeners bound to
+	the component can perform any teardown if required. Notice that event listeners bound to
 	elements of the template will be automatically removed by jQuery, and therefore this method
 	is seldom required.
 
@@ -93,6 +93,7 @@ Events handlers are registered by adding an `mn-click="methodName"` or `mn-submi
 attribute to an HTML element. When the event is triggered by the HTML element containing the
 attribute, methodName is invoked in the parent component(s). The handler gets passed a parameter
 with the jQuery object of the element that triggered the event.
+For any other event, the generic form `mn-event="event => methodName"` can be used.
 
 ####Examples:
 ```HTML
@@ -105,19 +106,25 @@ form to the server.
 ```HTML
 	<button mn-click="cancel">
 ```
-Will call the *cancel* method of the current controller when the button is clicked.
+Will call the *cancel* method of the parent component when the button is clicked.
+
+```HTML
+	<input mn-event="keyup => handleKey">
+```
+Will call the *handleKey* method of the parent component when the the keyup event is triggered.
 
 
 ##ToDo:
 ### Development
 - ESHint / TSLint
 - Minification with proper source maps (webpack plugin is buggy)
-- Set TypeScript compile target to ES6 and add Babel as a build step.
-	- And maybe the Promise shim will no longer be required.
+- Set TypeScript compile target to ES6 and add Babel as a build step
+	- This will enable more ES6 features
+	- And maybe the Promise shim will no longer be required
 
 ### Runtime
 - Properly setup Modernizr in order to support form validation shims
-- Refactor 'search' views & controller to flat search names
+- Refactor 'search' views & component to flat search names
 - Test refactor folders by functionality instead of component type
 - NLS/multilanguage
 
