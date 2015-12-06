@@ -229,15 +229,22 @@
 	function registerEventHandlers(component, node) {
 	    for (var _i = 0, _a = ['click', 'submit']; _i < _a.length; _i++) {
 	        var eventId = _a[_i];
-	        var mnAttr = "mn-" + eventId;
-	        node.find("[" + mnAttr + "]").each(function (i, elem) {
-	            var handlerName = $(elem).attr(mnAttr);
-	            if (component[handlerName])
-	                $(elem).on(eventId, function () {
-	                    return component[handlerName]($(this));
-	                });
+	        var mnAttr = 'mn-' + eventId;
+	        node.find('[' + mnAttr + ']').each(function (i, elem) {
+	            return registerEventHandler(component, $(elem), eventId, $(elem).attr(mnAttr));
 	        });
 	    }
+	    node.find('[mn-event]').each(function (i, elem) {
+	        var match = /(\S+)\s+=>\s+(\S+)/.exec($(elem).attr('mn-event'));
+	        if (match)
+	            registerEventHandler(component, $(elem), match[1], match[2]);
+	    });
+	}
+	function registerEventHandler(component, elem, eventId, handlerName) {
+	    if (component[handlerName])
+	        $(elem).on(eventId, function () {
+	            return component[handlerName]($(this));
+	        });
 	}
 	function renderSubcomponents(node, parent) {
 	    var promises = [];

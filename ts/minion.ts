@@ -133,15 +133,22 @@ function getTemplateFromComponent(tagName: string, component): Promise<string> {
 
 function registerEventHandlers(component, node: JQuery) {
 	for (var eventId of ['click', 'submit']) {
-		var mnAttr = "mn-" + eventId;
-		node.find("[" + mnAttr + "]").each((i, elem) => {
-			const handlerName = $(elem).attr(mnAttr);
-			if (component[handlerName])
-				$(elem).on(eventId, function() {
-					return component[handlerName]($(this));
-				});
-		});
+		var mnAttr = 'mn-' + eventId;
+		node.find('[' + mnAttr + ']').each((i, elem) =>
+			registerEventHandler(component, $(elem), eventId, $(elem).attr(mnAttr))
+		);
 	}
+	node.find('[mn-event]').each((i, elem) => {
+		const match = /(\S+)\s+=>\s+(\S+)/.exec($(elem).attr('mn-event'));
+		if (match) registerEventHandler(component, $(elem), match[1], match[2]);
+	});
+}
+
+function registerEventHandler(component, elem, eventId, handlerName) {
+	if (component[handlerName])
+		$(elem).on(eventId, function() {
+			return component[handlerName]($(this));
+		});
 }
 
 function renderSubcomponents(node: JQuery, parent): Promise<JQuery> {
