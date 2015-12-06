@@ -77,9 +77,9 @@ with the exception of the init method:
 There are several approaches for specifying the template of a component:
 - Default: by using the same name for the component and template. When a component
 	registers itself by invoking `minion.component('component-name', ComponentClass)`,
-	Minion will load the template using an AJAX call via `$.get()` from `component-name.html`.
+	Minion will load the template using AJAX from `component-name.html`.
 - By defining a `templateUrl` property in the component object: Minion will load the template
-	using `$.get()` from the URL specified in the value of that property.
+	using AJAX from the URL specified in the value of that property.
 - By defining a `template` property in the component object: Minion will use the property value
 	as the template itself. This is useful for small and highly reusable components that make
 	use of small templates.
