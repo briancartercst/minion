@@ -20,7 +20,7 @@ is defined as:
 ####Hello world example:
 #####The component: hello.js in ES5
 ```JavaScript
-	minion.component('my-component', {
+	minion.component('hello', {
 		init: function() {
 			this.greeting = 'Hello';
 		}
@@ -28,7 +28,7 @@ is defined as:
 ```
 #####The same hello.js component, in ES6
 ```JavaScript
-	minion.component('my-component', class {
+	minion.component('hello', class {
 		init() {
 			this.greeting = 'Hello';
 		}
@@ -41,7 +41,7 @@ is defined as:
 #####A HTML page referencing the component: someOtherPage.html
 ```HTML
 	Greeting component below:
-	<my-hello></my-hello>
+	<hello></hello>
 ```
 #####The resulting output:
 ```HTML
@@ -51,7 +51,7 @@ is defined as:
 
 ##Component lifecycle
 Components can contain other components. When Minion finds a component tag such as the above
-`<my-hello>`, it loads and renders its HTML template, invoking the component methods in a
+`<hello>`, it loads and renders its HTML template, invoking the component methods in a
 specific sequence. All lifecycle methods are optional, and most of them are seldom required,
 with the exception of the init method:
 - **init(componentNode)**: invoked immediately after the component is instantiated. This is where
@@ -60,7 +60,7 @@ with the exception of the init method:
 	[Promise](https://www.promisejs.org/) is returned, then Minion will wait for the promise
 	to resolve before rendering the template. This ensures that when the template is rendered,
 	all data has been properly initialized.
-	The HTML node of the component (e.g. `<my-hello>` in the previous example) is passed as
+	The HTML node of the component (e.g. `<hello>` in the previous example) is passed as
 	a jQuery object, so the component can examine its atributes and content before its template
 	is rendered.
 - **ready(rootNode)**: invoked after the HTML template has been fully rendered, including
