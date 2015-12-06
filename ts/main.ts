@@ -4,6 +4,7 @@ setupLoadingPopup();
 const view = $('#view');
 const appModel = {
 	userAdmin: {
+		userId: null,
 		users: [],
 		searchFilter: {}
 	}
@@ -13,9 +14,11 @@ $(() => {
 	routie({
 		'': () => routie('search'),
 		'search': () => minion.render('search', view),
-		'users': () => minion.render('users', view), //appModel, 'userAdmin'),
-		//TODO think of a clean way to pass "id" and other route parameters
-		'user/:id': (id) => minion.render('user-edit', view),
+		'users': () => minion.render('users', view, appModel, 'userAdmin'),
+		'user/:id': (id) => {
+			appModel.userAdmin.userId = id;
+			minion.render('user-edit', view, appModel, 'userAdmin');
+		},
 		'details/:id': (id) => minion.render('details', view)
 	});
 });

@@ -90,7 +90,7 @@ function getComponent(tagName: string) {
 function bindComponent(component, target, parent) {
 	const bindAttr = target.attr('bind');
 	if (!bindAttr) return;
-	var bindFrom, bindTo;
+	let bindFrom, bindTo;
 	const match = /(.+) as (.+)/.exec(bindAttr);
 	if (match) {
 		bindFrom = match[1];
@@ -100,7 +100,14 @@ function bindComponent(component, target, parent) {
 		bindFrom = bindAttr;
 		bindTo = bindAttr;
 	}
-	component[bindTo] = parent[bindFrom];
+	component[bindTo] = getNestedProp(parent, bindFrom);
+}
+
+function getNestedProp(obj, prop) {
+	if (prop.indexOf('.') < 0) return obj[prop];
+	let value = obj;
+	for (const p of prop.split('.')) value = value[p];
+	return value;
 }
 
 function getTemplate(tagName: string, component): Promise<string> {
