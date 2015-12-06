@@ -54,59 +54,50 @@ Components can contain other components. When Minion finds a component tag such 
 `<my-hello>`, it loads and renders its HTML template, invoking the component methods in a
 specific sequence. All lifecycle methods are optional, and most of them are seldom required,
 with the exception of the init method:
-- **init()**: invoked immediately after the component is instantiated. This is where
-	the component initializes values to be rendered by the template or manipulated by
-	the component itself, or nested components. A typical case is to invoke some remote
-	service in order to retrieve some data from the server. If a
+- **init(componentNode)**: invoked immediately after the component is instantiated. This is where
+	the component initializes values to be rendered by the template. A typical case is to invoke
+	some remote service in order to retrieve some data from the server. If a
 	[Promise](https://www.promisejs.org/) is returned, then Minion will wait for the promise
 	to resolve before rendering the template. This ensures that when the template is rendered,
 	all data has been properly initialized.
+	The HTML node of the component (e.g. `<my-hello>` in the previous example) is passed as
+	a jQuery object, so the component can examine its atributes and content before its template
+	is rendered.
 - **ready(rootNode)**: invoked after the HTML template has been fully rendered, including
-	the mustache expansions and any nested components. The rendered component root element
+	the mustache expansions and any nested components. The rendered template root element
 	is passed as a jQuery object, so it can be used to perform DOM manipulations or registering
 	event handlers. However, events can also be handled by the mn-click and mn-submit directives,
 	so this method is seldom required.
-- **done(rootNode)**:
+- **done(rootNode)**: Invoked right before the component is removed from the DOM. This is where
+	the controller can perform any teardown if required. Notice that event listeners bound to
+	elements of the template will be auomatically removed by jQuery, and therefore this method
+	is seldom required.
 
+##How Minion gets a template from a component
+There are several approaches for specifying the template of a component:
+- Default: by using the same name for the component and template. When a component
+	registers itself by invoking `minion.component('component-name', ComponentClass)`,
+	Minion will load the template from a file called `component-name.html`.
+- By defining a `templateUrl` property in the component object: Minion will load the template
+	from a file named after the value of that property.
+- By defining a `template` property in the component object: Minion will use the property value
+	as the template itself. This is useful for small and highly reusable components that make
+	use of small templates.
+- If a template does not require of a component, the `<mn-view template="templateUrl">` tag
+	can be used.
+All templates are cached, so they are loaded only once.
 
-###mn-view="*viewName*"
-Loads and renders a html file as a child of the tag containing this attribute.
-If a controller with the same id is available, will bind the controller and
-invoke its optional lifecycle methods:
-
-- **preRender**: Invoked before the view is rendered. Usually this is
-	where the controller will retrieve some remote data to be displayed by
-	the view. If a promise is returned, then the view will be rendered after
-	the promise resolves, to make sure the data is available to the view.
-
-- **postRender**: Invoked after the view is rendered. Usually this is where
-	the controller performs DOM manipulations with the rendered view or
-	registers event listeners to some of the view elements. Notice that
-	mn-*event* is a simpler way of performing this, so this method should
-	be used only for more complex requirements.
-
-- **done**: Invoked when the view is removed from the DOM. This is where
-	the controller can perform any teardown if required. Notice that event
-	listeners bound to elements of the view will be auomatically removed
-	by jQuery.
-
-####Example:
-```HTML
-	<div mn-view="users"></div>
-```
-Will load, cache and render users.html. If a controller has been registered
-with the name "users", then it will invoke its lifecycle methods and will
-bind it to the Mustache template context.
+##Event handling
 
 ###mn-click="*methodName*", mn-submit="*methodName*"
-Registers a listener so that *methodName* is invoked in the current controller
-when the event takes place.
+Registers a listener so that *methodName* is invoked in the parent component(s) when the
+event takes place.
 
 ####Examples:
 ```HTML
 	<form mn-submit="save">
 ```
-Will call the *save* method of the current controller when the form is submitted.
+Will call the *save* method of the parent component when the form is submitted.
 Notice that the method should return false to avoid the browser from posting the
 form to the server.
 
@@ -115,16 +106,6 @@ form to the server.
 ```
 Will call the *cancel* method of the current controller when the button is clicked.
 
-###mn-component="componentName"
-Locates the component registered by *componentName* and invokes its *render* method.
-
-####Example:
-```HTML
-	<div mn-component="my-input" name="email" label="Your e-mail"></div>
-```
-Locates the component registered as *my-input* and invokes its *render* method. The
-component has access to the *name* and *label* attributes, so it can expand the div
-into a full label / input tag pair.
 
 ##ToDo:
 ### Development
@@ -141,13 +122,10 @@ into a full label / input tag pair.
 - NLS/multilanguage
 
 ##Done:
-- Infinitely nested subviews
+- Infinitely nested components
 - npm scripts with proper build / watch / serve
 - Templating engine: Mustache
-- Simple Web components
-- Implement full set of CRUD operations for user table
-- Improve controller lifecycle attached to view lifecycle
-- Use hierarchical, controller-owned model, angular-style
+- Demo: implement full set of CRUD operations for user table
 - Config object to specify parameters such as:
 	- Base path for loading templates
 	- showLoading / hideLoading functions
