@@ -10,10 +10,40 @@ for small to medium single-page applications.
 Minion does not make use of the WebComponent standard for building the UI, but still the development
 approach is based on breaking the Web App into independent and reusable web components. Each component
 is defined as:
-- An HTML template, containing plain HTML and [Mustache](https://github.com/janl/mustache.js) template expressions.
-- An optional JavaScript Object or class. If present, several of its methods will be invoked during the application
-	lifecycle: when the component is created, after it is rendered and before it is removed. Also, components
-	hold data accessible to the template and can handle events triggered from elements it contains.
+- An HTML template, containing plain HTML and [Mustache](https://github.com/janl/mustache.js)
+	template expressions.
+- An optional JavaScript Object or class. If present, several of its methods will be invoked during
+	the application lifecycle: when the component is created, after it is rendered and before it is
+	removed. Also, components hold data accessible to the template and can handle events triggered
+	from elements it contains.
+
+####Hello World example:
+#####hello.js in ES5
+```JavaScript
+	minion.component('my-component', {
+		init: function() {
+			this.greeting = 'Hello';
+		}
+	});
+```
+#####hello.js in ES6
+```JavaScript
+	minion.component('my-component', class {
+		init() {
+			this.greeting = 'Hello';
+		}
+	});
+```
+#####hello.html
+```HTML
+	<p>{{greeting}}, world!</p>
+```
+#####someOtherPage.html
+```HTML
+	Greeting component below:
+	<my-hello></my-hello>
+```
+
 
 ##Supported tag attributes
 
