@@ -60,6 +60,7 @@
 	var view = $('#view');
 	var appModel = {
 	    userAdmin: {
+	        userId: null,
 	        users: [],
 	        searchFilter: {}
 	    }
@@ -68,9 +69,11 @@
 	    routie({
 	        '': function () { return routie('search'); },
 	        'search': function () { return minion_1.default.render('search', view); },
-	        'users': function () { return minion_1.default.render('users', view); },
-	        //TODO think of a clean way to pass "id" and other route parameters
-	        'user/:id': function (id) { return minion_1.default.render('user-edit', view); },
+	        'users': function () { return minion_1.default.render('users', view, appModel, 'userAdmin'); },
+	        'user/:id': function (id) {
+	            appModel.userAdmin.userId = id;
+	            minion_1.default.render('user-edit', view, appModel, 'userAdmin');
+	        },
 	        'details/:id': function (id) { return minion_1.default.render('details', view); }
 	    });
 	});
@@ -191,7 +194,17 @@
 	        bindFrom = bindAttr;
 	        bindTo = bindAttr;
 	    }
-	    component[bindTo] = parent[bindFrom];
+	    component[bindTo] = getNestedProp(parent, bindFrom);
+	}
+	function getNestedProp(obj, prop) {
+	    if (prop.indexOf('.') < 0)
+	        return obj[prop];
+	    var value = obj;
+	    for (var _i = 0, _a = prop.split('.'); _i < _a.length; _i++) {
+	        var p = _a[_i];
+	        value = value[p];
+	    }
+	    return value;
 	}
 	function getTemplate(tagName, component) {
 	    return new Promise(function (resolve) {
@@ -342,16 +355,15 @@
 /***/ function(module, exports, __webpack_require__) {
 
 	var minion_1 = __webpack_require__(2);
+	var users_1 = __webpack_require__(7);
 	minion_1.default.component('user-edit', {
-	    init: function (id) {
-	        // TODO adapt
-	        // this.user = minion.rootModel.users[id];
+	    init: function () {
+	        this.user = this.userAdmin.users[this.userAdmin.userId];
 	    },
 	    save: function (elem) {
-	        // TODO adapt
-	        // userSvc.saveUser(<any>minion.form2obj(elem)).then(() => {
-	        // 	window.location.href = '#users';
-	        // });
+	        users_1.default.saveUser(minion_1.default.form2obj(elem)).then(function () {
+	            window.location.href = '#users';
+	        });
 	        return false;
 	    }
 	});
@@ -367,8 +379,7 @@
 	    function class_1() {
 	    }
 	    class_1.prototype.searchUsers = function (elem) {
-	        // TODO adapt
-	        this.searchFilter = minion_1.default.form2obj(elem);
+	        this.userAdmin.searchFilter = minion_1.default.form2obj(elem);
 	        minion_1.default.render('user-table', $('user-table'), this);
 	        return false;
 	    };
@@ -377,10 +388,8 @@
 	minion_1.default.component('user-table', {
 	    init: function () {
 	        var _this = this;
-	        // TODO adapt
-	        return users_1.default.getUsers(this.searchFilter).then(function (users) {
-	            // 	minion.rootModel.users = users;
-	            _this.users = users;
+	        return users_1.default.getUsers(this.userAdmin.searchFilter).then(function (users) {
+	            _this.userAdmin.users = users;
 	        });
 	    },
 	    ready: function (viewContent) {
@@ -418,7 +427,7 @@
 	            for (var i = 0; i < 10; i++)
 	                data.push(createUser(i, filter));
 	            resolve(data);
-	        }, 1000);
+	        }, 800);
 	    });
 	}
 	function saveUser(u) {

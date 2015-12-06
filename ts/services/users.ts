@@ -22,7 +22,7 @@ function getUsers(filter): Promise<User[]> {
 			for (let i = 0; i < 10; i++)
 				data.push(createUser(i, filter));
 			resolve(data);
-		}, 1000);
+		}, 800);
 	});
 }
 
