@@ -73,7 +73,7 @@ function renderRecursive(tagName: string, target: JQuery, parent, bindProp?): Pr
 		target.empty().append(node);
 		registerEventHandlers(component, node);
 		component.ready(node);
-		if (component.done) node.bind('destroyed', component.done);
+		if (component.done) node.bind('destroyed', () => component.done(node));
 		return node;
 	});
 }

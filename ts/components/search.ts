@@ -1,12 +1,6 @@
 import minion from '../minion';
 
 minion.component('search', class {
-	potato: string;
-
-	init() {
-		this.potato = "I am a potato";
-	}
-
 	ready() {
 		console.log('search ready', arguments);
 		$('#price-range').slider({});
@@ -19,5 +13,9 @@ minion.component('search', class {
 	hello(evt) {
 		alert('hello!');
 		console.log(evt);
+	}
+
+	done() {
+		console.log('search done', arguments);
 	}
 });

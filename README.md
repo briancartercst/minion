@@ -17,7 +17,7 @@ is defined as:
 	removed. Also, components hold data accessible to the template and can handle events triggered
 	from elements it contains.
 
-####Hello World example:
+####Hello world example:
 #####hello.js in ES5
 ```JavaScript
 	minion.component('my-component', {
@@ -42,6 +42,11 @@ is defined as:
 ```HTML
 	Greeting component below:
 	<my-hello></my-hello>
+```
+#####Output
+```HTML
+	Greeting component below:
+	<p>Hello, world!</p>
 ```
 
 

@@ -167,7 +167,7 @@
 	        registerEventHandlers(component, node);
 	        component.ready(node);
 	        if (component.done)
-	            node.bind('destroyed', component.done);
+	            node.bind('destroyed', function () { return component.done(node); });
 	        return node;
 	    });
 	}
@@ -328,9 +328,6 @@
 	minion_1.default.component('search', (function () {
 	    function class_1() {
 	    }
-	    class_1.prototype.init = function () {
-	        this.potato = "I am a potato";
-	    };
 	    class_1.prototype.ready = function () {
 	        console.log('search ready', arguments);
 	        $('#price-range').slider({});
@@ -342,6 +339,9 @@
 	    class_1.prototype.hello = function (evt) {
 	        alert('hello!');
 	        console.log(evt);
+	    };
+	    class_1.prototype.done = function () {
+	        console.log('search done', arguments);
 	    };
 	    return class_1;
 	})());
