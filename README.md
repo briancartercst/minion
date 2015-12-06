@@ -1,7 +1,8 @@
 #Minion
 
-<img src="img/minion.jpg"
-	style="width: 50%; max-width:100%; margin-left: auto; margin-right: auto; display: block">
+<p align="center">
+	<img src="img/minion.jpg" width="50%">
+</p>
 
 Minion is a tiny MVC framework. It can be learned very fast and is good enough
 for small to medium single-page applications.
