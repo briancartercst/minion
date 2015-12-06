@@ -20,7 +20,7 @@ function getUsers(filter): Promise<User[]> {
 		setTimeout(()=> {
 			const data: User[] = [];
 			for (let i = 0; i < 10; i++)
-				data.push(createUser(i));
+				data.push(createUser(i, filter));
 			resolve(data);
 		}, 1000);
 	});
@@ -36,12 +36,13 @@ function deleteUser(id: string): Promise<void> {
 
 //-------------------- Public --------------------
 
-function createUser(id: number): User {
-	const usr: User = <any>{};
-	usr.name = randomName(3, 6);
-	usr.surname = randomName(4, 7);
-	usr.email = usr.name + '.' + usr.surname + '@gmail.com';
-	usr.mobile = randomMobile();
+function createUser(id: number, filter: User): User {
+	const usr: User = <User>{};
+	filter = filter || <User>{};
+	usr.name = filter.name || randomName(3, 6);
+	usr.surname = filter.surname || randomName(4, 7);
+	usr.email = filter.email || usr.name + '.' + usr.surname + '@gmail.com';
+	usr.mobile = filter.mobile || randomMobile();
 	usr.id = id;
 	return usr;
 }

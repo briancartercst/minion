@@ -20,9 +20,10 @@ const components = {};	// Component registry
 
 //-------------------- Publics --------------------
 
-function render(tagName: string, node: JQuery): Promise<JQuery> {
+function render(tagName: string, node: JQuery, model?, bindProp?): Promise<JQuery> {
+	model = model || {};
 	minion.showLoading();
-	return renderRecursive(tagName, node)
+	return renderRecursive(tagName, node, model, bindProp)
 	.then(viewContent => {
 		minion.hideLoading();
 		return viewContent;
@@ -41,8 +42,8 @@ function hideLoading() {
 	console.log('...Loaded');
 }
 
-function form2obj(form: JQuery): Object {
-	var result = {};
+function form2obj(form: JQuery, dest?): Object {
+	var result = dest || {};
 	for (const input of form.serializeArray()) {
 		if (input.value)
 			result[input.name] = Mustache.escape(input.value);
@@ -57,15 +58,17 @@ function form2obj(form: JQuery): Object {
 
 //-------------------- Privates --------------------
 
-function renderRecursive(tagName: string, target: JQuery): Promise<JQuery> {
+function renderRecursive(tagName: string, target: JQuery, parent, bindProp?): Promise<JQuery> {
 	const component = getComponent(tagName);
+	if (bindProp) target.attr('bind', bindProp);
+	bindComponent(component, target, parent);
 	return (component.init(target) || Promise.resolve())
 	.then(() => {
 		return getTemplate(tagName, component);
 	})
 	.then(template => {
 		const node = $('<div>' + Mustache.render(template, component) + '</div>');
-		return renderSubcomponents(node);
+		return renderSubcomponents(node, component);
 	})
 	.then(node => {
 		target.empty().append(node);
@@ -82,6 +85,22 @@ function getComponent(tagName: string) {
 	component.init = component.init || function(){};
 	component.ready = component.ready || function(){};
 	return component;
+}
+
+function bindComponent(component, target, parent) {
+	const bindAttr = target.attr('bind');
+	if (!bindAttr) return;
+	var bindFrom, bindTo;
+	const match = /(.+) as (.+)/.exec(bindAttr);
+	if (match) {
+		bindFrom = match[1];
+		bindTo = match[2];
+	}
+	else {
+		bindFrom = bindAttr;
+		bindTo = bindAttr;
+	}
+	component[bindTo] = parent[bindFrom];
 }
 
 function getTemplate(tagName: string, component): Promise<string> {
@@ -120,10 +139,10 @@ function registerEventHandlers(component, node: JQuery) {
 	}
 }
 
-function renderSubcomponents(node: JQuery): Promise<JQuery> {
+function renderSubcomponents(node: JQuery, parent): Promise<JQuery> {
 	const promises: Promise<JQuery>[] = [];
 	node.find(getComponentsQuery()).each((i, e) => {
-		promises.push(renderRecursive(e.localName, $(e)));
+		promises.push(renderRecursive(e.localName, $(e), parent));
 	});
 	return Promise.all(promises).then(() => node);
 }

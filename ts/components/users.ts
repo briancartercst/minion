@@ -2,10 +2,11 @@ import minion from '../minion';
 import userSvc from '../services/users';
 
 minion.component('users', class {
+	searchFilter;
 	searchUsers(elem) {
 		// TODO adapt
-		// minion.rootModel.userFilter = minion.form2obj(elem);
-		// minion.showView('user-table');
+		this.searchFilter = minion.form2obj(elem);
+		minion.render('user-table', $('user-table'), this);
 		return false;
 	}
 });
@@ -13,7 +14,7 @@ minion.component('users', class {
 minion.component('user-table', {
 	init() {
 		// TODO adapt
-		return userSvc.getUsers(null/*minion.rootModel.userFilter*/).then(users => {
+		return userSvc.getUsers(this.searchFilter).then(users => {
 			// 	minion.rootModel.users = users;
 			this.users = users;
 		});

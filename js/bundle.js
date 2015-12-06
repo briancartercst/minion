@@ -56,8 +56,14 @@
 /***/ function(module, exports, __webpack_require__) {
 
 	var minion_1 = __webpack_require__(2);
-	var view = $('#view');
 	setupLoadingPopup();
+	var view = $('#view');
+	var appModel = {
+	    userAdmin: {
+	        users: [],
+	        searchFilter: {}
+	    }
+	};
 	$(function () {
 	    routie({
 	        '': function () { return routie('search'); },
@@ -109,9 +115,10 @@
 	var templates = {}; // Template cache
 	var components = {}; // Component registry
 	//-------------------- Publics --------------------
-	function render(tagName, node) {
+	function render(tagName, node, model, bindProp) {
+	    model = model || {};
 	    minion.showLoading();
-	    return renderRecursive(tagName, node)
+	    return renderRecursive(tagName, node, model, bindProp)
 	        .then(function (viewContent) {
 	        minion.hideLoading();
 	        return viewContent;
@@ -126,8 +133,8 @@
 	function hideLoading() {
 	    console.log('...Loaded');
 	}
-	function form2obj(form) {
-	    var result = {};
+	function form2obj(form, dest) {
+	    var result = dest || {};
 	    for (var _i = 0, _a = form.serializeArray(); _i < _a.length; _i++) {
 	        var input = _a[_i];
 	        if (input.value)
@@ -141,15 +148,18 @@
 	    return result;
 	}
 	//-------------------- Privates --------------------
-	function renderRecursive(tagName, target) {
+	function renderRecursive(tagName, target, parent, bindProp) {
 	    var component = getComponent(tagName);
+	    if (bindProp)
+	        target.attr('bind', bindProp);
+	    bindComponent(component, target, parent);
 	    return (component.init(target) || Promise.resolve())
 	        .then(function () {
 	        return getTemplate(tagName, component);
 	    })
 	        .then(function (template) {
 	        var node = $('<div>' + Mustache.render(template, component) + '</div>');
-	        return renderSubcomponents(node);
+	        return renderSubcomponents(node, component);
 	    })
 	        .then(function (node) {
 	        target.empty().append(node);
@@ -166,6 +176,22 @@
 	    component.init = component.init || function () { };
 	    component.ready = component.ready || function () { };
 	    return component;
+	}
+	function bindComponent(component, target, parent) {
+	    var bindAttr = target.attr('bind');
+	    if (!bindAttr)
+	        return;
+	    var bindFrom, bindTo;
+	    var match = /(.+) as (.+)/.exec(bindAttr);
+	    if (match) {
+	        bindFrom = match[1];
+	        bindTo = match[2];
+	    }
+	    else {
+	        bindFrom = bindAttr;
+	        bindTo = bindAttr;
+	    }
+	    component[bindTo] = parent[bindFrom];
 	}
 	function getTemplate(tagName, component) {
 	    return new Promise(function (resolve) {
@@ -203,10 +229,10 @@
 	        });
 	    }
 	}
-	function renderSubcomponents(node) {
+	function renderSubcomponents(node, parent) {
 	    var promises = [];
 	    node.find(getComponentsQuery()).each(function (i, e) {
-	        promises.push(renderRecursive(e.localName, $(e)));
+	        promises.push(renderRecursive(e.localName, $(e), parent));
 	    });
 	    return Promise.all(promises).then(function () { return node; });
 	}
@@ -342,8 +368,8 @@
 	    }
 	    class_1.prototype.searchUsers = function (elem) {
 	        // TODO adapt
-	        // minion.rootModel.userFilter = minion.form2obj(elem);
-	        // minion.showView('user-table');
+	        this.searchFilter = minion_1.default.form2obj(elem);
+	        minion_1.default.render('user-table', $('user-table'), this);
 	        return false;
 	    };
 	    return class_1;
@@ -352,7 +378,7 @@
 	    init: function () {
 	        var _this = this;
 	        // TODO adapt
-	        return users_1.default.getUsers(null /*minion.rootModel.userFilter*/).then(function (users) {
+	        return users_1.default.getUsers(this.searchFilter).then(function (users) {
 	            // 	minion.rootModel.users = users;
 	            _this.users = users;
 	        });
@@ -390,7 +416,7 @@
 	        setTimeout(function () {
 	            var data = [];
 	            for (var i = 0; i < 10; i++)
-	                data.push(createUser(i));
+	                data.push(createUser(i, filter));
 	            resolve(data);
 	        }, 1000);
 	    });
@@ -402,12 +428,13 @@
 	    return Promise.resolve(undefined);
 	}
 	//-------------------- Public --------------------
-	function createUser(id) {
+	function createUser(id, filter) {
 	    var usr = {};
-	    usr.name = randomName(3, 6);
-	    usr.surname = randomName(4, 7);
-	    usr.email = usr.name + '.' + usr.surname + '@gmail.com';
-	    usr.mobile = randomMobile();
+	    filter = filter || {};
+	    usr.name = filter.name || randomName(3, 6);
+	    usr.surname = filter.surname || randomName(4, 7);
+	    usr.email = filter.email || usr.name + '.' + usr.surname + '@gmail.com';
+	    usr.mobile = filter.mobile || randomMobile();
 	    usr.id = id;
 	    return usr;
 	}
