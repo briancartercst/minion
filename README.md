@@ -4,14 +4,16 @@
 	<img src="img/minion.jpg" width="50%">
 </p>
 
-Minion is a tiny MVC framework. It can be learned very fast and is good enough
+Minion is a tiny WebComponent-oriented UI framework. It can be learned very fast and is good enough
 for small to medium single-page applications.
 
-It has some similarities with Angular:
-- Controllers
-- Components
-- Routing (provided by Routie)
-- Templating (provided by Mustache)
+Minion does not make use of the WebComponent standard for building the UI, but still the development
+approach is based on breaking the Web App into independent and reusable web components. Each component
+is defined as:
+- An HTML template, containing plain HTML and [Mustache](https://github.com/janl/mustache.js) template expressions.
+- An optional JavaScript Object or class. If present, several of its methods will be invoked during the application
+	lifecycle: when the component is created, after it is rendered and before it is removed. Also, components
+	hold data accessible to the template and can handle events triggered from elements it contains.
 
 ##Supported tag attributes
 
