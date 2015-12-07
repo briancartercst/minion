@@ -157,7 +157,7 @@ Finally, the `*` value can be used for binding the whole parent or child compone
 - And the rather risky `mn-bind="*"` will directly bind all properties of the parent
 	component into the child component.
 
-
+<!--
 ##ToDo:
 ### Development
 - ESHint / TSLint
@@ -167,7 +167,9 @@ Finally, the `*` value can be used for binding the whole parent or child compone
 	- And maybe the Promise shim will no longer be required
 
 ### Runtime
-- Properly setup Modernizr in order to support form validation shims
-- Refactor 'search' views & component to flat search names
-- Test refactor folders by functionality instead of component type
-- NLS/multilanguage
+- Demo
+	- Properly setup Modernizr in order to support form validation shims
+	- Refactor 'search' views & component to flat search names
+	- Test refactor folders by functionality instead of component type
+	- NLS/multilanguage
+-->
