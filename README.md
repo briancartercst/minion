@@ -146,6 +146,17 @@ the `address` property of the customer component.
 When the address component is created, an `address` property will be created referencing
 the `addr` property inside the `cust` property of the customer component.
 
+You can also pass a comma-separated list of bindings, e.g. `mn-bind="prop1, prop2"` or
+`mn-bind="prop1 as altProp1, prop2"`, etc.
+
+Finally, the `*` value can be used for binding the whole parent or child component, so that:
+- `mn-bind="obj as *"` will bind all properties of the obj property in the parent component directly
+	to the child component.
+- `mn-bind="* as obj"` will bind all properties of the parent component to the obj property of the
+	child component.
+- And the rather risky `mn-bind="*"` will directly bind all properties of the parent
+	component into the child component.
+
 
 ##ToDo:
 ### Development

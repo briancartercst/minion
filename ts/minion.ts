@@ -87,22 +87,35 @@ function getComponent(tagName: string) {
 	return component;
 }
 
-function bindComponent(component, bindExpr, parent) {
-	if (!bindExpr) return;
-	let bindFrom, bindTo;
-	const match = /(\S+)\s+as\s+(\S+)/.exec(bindExpr);
-	if (match) {
-		bindFrom = match[1];
-		bindTo = match[2];
+function bindComponent(component, binds, parent) {
+	if (!binds) return;
+	for (var bindExpr of binds.split(',')) {
+		bindExpr = bindExpr.trim();
+		let bindFrom, bindTo;
+		const match = /(\S+)\s+as\s+(\S+)/.exec(bindExpr);
+		if (match) {
+			bindFrom = match[1];
+			bindTo = match[2];
+		}
+		else {
+			bindFrom = bindExpr;
+			bindTo = bindExpr;
+		}
+		const value = getNestedProp(parent, bindFrom);
+		if (bindTo == '*') $.extend(component, value);
+		else component[bindTo] = value;
 	}
-	else {
-		bindFrom = bindExpr;
-		bindTo = bindExpr;
-	}
-	component[bindTo] = getNestedProp(parent, bindFrom);
 }
 
 function getNestedProp(obj, prop) {
+	if (prop == '*') {
+		const keys = Object.keys(obj).filter(
+			prop => !(obj[prop] instanceof Function) && prop != 'template' && prop != 'templateUrl'
+		);
+		const result = {};
+		for (const key of keys) result[key] = obj[key];
+		return result;
+	}
 	if (prop.indexOf('.') < 0) return obj[prop];
 	let value = obj;
 	for (const p of prop.split('.')) value = value[p];

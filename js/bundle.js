@@ -181,27 +181,44 @@
 	    component.ready = component.ready || function () { };
 	    return component;
 	}
-	function bindComponent(component, bindExpr, parent) {
-	    if (!bindExpr)
+	function bindComponent(component, binds, parent) {
+	    if (!binds)
 	        return;
-	    var bindFrom, bindTo;
-	    var match = /(\S+)\s+as\s+(\S+)/.exec(bindExpr);
-	    if (match) {
-	        bindFrom = match[1];
-	        bindTo = match[2];
+	    for (var _i = 0, _a = binds.split(','); _i < _a.length; _i++) {
+	        var bindExpr = _a[_i];
+	        bindExpr = bindExpr.trim();
+	        var bindFrom = void 0, bindTo = void 0;
+	        var match = /(\S+)\s+as\s+(\S+)/.exec(bindExpr);
+	        if (match) {
+	            bindFrom = match[1];
+	            bindTo = match[2];
+	        }
+	        else {
+	            bindFrom = bindExpr;
+	            bindTo = bindExpr;
+	        }
+	        var value = getNestedProp(parent, bindFrom);
+	        if (bindTo == '*')
+	            $.extend(component, value);
+	        else
+	            component[bindTo] = value;
 	    }
-	    else {
-	        bindFrom = bindExpr;
-	        bindTo = bindExpr;
-	    }
-	    component[bindTo] = getNestedProp(parent, bindFrom);
 	}
 	function getNestedProp(obj, prop) {
+	    if (prop == '*') {
+	        var keys = Object.keys(obj).filter(function (prop) { return !(obj[prop] instanceof Function) && prop != 'template' && prop != 'templateUrl'; });
+	        var result = {};
+	        for (var _i = 0; _i < keys.length; _i++) {
+	            var key = keys[_i];
+	            result[key] = obj[key];
+	        }
+	        return result;
+	    }
 	    if (prop.indexOf('.') < 0)
 	        return obj[prop];
 	    var value = obj;
-	    for (var _i = 0, _a = prop.split('.'); _i < _a.length; _i++) {
-	        var p = _a[_i];
+	    for (var _a = 0, _b = prop.split('.'); _a < _b.length; _a++) {
+	        var p = _b[_a];
 	        value = value[p];
 	    }
 	    return value;
