@@ -47,7 +47,7 @@
 	__webpack_require__(1);
 	__webpack_require__(3);
 	__webpack_require__(4);
-	__webpack_require__(5);
+	(function webpackMissingModule() { throw new Error("Cannot find module \"./ts/components/todo\""); }());
 	__webpack_require__(6);
 	module.exports = __webpack_require__(8);
 
@@ -358,55 +358,7 @@
 
 
 /***/ },
-/* 5 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var minion_1 = __webpack_require__(2);
-	minion_1.default.component('todo', (function () {
-	    function class_1() {
-	        this.todoList = [];
-	    }
-	    class_1.prototype.keyPressed = function (elem, evt) {
-	        if (evt.keyCode != 13 || elem.val().length == 0)
-	            return;
-	        var item = { text: elem.val(), done: false };
-	        this.todoList.push(item);
-	        this.addTodoComponent(item);
-	        elem.val('');
-	    };
-	    class_1.prototype.addTodoComponent = function (item) {
-	        var _this = this;
-	        var node = $('<todo-item>');
-	        $('.todo-list').append(node);
-	        minion_1.default.render('todo-item', node, { item: item }, 'item')
-	            .then(function (node) {
-	            var itemComp = node.data('component');
-	            itemComp.deleteItem = function (elem) { return _this.deleteItem(node, itemComp.item); };
-	        });
-	    };
-	    class_1.prototype.deleteItem = function (node, item) {
-	        this.todoList.splice(this.todoList.indexOf(item), 1);
-	        node.remove();
-	    };
-	    return class_1;
-	})());
-	minion_1.default.component('todo-item', (function () {
-	    function class_2() {
-	        this.template = "\n\t\t<div style=\"padding: 1em; border-bottom: 1px solid #CCC\">\n\t\t\t<input type=\"checkbox\" mn-click=\"toggleDone\">&nbsp;&nbsp;\n\t\t\t<span class=\"item-text\">{{item.text}}<span>\n\t\t\t<button class=\"btn btn-danger btn-sm pull-right\" style=\"margin-top: -0.5ex\"\n\t\t\t\ttype=\"button\" mn-click=\"deleteItem\">\n\t\t\t\t<span class=\"glyphicon glyphicon-trash\" aria-hidden=\"true\"></span>\n\t\t\t</button>\n\t\t</div>\n\t";
-	    }
-	    class_2.prototype.ready = function (node) {
-	        this.itemText = node.find('.item-text');
-	    };
-	    class_2.prototype.deleteItem = function (elem) { };
-	    class_2.prototype.toggleDone = function () {
-	        this.item.done = !this.item.done;
-	        this.itemText.toggleClass('todo-done');
-	    };
-	    return class_2;
-	})());
-
-
-/***/ },
+/* 5 */,
 /* 6 */
 /***/ function(module, exports, __webpack_require__) {
 
