@@ -19,7 +19,8 @@ $(() => {
 			appModel.userAdmin.userId = id;
 			minion.render('user-edit', view, appModel, 'userAdmin');
 		},
-		'details/:id': (id) => minion.render('details', view)
+		'details/:id': (id) => minion.render('details', view),
+		'todo': () => minion.render('todo', view)
 	});
 });
 

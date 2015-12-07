@@ -26,7 +26,7 @@ function render(tagName: string, node: JQuery, model?, bindProp?): Promise<JQuer
 	return renderRecursive(tagName, node, model, bindProp)
 	.then(node => {
 		minion.hideLoading();
-		return node;
+		return node.parent();
 	});
 }
 
@@ -60,6 +60,7 @@ function form2obj(form: JQuery, dest?): Object {
 
 function renderRecursive(tagName: string, target: JQuery, parent, bindProp?): Promise<JQuery> {
 	const component = getComponent(tagName);
+	target.data('component', component);
 	bindComponent(component, bindProp || target.attr('bind'), parent);
 	return (component.init(target) || Promise.resolve())
 	.then(() => {
@@ -146,8 +147,8 @@ function registerEventHandlers(component, node: JQuery) {
 
 function registerEventHandler(component, elem, eventId, handlerName) {
 	if (component[handlerName])
-		$(elem).on(eventId, function() {
-			return component[handlerName]($(this));
+		$(elem).on(eventId, function(event) {
+			return component[handlerName]($(this), event);
 		});
 }
 

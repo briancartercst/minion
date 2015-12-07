@@ -123,6 +123,7 @@ Will call the *handleKey* method of the parent component when the the keyup even
 	- And maybe the Promise shim will no longer be required
 
 ### Runtime
+- Document mn-bind
 - Properly setup Modernizr in order to support form validation shims
 - Refactor 'search' views & component to flat search names
 - Test refactor folders by functionality instead of component type
