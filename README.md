@@ -146,6 +146,7 @@ the `address` property of the customer component.
 When the address component is created, an `address` property will be created referencing
 the `addr` property inside the `cust` property of the customer component.
 
+
 ##ToDo:
 ### Development
 - ESHint / TSLint
@@ -159,14 +160,3 @@ the `addr` property inside the `cust` property of the customer component.
 - Refactor 'search' views & component to flat search names
 - Test refactor folders by functionality instead of component type
 - NLS/multilanguage
-
-##Done:
-- Infinitely nested components
-- npm scripts with proper build / watch / serve
-- Templating engine: Mustache
-- Demo: implement full set of CRUD operations for user table
-- Config object to specify parameters such as:
-	- Base path for loading templates
-	- showLoading / hideLoading functions
-- Show waiting popup & block current UI
-- Add extra HTML escaping to avoid XSS attacks

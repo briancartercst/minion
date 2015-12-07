@@ -388,6 +388,15 @@
 	        this.todoList.splice(this.todoList.indexOf(item), 1);
 	        node.remove();
 	    };
+	    class_1.prototype.deleteCompleted = function () {
+	        var _this = this;
+	        $('todo-item').each(function (i, e) {
+	            var node = $(e);
+	            var itemComp = node.data('component');
+	            if (itemComp.item.done)
+	                _this.deleteItem(node, itemComp.item);
+	        });
+	    };
 	    return class_1;
 	})());
 	minion_1.default.component('todo-item', (function () {

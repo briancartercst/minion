@@ -26,9 +26,18 @@ minion.component('todo', class {
 		});
 	}
 
-	deleteItem(node: JQuery, item) {
+	deleteItem(node: JQuery, item: ToDoItem) {
 		this.todoList.splice(this.todoList.indexOf(item), 1);
 		node.remove();
+	}
+
+	deleteCompleted() {
+		$('todo-item').each((i, e) => {
+			const node = $(e);
+			const itemComp = node.data('component');
+			if (itemComp.item.done)
+				this.deleteItem(node, itemComp.item);
+		});
 	}
 });
 
