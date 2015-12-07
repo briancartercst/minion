@@ -24,9 +24,9 @@ function render(tagName: string, node: JQuery, model?, bindProp?): Promise<JQuer
 	model = model || {};
 	minion.showLoading();
 	return renderRecursive(tagName, node, model, bindProp)
-	.then(viewContent => {
+	.then(node => {
 		minion.hideLoading();
-		return viewContent;
+		return node;
 	});
 }
 

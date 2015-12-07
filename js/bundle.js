@@ -122,9 +122,9 @@
 	    model = model || {};
 	    minion.showLoading();
 	    return renderRecursive(tagName, node, model, bindProp)
-	        .then(function (viewContent) {
+	        .then(function (node) {
 	        minion.hideLoading();
-	        return viewContent;
+	        return node;
 	    });
 	}
 	function component(name, component) {
