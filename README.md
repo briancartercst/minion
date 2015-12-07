@@ -113,6 +113,38 @@ Will call the *cancel* method of the parent component when the button is clicked
 ```
 Will call the *handleKey* method of the parent component when the the keyup event is triggered.
 
+##Data binding
+Each component holds its own data as plain JavaScript properties, which are accessible to
+the templates via the {{propertyName}} syntax.
+
+When a component is nested inside another component, the `mn-bind` attribute can be used to
+propagate data from the parent to the child component. This attribute can be used in two ways:
+- **mn-bind="propertyName"**: will create `propertyName` inside the child component and copy
+	the value of the same property from the parent component.
+- **mn-bind="srcProp as targetProp"**: will create `targetProp` inside the child component and
+	copy the value of `srcProp` from the parent component. In this case, srcProp can be a nested
+	property such as `obj1.obj2.prop`.
+
+Notice that even property values are just copied, if the property holds a JavaScript object,
+its reference will be copied. This way, the child component can directly reference data held
+inside the parent component.
+
+####Examples:
+```HTML
+	<customer>
+		<address mn-bind="address"></address>
+	</customer>
+```
+When the address component is created, an `address` property will be created referencing
+the `address` property of the customer component.
+
+```HTML
+	<customer>
+		<address mn-bind="cust.addr as address"></address>
+	</customer>
+```
+When the address component is created, an `address` property will be created referencing
+the `addr` property inside the `cust` property of the customer component.
 
 ##ToDo:
 ### Development
@@ -123,7 +155,6 @@ Will call the *handleKey* method of the parent component when the the keyup even
 	- And maybe the Promise shim will no longer be required
 
 ### Runtime
-- Document mn-bind
 - Properly setup Modernizr in order to support form validation shims
 - Refactor 'search' views & component to flat search names
 - Test refactor folders by functionality instead of component type
